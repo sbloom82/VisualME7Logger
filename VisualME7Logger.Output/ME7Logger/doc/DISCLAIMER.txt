@@ -1,0 +1,26 @@
+=========================================================================
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+=========================================================================
+
+In short: 
+The logger has been tested successfully as far as possible, but I can and will not 
+guarantee that nothing bad could happen when using the software with your specific car. 
+
+Please follow these steps with each new ecu/car combination before you start logging on the street/dyno:
+1. Configure highest baudrate and sampling rate you wish to use in the logger configuration.
+2. Try to start the logger at first while ignition is on but engine not running.
+3. Next, try to start the logger while engine is running, but in idle gear.
+4. Rev. the engine to redline in idle gear while the logger is connected & running.
+
+If any of the above test steps leads to unexpected behaviour of your car/engine 
+(well, only behaviour you do not see anyways :-)), then don't use the logger while driving.
+
