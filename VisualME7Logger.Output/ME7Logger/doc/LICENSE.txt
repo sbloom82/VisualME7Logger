@@ -1,0 +1,80 @@
+==============================================================================================
+
+    Freeware License Agreement
+      for ME7Logger V1.xx
+         April 2011
+
+==============================================================================================
+
+Except where otherwise noted, all of the documentation and software 
+included in the ME7Logger package is copyrighted by mki.
+
+Permission is granted to anyone to use this software for NON-COMMERCIAL purpose,
+provided that the following conditions are met:
+
+1. COPYRIGHT NOTE
+All redistributions in binary form must retain all occurrences of the above copyright notice.
+
+2. COPYING AND DISTRIBUTION
+This software is FREEWARE. You may distribute copies of this software but you may
+NOT charge for the software or the service of distribution.
+If you make copies of this program you must give the recipients all the rights you have.
+You must also include this license in the distribution.
+
+3. MODIFYING
+Modifying your copy or copies of the program or any portion of it in any way is prohibited.
+
+4. DECOMPILING
+Decompiling, disassembling or any reverse engineering of the binary and executable files
+that are associated with this program is prohibited.
+
+5. ACCEPTING THIS LICENSE
+Distributing or copying the program is prohibited by law unless you accept this license.
+You are not required to do this, because you have not signed the license,
+but by copying or distributing the program, you declare your acceptance of this license.
+
+
+6. DISCLAIMER OF WARRANTY
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+7. TERMINATION
+This license is valid as long as you use the software. It will be terminated
+as soon as you violate any of its terms and conditions. In this case you have
+to immediately destroy, respectively delete, all copies of this product you
+made.
+
+
+8. MISCELLANEOUS
+This license represents the complete agreement between the Author and you.
+It overrides all other agreements, either spoken or written. It can only be
+changed by a written and signed contract.
+If, as a consequence of a court judgment or allegation of patent violation
+or for any other reason (not limited to patent issues), conditions are
+imposed on you (whether by court order, agreement or otherwise) that
+contradict the conditions of this license, they do not excuse you from the
+conditions of this license.  If you cannot distribute so as to satisfy
+simultaneously your obligations under this license and any other pertinent
+obligations, then as a consequence you may not distribute the program at all.
+  
+END OF TERMS AND CONDITIONS.
+
+
+Have any problems with the conditions? Then contact me please, to see what can be done.
+
+Contact with the author:
+mki 
+email: psetz62 (at) gmx.de
+
+Special thanks to:
+NefMoto, http://www.nefariousmotorsports.com
+

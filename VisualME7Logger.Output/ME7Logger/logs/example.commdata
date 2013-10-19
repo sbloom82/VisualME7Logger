@@ -1,0 +1,13 @@
+Connect overview for file example.bin:
+-----------------------------------------------------------
+slow (0x01)           -> KWP2000
+slow (0x31)           -> KWP2000
+slow (0x33)           -> SAE-J1979(KWP2000)
+fast (HM2-phys(0x10)) -> KWP2000
+fast (HM3-func(0x31)) -> KWP2000
+
+KWP2000 communication:
+HM0/none(----)
+HM2/phys(0x10)
+HM3/func(0x31)
+

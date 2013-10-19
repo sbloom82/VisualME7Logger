@@ -1,0 +1,12 @@
+#
+# Makefile to build example with libME7Logger.dll
+#
+
+CC=gcc
+CFLAGS= -Wall -O3
+
+example:  example.c ME7Logger.h
+	$(CC) $(CFLAGS) -c -o example.o example.c
+	$(CC) $(CFLAGS) -o example example.o  -L. -lME7Logger
+
+

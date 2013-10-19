@@ -1,0 +1,1184 @@
+# Mapping for standard ME7.5/ME7.1
+#
+# Version 1.20, (c) mki 09/2011
+#
+#
+# Normally you should not need to edit this file!!
+#
+# Remark: the conversion factor of injection timing variables te_w, te2_w, ti_b1, ti_b2, ti_avg, timx_w, timxth_w
+# varies between different ecu's. The conversion of injection time internal value -> physical value  depends
+# on the ecu's cpu speed:
+# 20 MHz -> factor = (1/312.5)   = 0.0032     (3.2us/TickTime)  
+# 24 MHz -> factor = (1/375)     = 0.00266667 (2.667us/TickTime)
+# 32 MHz -> factor = (1/250)     = 0.0040     (4us/TickTime)        (*)
+# 40 MHz -> factor = (1/312.5)   = 0.0032     (3.2us/TickTime)      (*)
+#     (*) 32MHz and 40MHz use doubled divide factor for timer T4 compared to 20MHz and 24MHz.
+# In this map file, the conversion factors for 24MHz are inserted as default.
+# The ME7Info tool will automatically determine the used cpu speed and put the
+# correct conversion factors into generated ecu characteristics files!
+# -> Changed conversion factors for injection timing variables in this file will not be effective.
+#
+# In addition, the conversion factor of following constants is also dependent on cpu frequency:
+# TEMIN, TEMINVA, TVUB, TVTSPEP, DTEPRU, DTIABS    : same factor as for injection timing variables
+# KRKTE                                            : factor of inj. timing variables divided by 24
+#
+#
+# This file section maps: (resulttype, bitmask) -> (variable name, size, unit, conversion formula, comment)
+#
+# (rt = resulttype, bm = bitmask, sz = size (0=determine from image, 1=byte, 2=word))
+#
+# rt, bm, varname             ,sz, {unit}    , S, I,      A,         B, {comment}
+0001, 00, nmot                , 0, {rpm     }, 0, 0,     40,         0, {Motordrehzahl}
+0002, 00, rl                  , 0, {%       }, 0, 0,   0.75,         0, {relative Luftfüllung}
+0003, 00, rk_w                , 0, {%       }, 0, 0, 0.046875,       0, {relative Kraftstoffmasse}
+0004, 00, rk2_w               , 0, {%       }, 0, 0, 0.046875,       0, {relative Kraftstoffmasse Bank 2}
+0005, 00, te_w                , 0, {ms      }, 0, 0, 0.00266667,     0, {effektive Einspritzzeit (word)}
+0006, 00, te2_w               , 0, {ms      }, 0, 0, 0.00266667,     0, {effektive Einspritzzeit (word) Bank 2}
+0007, 00, wdkba               , 0, {% DK    }, 0, 0, 0.392157,       0, {Drosselklappenwinkel bezogen auf unteren Anschlag}
+0008, 00, wped_w              , 0, {% PED   }, 0, 0, 0.0015259,      0, {normierter Fahrpedalwinkel}
+0009, 00, zwout               , 0, {°KW     }, 1, 0,   0.75,         0, {Zündwinkel-Ausgabe}
+000A, 00, mshfm_w             , 0, {g/s     }, 0, 0, 0.02777778,     0, {Massenstrom HFM 16-Bit Größe}
+000B, 00, tmot                , 0, {°C      }, 0, 0,   0.75,        48, {Motor-Temperatur}
+000C, 00, tans                , 0, {°C      }, 0, 0,   0.75,        48, {Ansaugluft - Temperatur}
+000D, 80, fcmEnd              , 0, {#       }, 0, 0,      1,         0, {Anzahl Einträge im Fehlerspeicher}
+000D, 40, tkatm               , 0, {°C      }, 0, 0,      5,        50, {Katalysatortemperatur aus Modell}
+000D, 20, B_koe               , 0, {        }, 0, 0,      1,         0, {Bedingung für Kompressoreinschalten}
+000D, 10, B_ll                , 0, {        }, 0, 0,      1,         0, {Bedingung Leerlauf}
+000D, 08, B_lr                , 0, {        }, 0, 0,      1,         0, {LREB: Bedingung Lambdaregelung (vor Kat); (Bank 1)}
+000D, 04, wdkba               , 0, {% DK    }, 0, 0, 0.392157,       0, {Drosselklappenwinkel bezogen auf unteren Anschlag}
+000D, 02, nmot                , 0, {rpm     }, 0, 0,     40,         0, {Motordrehzahl}
+000D, 01, tmot                , 0, {°C      }, 0, 0,   0.75,        48, {Motor-Temperatur}
+000E, 00, nmotll              , 0, {rpm     }, 0, 0,     10,         0, {Motordrehzahl im Leerlaufbereich}
+000F, 00, nsol                , 0, {rpm     }, 0, 0,     10,         0, {Leerlaufsolldrehzahl}
+0010, 00, mds_w               , 0, {%       }, 0, 0, 0.00152588,     0, {Motorschleppmoment}
+0011, 00, mdverb              , 0, {%       }, 0, 0, 0.390625,       0, {Momentenbedarf der Nebenaggregate}
+0012, 00, mdverl_w            , 0, {%       }, 0, 0, 0.00152588,     0, {Motor-Verlustmoment}
+0013, 00, dmvad_w             , 0, {%       }, 1, 0, 0.00305176,     0, {Delta-Motordrehmoment aus Verlustmoment-Adaption}
+0014, 10, B_sl                , 0, {        }, 0, 0,      1,         0, {Bedingung Servo-Lenkung}
+0014, 08, B_sksc              , 0, {        }, 0, 0,      1,         0, {Bedingung heizb. Heckscheibe eingeschaltet aus CAN-Botschaft Clima1}
+0014, 04, B_nac               , 0, {        }, 0, 0,      1,         0, {Bedingung für erhöhte LL-Drehzahl bei Klimaanlage}
+0014, 02, B_fs                , 0, {        }, 0, 0,      1,         0, {Bedingung Fahrstufe}
+0014, 01, B_koe               , 0, {        }, 0, 0,      1,         0, {Bedingung für Kompressoreinschalten}
+0015, 00, mifab_w             , 0, {%       }, 0, 0, 0.00152588,     0, {Begrenztes indiziertes Fahrerwunschmoment}
+0016, 00, misol_w             , 0, {%       }, 0, 0, 0.00152588,     0, {Indiziertes resultierendes Sollmoment}
+0017, 00, miext_w             , 0, {%       }, 0, 0, 0.00152588,     0, {von außen (ASR, GS, usw.) angefordertes indiziertes Motormoment}
+0018, 00, ub                  , 0, {V       }, 0, 0, 0.0704,         0, {Batteriespannung}
+0019, 00, vfzg                , 0, {km/h    }, 0, 0,   1.25,         0, {Fahrzeuggeschwindigkeit}
+001A, 00, hagr                , 0, {%       }, 0, 0, 0.00152588,     0, {Hub AGR-Ventil}
+001B, 00, taagr               , 0, {%       }, 0, 0, 0.00152588,     0, {Tastverhaeltnis AGR-Ventil}
+001C, 00, fr_w                , 0, {-       }, 0, 0, 3.05176e-05,    0, {Lambda-Regler-Ausgang (Word)}
+001D, 00, fr2_w               , 0, {-       }, 0, 0, 3.05176e-05,    0, {Lambda-Regler-Ausgang (Word) Bank 2}
+001E, 00, dveadast            , 0, {-       }, 0, 0,      1,         0, {DVE Adaptionsstatus}
+#001F: internal handling
+#0020: internal handling
+0021, 00, fra_w               , 0, {-       }, 0, 0, 3.05176e-05,    0, {multiplikative Gemischkorrektur der Gemischadaption (Word)}
+0022, 00, fra2_w              , 0, {-       }, 0, 0, 3.05176e-05,    0, {multiplikative Gemischkorrektur der Gemischadaption (Word) Bank 2}
+0023, 00, tvlr                , 0, {s       }, 1, 0,   0.01,         0, {LR: Summenwert für verzögerte Reglerumschaltung tv}
+0024, 00, tvlr2               , 0, {s       }, 1, 0,   0.01,         0, {LR: Summenwert für verzögerte Reglerumschaltung tv Bank 2}
+0025, 00, usvk                , 0, {V       }, 0, 0, 0.00521569,   0.2, {Spannung Lambdasonde vor Kat}
+0026, 00, usvk2               , 0, {V       }, 0, 0, 0.00521569,   0.2, {Spannung Lambdasonde vor Kat Bank 2}
+0027, 00, ushk                , 0, {V       }, 0, 0, 0.00521569,   0.2, {Spannung Lambdasonde hinter Katalysator}
+0028, 00, ushk2               , 0, {V       }, 0, 0, 0.00521569,   0.2, {Spannung Lambdasonde hinter Katalysator Bank 2}
+0029, 00, lamelsh_w           , 0, {-       }, 0, 0, 0.000244141,    0, {Lambdasoll für elektrische Sondendiagnose hinter KAT (Kurztrip)}
+002A, 00, lamelsh2_w          , 0, {-       }, 0, 0, 0.000244141,    0, {Lambdasoll für elektrische Sondendiagnose hinter KAT (Kurztrip) Bank 2}
+002B, 00, lamsbg_w            , 0, {-       }, 0, 0, 0.000244141,    0, {Lambdasoll Begrenzung (word)}
+002C, 00, lamsbg2_w           , 0, {-       }, 0, 0, 0.000244141,    0, {Lambdasoll Begrenzung (word) Bank 2}
+002D, 00, lamsoni_w           , 0, {-       }, 0, 0, 0.000244141,    0, {Lambda-Istwert}
+002E, 00, lamsoni2_w          , 0, {-       }, 0, 0, 0.000244141,    0, {Lambda-Istwert Bank 2}
+002F, 04, B_hsve              , 0, {        }, 0, 0,      1,         0, {Bedingung Endstufe Sondenheizung vor Kat angesteuert}
+002F, 02, B_sbbvk             , 0, {        }, 0, 0,      1,         0, {Bedingung Sonde betriebsbereit vor Kat}
+002F, 01, B_lr                , 0, {        }, 0, 0,      1,         0, {LREB: Bedingung Lambdaregelung (vor Kat); (Bank 1)}
+0030, 04, B_hshe              , 0, {        }, 0, 0,      1,         0, {Bedingung Endstufe Sondenheizung hinter Kat angesteuert}
+0030, 02, B_sbbhk             , 0, {        }, 0, 0,      1,         0, {Bedingung Sonde betriebsbereit hinter Kat}
+0030, 01, B_lrhk              , 0, {        }, 0, 0,      1,         0, {Bedingung Lambdaregelung hinter Kat}
+0031, 04, B_hsve2             , 0, {        }, 0, 0,      1,         0, {Bedingung Endstufe Sondenheizung vor Kat angesteuert Bank2}
+0031, 02, B_sbbvk2            , 0, {        }, 0, 0,      1,         0, {Bedingung Sonde betriebsbereit vor Kat Bank2}
+0031, 01, B_lr2               , 0, {        }, 0, 0,      1,         0, {LREB: Bedingung Lambdaregelung (vor Kat); (Bank 2)}
+0032, 04, B_hshe2             , 0, {        }, 0, 0,      1,         0, {Bedingung Endstufe Sondenheizung hinter Kat angesteuert Bank2}
+0032, 02, B_sbbhk2            , 0, {        }, 0, 0,      1,         0, {Bedingung Sonde betriebsbereit hinter Kat Bank2}
+0032, 01, B_lrhk2             , 0, {        }, 0, 0,      1,         0, {Bedingung Lambdaregelung hinter Kat Bank2}
+0033, 00, wkrdya_0            , 0, {°KW     }, 0, 0,  -0.75,         0, {adaptierter Zündwinkel bei KR-Dynamik}
+0034, 00, rkrn_w_0            , 0, {V       }, 0, 0, 0.0195313,      0, {normierter Referenzpegel Klopfregelung}
+0035, 00, wkrdya_1            , 0, {°KW     }, 0, 0,  -0.75,         0, {adaptierter Zündwinkel bei KR-Dynamik}
+0036, 00, rkrn_w_1            , 0, {V       }, 0, 0, 0.0195313,      0, {normierter Referenzpegel Klopfregelung}
+0037, 00, wkrdya_2            , 0, {°KW     }, 0, 0,  -0.75,         0, {adaptierter Zündwinkel bei KR-Dynamik}
+0038, 00, rkrn_w_2            , 0, {V       }, 0, 0, 0.0195313,      0, {normierter Referenzpegel Klopfregelung}
+0039, 00, wkrdya_3            , 0, {°KW     }, 0, 0,  -0.75,         0, {adaptierter Zündwinkel bei KR-Dynamik}
+003A, 00, rkrn_w_3            , 0, {V       }, 0, 0, 0.0195313,      0, {normierter Referenzpegel Klopfregelung}
+003B, 00, wkrdya_4            , 0, {°KW     }, 0, 0,  -0.75,         0, {adaptierter Zündwinkel bei KR-Dynamik}
+003C, 00, rkrn_w_4            , 0, {V       }, 0, 0, 0.0195313,      0, {normierter Referenzpegel Klopfregelung}
+003D, 00, wkrma               , 0, {°KW     }, 0, 0,  -0.75,         0, {Mittelwert der ZW-Spätverstellungen KR, allgemein (im Notlauf mit Sicherheit)}
+003E, 00, rkrn_w_5            , 0, {V       }, 0, 0, 0.0195313,      0, {normierter Referenzpegel Klopfregelung}
+003F, 00, wkrmdy_w            , 2, {°KW     }, 0, 0, 0.1875,         0, {Dynamischer Mittelwert der zylinderindividuellen ZW Spätverstellungen}
+0040, 00, rkrn_w_6            , 0, {V       }, 0, 0, 0.0195313,      0, {normierter Referenzpegel Klopfregelung}
+0041, 00, wkrmstat_w          , 2, {°KW     }, 0, 0, 0.1875,         0, {Quasistationärer Mittelwert der zylinderindividuellen ZW Spätverstellwerte}
+0042, 00, rkrn_w_7            , 0, {V       }, 0, 0, 0.0195313,      0, {normierter Referenzpegel Klopfregelung}
+0043, 00, fpvdk               , 0, {-       }, 0, 0, 0.015625,       0, {Korrekturfaktor Druck vor Drosselklappe}
+0044, 00, fho                 , 0, {-       }, 0, 0, 0.015625,       0, {Korrekturfaktor Höhe}
+0045, 00, rlmx_w              , 0, {%       }, 0, 0, 0.0234375,      0, {Rohwert Maximalfuellung}
+0046, 00, rlmax_w             , 0, {%       }, 0, 0, 0.0234375,      0, {maximal erreichbare Füllung bei Turbo}
+0047, 00, rlsol_w             , 0, {%       }, 0, 0, 0.0234375,      0, {Soll-Füllung}
+0048, 00, drlmaxo             , 0, {%       }, 0, 0,   0.75,         0, {Delta Maximalfuellung bei Overboost}
+0049, 00, fldrrx_w            , 0, {-       }, 0, 0, 3.05176e-05,    0, {Korrekturfaktor Maximalfuellung aus Klopfregelung}
+004A, 00, ti_b1               , 0, {ms      }, 0, 0, 0.00266667,     0, {Einspritzzeit für EV's auf Bank1}
+004B, 00, ldrlms_w            , 0, {%       }, 0, 0, 0.0234375,      0, {Begrenzungswert für maximale Füllung LDR für Motorschutz}
+004C, 00, plsol               , 0, {mbar    }, 0, 0,     10,         0, {Soll-Ladedruck}
+004D, 00, pvdks_w             , 0, {mbar    }, 0, 0, 0.0390625,      0, {Druck vor Drosselklappe ohne Umschaltung auf Ersatzwert bei Sensorfehler}
+004E, 00, ldtvm               , 0, {%       }, 0, 0, 0.390625,       0, {LDR Tastverhältnis , moduliert (Endergebnis)}
+004F, 20, B_brlmx             , 0, {        }, 0, 0,      1,         0, {Bedingung LDR Begrenzung der Maximalfuellung}
+004F, 10, B_ldobsp            , 0, {        }, 0, 0,      1,         0, {Bedingung LDR Overboost innerhalb Sperrzeit}
+004F, 08, B_ldob              , 0, {        }, 0, 0,      1,         0, {Bedingung: Overboost aktiv}
+004F, 04, B_lds               , 0, {        }, 0, 0,      1,         0, {Flag für Bedingung LDR Steuerung}
+004F, 02, B_ldr               , 0, {        }, 0, 0,      1,         0, {Flag für Bedingung LDR aktiv}
+004F, 01, B_ldb               , 0, {        }, 0, 0,      1,         0, {Bedingung für Ladedruckregelbereitschaft}
+0050, 00, tmotlin             , 0, {°C      }, 0, 0,   0.75,        48, {Motortemperatur, linearisiert und umgerechnet}
+0051, 00, wub                 , 0, {V       }, 0, 0, 0.0704,         0, {Batteriespannung; vom AD-Wandler erfaßter Wert}
+0052, 00, ti_avg              , 0, {ms      }, 0, 0, 0.00266667,     0, {Mittlere Einspritzzeit für EV's Bank1 und Bank2}
+0053, 00, ti_b2               , 0, {ms      }, 0, 0, 0.00266667,     0, {Einspritzzeit für EV's auf Bank2}
+0054, 00, ps_w                , 0, {mbar    }, 0, 0, 0.0390625,      0, {Saugrohr-Absolutdruck (Word)}
+0055, 00, tanslin             , 0, {°C      }, 0, 0,   0.75,        48, {Ansauglufttemperatur, linearisiert und umgerechnet}
+0056, 00, vfil_w              , 0, {km/h    }, 0, 0, 0.0078125,      0, {gefilterte Geschwindigkeit (16-Bit)}
+0057, 10, B_ba                , 0, {        }, 0, 0,      1,         0, {Bedingung Anreicherung}
+0057, 08, B_sa                , 0, {        }, 0, 0,      1,         0, {Bedingung Schubabschalten}
+0057, 04, B_vl                , 0, {        }, 0, 0,      1,         0, {Bedingung Vollast}
+0057, 01, B_ll                , 0, {        }, 0, 0,      1,         0, {Bedingung Leerlauf}
+0058, 00, dwkrz_0             , 0, {°KW     }, 1, 0,   0.75,         0, {zyl.ind. ZW-Spätverstellung inkl. Dyn.vorhalt}
+0059, 00, dwkrz_1             , 0, {°KW     }, 1, 0,   0.75,         0, {zyl.ind. ZW-Spätverstellung inkl. Dyn.vorhalt}
+005A, 00, dwkrz_2             , 0, {°KW     }, 1, 0,   0.75,         0, {zyl.ind. ZW-Spätverstellung inkl. Dyn.vorhalt}
+005B, 00, dwkrz_3             , 0, {°KW     }, 1, 0,   0.75,         0, {zyl.ind. ZW-Spätverstellung inkl. Dyn.vorhalt}
+005C, 00, dwkrz_4             , 0, {°KW     }, 1, 0,   0.75,         0, {zyl.ind. ZW-Spätverstellung inkl. Dyn.vorhalt}
+005D, 00, dwkrz_5             , 0, {°KW     }, 1, 0,   0.75,         0, {zyl.ind. ZW-Spätverstellung inkl. Dyn.vorhalt}
+005E, 00, dwkrz_6             , 0, {°KW     }, 1, 0,   0.75,         0, {zyl.ind. ZW-Spätverstellung inkl. Dyn.vorhalt}
+005F, 00, dwkrz_7             , 0, {°KW     }, 1, 0,   0.75,         0, {zyl.ind. ZW-Spätverstellung inkl. Dyn.vorhalt}
+0060, 00, afnmn               , 0, {rpm     }, 0, 0,        40,      0, {Bereichsfenster Aussetzer, minimale Drehzahl}
+0061, 00, afnmx               , 0, {rpm     }, 0, 0,        40,      0, {Bereichsfenster Aussetzer, maximale Drehzahl}
+0062, 00, afrlmn              , 0, {%       }, 0, 0,      0.75,      0, {Bereichsfenster Aussetzer, minimale Last}
+0063, 00, afrlmx              , 0, {%       }, 0, 0,      0.75,      0, {Bereichsfenster Aussetzer, maximale Last}
+0064, 00, zwist               , 0, {°KW     }, 1, 0,   0.75,         0, {Ist-Zündwinkel}
+0065, 00, fzabgs_w            , 0, {#       }, 0, 0,      1,         0, {Fehlerzähler Summe, zählt abgasrelevante Aussetzer über alle Zylinder}
+0066, 00, etazwbm             , 0, {%       }, 0, 0,    0.5,         0, {gemittelter Zündwinkelwirkungsgrad des Basiszündwinkels}
+0067, 00, fkmsdks_w           , 0, {-       }, 0, 0, 6.10352e-05,    0, {Korrekturfaktor schneller Massenstromabgleich}
+0068, 00, msndko_w            , 0, {g/s     }, 0, 0, 0.02777778,     0, {normierter Leckluftmassenstrom über Drosselklappe (word)}
+006A, 00, tkatm               , 0, {°C      }, 0, 0,      5,        50, {Katalysatortemperatur aus Modell}
+006B, 00, tpsvkmf_w           , 0, {s       }, 0, 0,   0.01,         0, {gefilterter Periodendauerwert des Sondensignals vor Kat. (Word)}
+006C, 00, tpsvkmf2_w          , 0, {s       }, 0, 0,   0.01,         0, {gefilterter Periodendauerwert des Sondensignals vor Kat. (Word) Bank 2}
+006D, 00, atv                 , 0, {s       }, 1, 0,   0.01,         0, {aktueller Lernkennfeld-Integratorwert der Regelung hinter Kat}
+006E, 00, atv2                , 0, {s       }, 1, 0,   0.01,         0, {aktueller Lernkennfeld-Integratorwert der Regelung hinter Kat Bank 2}
+006F, 00, sfplsv              , 0, {        }, 0, 0,      1,         0, {Status Fehlerpfad: Diagnose Lambdasonde vor Kat}
+0071, 00, sfplsh              , 0, {        }, 0, 0,      1,         0, {Status Fehlerpfad: Diagnose Lambdasonde hinter Kat}
+0073, 00, sfplsv              , 0, {        }, 0, 0,      1,         0, {Status Fehlerpfad: Diagnose Lambdasonde vor Kat}
+0075, 00, tkatm2              , 0, {°C      }, 0, 0,      5,        50, {Katalysatortemperatur aus Modell Bank 2}
+0076, 00, rinv_w              , 0, {Ohm     }, 0, 0,      2,         0, {Istwert (word) Innenwiderstand Ri-Nernstzelle der Lambdasonde vor KAT}
+0077, 00, rinv2_w             , 0, {Ohm     }, 0, 0,      2,         0, {Istwert (word) Innenwiderstand Ri-Nernstzelle der Lambdasonde vor KAT Bank 2}
+0078, 00, rinh_w              , 0, {Ohm     }, 0, 0,      2,         0, {Istwert (word) Innenwiderstand Ri-Nernstzelle der Lambdasonde hinter KAT}
+0079, 00, rinh2_w             , 0, {Ohm     }, 0, 0,      2,         0, {Istwert (word) Innenwiderstand Ri-Nernstzelle der Lambdasonde hinter KAT Bank 2}
+007A, 01, B_hsve              , 0, {        }, 0, 0,      1,         0, {Bedingung Heizung Sonde vor Kat ein}
+007B, 01, B_hshe              , 0, {        }, 0, 0,      1,         0, {Bedingung Heizung Sonde hinter Kat ein}
+007C, 01, B_hsve2             , 0, {        }, 0, 0,      1,         0, {Bedingung Heizung Sonde vor Kat ein Bank2}
+007D, 01, B_hshe2             , 0, {        }, 0, 0,      1,         0, {Bedingung Heizung Sonde hinter Kat ein Bank2}
+007E, 00, katbfi_w            , 0, {1/s     }, 1, 0, 0.015625,       0, {Sauerstoff-Anteil vor dem Speicher (Kat-Modell)}
+007F, 00, katbfi2_w           , 0, {1/s     }, 1, 0, 0.015625,       0, {Sauerstoff-Anteil vor dem Speicher (Kat-Modell) Bank 2}
+0080, 00, sfpkat              , 0, {        }, 0, 0,      1,         0, {Status Fehlerpfad: Katalysator-Überwachung}
+0082, 00, gangi               , 0, {gear    }, 0, 0,      1,         0, {Ist-Gang vom CAN bei AT oder aus n/v bei HS}
+0083, 01, B_nac               , 0, {        }, 0, 0,      1,         0, {Bedingung für erhöhte LL-Drehzahl bei Klimaanlage}
+0084, 01, B_koe               , 0, {        }, 0, 0,      1,         0, {Bedingung für Kompressoreinschalten}
+0085, 00, lbz                 , 0, {%       }, 0, 0, 0.390625,       0, {Ladebilanz der Batterie}
+0086, 00, wdks                , 0, {% DK    }, 0, 0, 0.392157,       0, {Sollwert DK-Winkel, bezogen auf unteren Anschlag}
+0087, 00, dmllri_w            , 0, {%       }, 1, 0, 0.00305176,     0, {geforderte Drehmomentänderung von der LLR (I-Anteil)}
+0088, 00, ml_w                , 0, {g/s     }, 0, 0, 0.02777778,     0, {Luftmassenfluß gefiltert (Word)}
+0089, 80, Z_ks1               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Klopfsensor 1}
+0089, 40, Z_ks2               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Klopfsensor 2}
+0089, 20, Z_ks3               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Klopfsensor 3}
+0089, 10, Z_ks4               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Klopfsensor 4}
+0089, 08, Z_enws              , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Nockenwellensteuerung (Einlaß,Bank1)}
+008A, 80, Z_lm                , 0, {        }, 0, 0,      1,         0, {Zyklusflag:	LMM/HLM/HFM}
+008A, 40, Z_dk                , 0, {        }, 0, 0,      1,         0, {Zyklusflag:	DK - Potentiometer}
+008A, 20, Z_tm                , 0, {        }, 0, 0,      1,         0, {Zyklusflag:	TMOT}
+008A, 08, Z_vfz               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Fahrzeug-Geschwindigkeit}
+008A, 04, Z_llr               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Diagnose Leerlaufregelung, Steller}
+008A, 02, Z_kuppl             , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Kupplung betaetigt}
+008A, 01, Z_brems             , 0, {        }, 0, 0,      1,         0, {Zyklusflag: BREMS (Bremsschalter)}
+008B, 80, Z_rkat              , 0, {        }, 0, 0,      1,         0, {Zyklusflag:LR-Adaption additiv pro Zeit}
+008B, 40, Z_rkaz              , 0, {        }, 0, 0,      1,         0, {Zyklusflag:LR-Adaption additiv pro Einspritzung}
+008B, 20, Z_grbh              , 0, {        }, 0, 0,      1,         0, {Zyklusflag: GRA Bedienhebel}
+008B, 10, Z_ldra              , 0, {        }, 0, 0,      1,         0, {Zyklusflag:	Ladedruckregelabweichung}
+008B, 08, Z_thm               , 0, {        }, 0, 0,      1,         0, {Zyklusflg Kühlwasser-Thermostat}
+008C, 00, sfpenws             , 0, {        }, 0, 0,      1,         0, {Status Fehlerpfad: Nockenwellensteuerung (Einlaß, Bank1)}
+008D, 01, B_nws               , 0, {        }, 0, 0,      1,         0, {Bedingung Nockenwellensteuerung}
+008E, 80, B_mil               , 0, {        }, 0, 0,      1,         0, {MIL-Ansteuerung}
+008E, 40, bbdcy               , 0, {        }, 0, 0,      1,         0, {Byte für Bedingung B_dcy als Triggerevent in DCLA}
+008E, 20, B_trip              , 0, {        }, 0, 0,      1,         0, {Flag für erfüllten 'trip'}
+008E, 10, fcmEnd              , 0, {#       }, 0, 0,      1,         0, {Anzahl Einträge im Fehlerspeicher}
+008E, 02, bbwuc               , 0, {        }, 0, 0,      1,         0, {Byte für Bedingung B_wuc als Triggerevent in DCLA}
+008E, 01, B_nowuc             , 0, {        }, 0, 0,      1,         0, {Bedingung 'kein warm up cycle' erkannt}
+0090, 01, B_su                , 0, {        }, 0, 0,      1,         0, {Bedingung SU-V eingeschaltet}
+0091, 00, migs_w              , 0, {%       }, 0, 0, 0.00152588,     0, {Indiziertes Soll-Motormoment GS für schnellen Eingriff}
+0092, 00, miasrs_w            , 0, {%       }, 0, 0, 0.00152588,     0, {Indiziertes Soll-Motormoment ASR für schnellen Eingriff}
+0093, 00, miist_w             , 0, {%       }, 0, 0, 0.00152588,     0, {indiziertes Motormoment Hochdruckphase Istwert}
+0094, 00, miasrl_w            , 2, {%       }, 0, 0, 0.00152588,     0, {Indiziertes Soll-Motormoment ASR für langsamen Eingriff}
+0095, 00, miges_w             , 0, {%       }, 0, 0, 0.00152588,     0, {Indiziertes Soll-Motormoment für Getriebeschutz}
+0096, 01, B_bevab             , 0, {        }, 0, 0,         1,      0, {Bedingung EV-Abschaltung auf Bank/Bank1}
+0097, 00, pus_w               , 0, {mbar    }, 0, 0, 0.0390625,      0, {Umgebungsdruck ohne Umschaltung auf Ersatzwert bei Sensorfehler}
+0098, 00, tats_w              , 0, {°C      }, 0, 0, 0.0195312,     50, {Abgastemperatur aus Sensor}
+0099, 00, tats2_w             , 0, {°C      }, 0, 0, 0.0195312,     50, {Abgastemperatur aus Sensor Bank 2}
+009A, 00, udkp1_w             , 0, {V       }, 0, 0, 0.001222,       0, {Spannung DK-Poti 1}
+009B, 00, udkp2_w             , 0, {V       }, 0, 0, 0.001222,       0, {Spannung DK-Poti 2}
+009C, 00, upwg1_w             , 0, {V       }, 0, 0, 0.00488281,     0, {Spannung PWG-Poti 1 (Word)}
+009D, 00, upwg2_w             , 0, {V       }, 0, 0, 0.00488281,     0, {Spannung PWG-Poti 2 (Word)}
+# This is B_hsve && B_hsve2 for 2-bank engines
+#009E, 01, B_hsve              , 0, {        }, 0, 0,      1,         0, {Bedingung Heizung Sonde vor Kat ein}
+# This is B_hshe && B_hshe2 for 2-bank engines
+#009F, 01, B_hshe              , 0, {        }, 0, 0,      1,         0, {Bedingung Heizung Sonde hinter Kat ein}
+00A0, 00, frao_w              , 0, {-       }, 0, 0, 3.05176e-05,    0, {multiplikativer Gemischadaptionsfaktor oberer Lastbereich (Word)}
+00A1, 00, frao2_w             , 0, {-       }, 0, 0, 3.05176e-05,    0, {multiplikativer Gemischadaptionsfaktor oberer Lastbereich (Word) Bank 2}
+00A2, 00, ahkat               , 0, {-       }, 0, 0, 0.00390625,     0, {Mittelwert der Amplitude Sondensignal hinter Kat. korrigiert mit KB}
+00A3, 00, ahkat2              , 0, {-       }, 0, 0, 0.00390625,     0, {Mittelwert der Amplitude Sondensignal hinter Kat. korrigiert mit KB Bank2}
+00A4, 00, lrnstep_c           , 0, {#       }, 0, 0,      1,         0, {Zähler für Lerndauer eines Lernsteps}
+00A5, 00, sfpks1              , 0, {        }, 0, 0,      1,         0, {Status Fehlerpfad: Klopfsensor 1}
+00A7, 00, avdtev              , 0, {#       }, 0, 0,      1,         0, {Anzahl der nicht erfolgreichen DTEV Prüfversuche}
+00A8, 00, ftead_w             , 0, {-       }, 1, 0, 0.00195312,     0, {Beladung des Aktivkohlefilters}
+00A9, 00, ftefva_w            , 0, {-       }, 0, 0, 7.62939e-06,    0, {Spülrate Tankentlüftung}
+00AA, 00, tateout             , 0, {%       }, 0, 0, 0.390625,       0, {ausgegebenes Tastverhältnis für Tankentlüftungsventil}
+00AB, 00, rkte_w              , 0, {%       }, 1, 0, 0.046875,       0, {Relativer Gemischanteil Tankentlüftung}
+00AC, 00, ready               , 0, {        }, 0, 0,      1,         0, {readiness-Byte für Ausgabe SAE J1979 Mode2}
+00AD, 20, Z_hsh               , 0, {        }, 0, 0,      1,         0, {Zyklusflag:Lambdasonden-Heizung hinter Katalysator}
+# This is Z_hsv for some engines
+#00AD, 10, Z_hsvsa             , 0, {        }, 0, 0,      1,         0, {Zyklusflag:  reduzierte  LSU-Heizung oder LSU-Kennlinie abgeflacht}
+00AD, 08, Z_tes               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Tankentlüftungssystem}
+00AD, 04, Z_tesg              , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Tankentlüftungssystem Grobleck}
+00AD, 01, Z_kat               , 0, {        }, 0, 0,      1,         0, {Zyklusflag:	Katalysator-Konvertierung}
+00AE, 20, E_hsh               , 0, {        }, 0, 0,      1,         0, {Errorflag: Lambdasonden-Heizung hinter Katalysator}
+# This is E_hsv for some engines
+#00AE, 10, E_hsvsa             , 0, {        }, 0, 0,      1,         0, {Errorflag: reduzierte  LSU-Heizung oder LSU-Kennlinie abgeflacht}
+00AE, 08, E_tes               , 0, {        }, 0, 0,      1,         0, {Errorflag: Tankentlüftungssystem}
+00AE, 04, E_tesg              , 0, {        }, 0, 0,      1,         0, {Errorflag: Tankentlüftungssystem Grobleck}
+00AE, 01, E_kat               , 0, {        }, 0, 0,      1,         0, {Errorflag: Katalysator-Konvertierung}
+00AF, 20, Z_sls               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Sekundärluft-System}
+00AF, 08, Z_lash              , 0, {        }, 0, 0,      1,         0, {Zyklusflag:Lambda-Sondenalterung hinter Kat.}
+00AF, 02, Z_lsh               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Lambda-Sonde hinter Kat}
+00AF, 01, Z_lsv               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Lambda-Sonde vor Kat}
+00B1, 20, E_slv               , 0, {        }, 0, 0,      1,         0, {Errorflag: Sekundärluftventil}
+00B1, 08, E_lash              , 0, {        }, 0, 0,      1,         0, {Errorflag: Lambda-Sondenalterung hinter Katalysator}
+00B1, 02, E_lsh               , 0, {        }, 0, 0,      1,         0, {Errorflag: Lambda-Sonde hinter Kat}
+00B1, 01, E_lsv               , 0, {        }, 0, 0,      1,         0, {Errorflag: Lambda-Sonde vor Kat}
+00B3, 00, wnwi_w              , 0, {°KW     }, 1, 0, 0.00390625,     0, {Istwinkel für Nockenwelle (word)}
+00B4, 00, wnwi2_w             , 0, {°KW     }, 1, 0, 0.00390625,     0, {Istwinkel für Nockenwelle (word) Bank 2}
+00B5, 00, dwnwsp_w            , 0, {°KW     }, 1, 0,  0.015625,      0, {Abweichung des Adaptionswinkels vom fahrzeugspez. Sollwinkel der Nockenwelle}
+00B6, 00, dwnwsp2_w           , 0, {°KW     }, 1, 0,  0.015625,      0, {Abweichung des Adaptionswinkels vom fahrzeugspez. Sollwinkel der Nockenwelle Bank 2}
+00B7, 00, wnwsfae_w           , 0, {°KW     }, 1, 0, 0.0078125,      0, {Sollwinkel bei Testereingriff Einlassnockenwelle}
+00B8, 01, B_atr               , 0, {        }, 0, 0,         1,      0, {Bedingung Abgastemperaturregelung}
+00B9, 01, B_atr2              , 0, {        }, 0, 0,         1,      0, {Bedingung Abgastemperaturregelung Bank 2}
+00BA, 01, B_brlmx             , 0, {        }, 0, 0,         1,      0, {Bedingung LDR Begrenzung der Maximalfuellung}
+00BB, 00, tmki                , 0, {°C      }, 0, 0,   0.75,        48, {Motortemperatur aus Kombiinstrument}
+00BC, 00, drlfue_w            , 0, {%/seg   }, 1, 0, 0.0234375,      0, {Lastkorrektur des Füllungsreglers}
+00BD, 01, B_furena            , 0, {        }, 0, 0,      1,         0, {Bedingung Aktivierung des Füllungsreglers}
+00BE, 00, frau_w              , 0, {-       }, 0, 0, 3.05176e-05,    0, {multiplikativer Gemischadaptionsfaktor unterer mult. Bereich (Word)}
+00BF, 00, frau2_w             , 0, {-       }, 0, 0, 3.05176e-05,    0, {multiplikativer Gemischadaptionsfaktor unterer mult. Bereich (Word) Bank 2}
+00C0, 00, vziel_w             , 0, {km/h    }, 0, 0, 0.0078125,      0, {Zielgeschwindigkeit FGR}
+00C1, 10, B_acc               , 0, {        }, 0, 0,      1,         0, {Bedingung: ACC-Steuergerät vorhanden}
+00C1, 08, B_fgrte             , 0, {        }, 0, 0,      1,         0, {Bedingung FGR vom Tester freigegeben}
+00C1, 04, B_kuppl             , 0, {        }, 0, 0,      1,         0, {Bedingung Kupplung betätigt}
+00C1, 02, B_br                , 0, {        }, 0, 0,      1,         0, {Bedingung Bremstestschalter betätigt}
+00C1, 01, B_bl                , 0, {        }, 0, 0,      1,         0, {Bedingung Bremslichtschalter betätigt}
+# 3 variants:
+20C2, 08, S_fgrwb             , 0, {        }, 0, 0,      1,         0, {Schalter Wiederaufnahme/Beschleunigen am FGR-Bedienhebel}
+20C2, 04, S_fgrsv             , 0, {        }, 0, 0,      1,         0, {Schalter Setzen/Verzögern am FGR-Bedienhebel}
+20C2, 02, S_fgrat             , 0, {        }, 0, 0,      1,         0, {Schalter Aus-Tip am FGR-Bedienhebelschalter}
+20C2, 01, S_fgrhs             , 0, {        }, 0, 0,      1,         0, {Hauptschalter am FGR-Bedienhebel}
+#
+10C2, 80, S_fgrhs             , 0, {        }, 0, 0,      1,         0, {Hauptschalter am FGR-Bedienhebel}
+10C2, 08, B_fgrtuc            , 0, {        }, 0, 0,      1,         0, {Bedingung FGR-Tipschalter Beschleunigen betätigt (vom CAN)}
+10C2, 04, B_fgrtdc            , 0, {        }, 0, 0,      1,         0, {Bedingung FGR-Tipschalter Verzögern betätigt (vom CAN)}
+10C2, 02, B_fgratc            , 0, {        }, 0, 0,      1,         0, {Bedingung FGR-Tipschalter Aus betätigt (vom CAN)}
+10C2, 01, B_fgrhsc            , 0, {        }, 0, 0,      1,         0, {Bedingung FGR-Hauptschalter ein (vom CAN)}
+#
+00C2, 80, S_fgrhs             , 0, {        }, 0, 0,      1,         0, {Hauptschalter am FGR-Bedienhebel}
+00C2, 20, B_fgrwac            , 0, {        }, 0, 0,      1,         0, {Bedingung FGR-Tipschalter Wiederaufnahme betätigt (vom CAN)}
+00C2, 10, B_fgrsec            , 0, {        }, 0, 0,      1,         0, {Bedingung FGR-Tipschalter Setzen betätigt (vom CAN)}
+00C2, 08, B_fgrtuc            , 0, {        }, 0, 0,      1,         0, {Bedingung FGR-Tipschalter Beschleunigen betätigt (vom CAN)}
+00C2, 04, B_fgrtdc            , 0, {        }, 0, 0,      1,         0, {Bedingung FGR-Tipschalter Verzögern betätigt (vom CAN)}
+00C2, 02, B_fgratc            , 0, {        }, 0, 0,      1,         0, {Bedingung FGR-Tipschalter Aus betätigt (vom CAN)}
+00C2, 01, B_fgrhsc            , 0, {        }, 0, 0,      1,         0, {Bedingung FGR-Hauptschalter ein (vom CAN)}
+#
+00C3, 00, sfptes              , 0, {        }, 0, 0,      1,         0, {Status Fehlerpfad: Tankdiagnose, TEV defekt offen}
+00C4, 00, dlamatr_w           , 0, {-       }, 1, 0, 0.000244141,    0, {Delta Lambdasoll aus Abgastemperaturregelung}
+00C5, 00, dlamatr2_w          , 0, {-       }, 1, 0, 0.000244141,    0, {Delta Lambdasoll aus Abgastemperaturregelung Bank 2}
+00C6, 00, fldrxl_w            , 0, {-       }, 0, 0, 3.05176e-05,    0, {Faktor zur LDR rlmax-Korrektur durch den Langzeitanteil}
+00C7, 00, wkrm                , 0, {°KW     }, 0, 0,  -0.75,         0, {Mittelwert der zylinderindividuellen ZW-Spätverstellungen durch KR}
+00C8, 00, ldimxa_0            , 0, {%       }, 1, 0,  0.005,         0, {Adaptive Korrektur der LDR I-Regler Maximalwertbegrenzung}
+00C9, 00, ldimxa_1            , 0, {%       }, 1, 0,  0.005,         0, {Adaptive Korrektur der LDR I-Regler Maximalwertbegrenzung}
+00CA, 00, ldimxa_2            , 0, {%       }, 1, 0,  0.005,         0, {Adaptive Korrektur der LDR I-Regler Maximalwertbegrenzung}
+00CB, 00, ldimxa_3            , 0, {%       }, 1, 0,  0.005,         0, {Adaptive Korrektur der LDR I-Regler Maximalwertbegrenzung}
+00CC, 00, ldimxa_4            , 0, {%       }, 1, 0,  0.005,         0, {Adaptive Korrektur der LDR I-Regler Maximalwertbegrenzung}
+00CD, 00, msdk_w              , 0, {g/s     }, 0, 0, 0.02777778,     0, {Massenstrom über Drosselklappe (word)}
+00CE, 00, fkmsdk_w            , 0, {-       }, 0, 0, 6.10352e-05,    0, {Korrekturfaktor Massenstrom Nebenfüllungssignal}
+00CF, 80, B_ldob              , 0, {        }, 0, 0,      1,         0, {Bedingung: Overboost aktiv}
+00CF, 40, B_frao              , 0, {        }, 0, 0,      1,         0, {Einschaltbedingung für Adaption von frao}
+00CF, 10, B_lr                , 0, {        }, 0, 0,      1,         0, {LREB: Bedingung Lambdaregelung (vor Kat); (Bank 1)}
+00CF, 04, B_hsve              , 0, {        }, 0, 0,      1,         0, {Bedingung Endstufe Sondenheizung vor Kat angesteuert}
+00CF, 02, B_kh                , 0, {        }, 0, 0,      1,         0, {Bedingung Kat-Heizung}
+00CF, 01, B_ll                , 0, {        }, 0, 0,      1,         0, {Bedingung Leerlauf}
+00D0, 00, frxt                , 0, {-       }, 0, 0, 0.0078125,      0, {Faktor zur Korrektur rlmx als Funktion von Motor- und Öltemperatur}
+00D1, 00, frxta_w             , 0, {-       }, 0, 0, 3.05176e-05,    0, {Faktor zur Korrektur rlmx als Funktion von tans}
+00D2, 00, fkatei              , 0, {-       }, 1, 0, 0.0078125,      0, {Faktor Kraftstoffanteil Tankentlüftung (aktueller Istwert)}
+00D3, 00, tnst_w              , 0, {s       }, 0, 0,   0.01,         0, {Zeit nach Startende}
+00D4, 01, B_lr                , 0, {        }, 0, 0,      1,         0, {LREB: Bedingung Lambdaregelung (vor Kat); (Bank 1)}
+00D5, 00, sfpfrst             , 0, {        }, 0, 0,      1,         0, {Status Fehlerpfad: LR-Abweichung}
+00D6, 00, sfprkaz             , 0, {        }, 0, 0,      1,         0, {Status Fehlerpfad: LR Adaption additive Korrektur pro Zündung}
+00D7, 00, sfpfrau             , 0, {        }, 0, 0,      1,         0, {Status Fehlerpfad: LR Adaption unterer multiplikativer Bereich}
+00D8, 00, taats_w             , 0, {%       }, 0, 0, 0.00152588,     0, {Tastverhaeltnis Abgastemperatursensor}
+00D9, 00, taats2_w            , 0, {%       }, 0, 0, 0.00152588,     0, {Tastverhaeltnis Abgastemperatursensor Bank 2}
+00DA, 00, vkASRAntrieb        , 0, {        }, 0, 0,      1,         0, {}
+00DB, 00, vkASRAntrieb        , 0, {        }, 0, 0,      1,         0, {}
+00DE, 00, dlahi_w             , 0, {-       }, 1, 0, 3.05176e-05,    0, {I-Anteil der stetigen LRHK}
+00DF, 00, dlahi2_w            , 0, {-       }, 1, 0, 3.05176e-05,    0, {I-Anteil der stetigen LRHK Bank 2}
+00E0, 00, fzabg_w_0           , 0, {#       }, 0, 0,      1,         0, {Aussetzerzähler}
+00E1, 00, fzabg_w_1           , 0, {#       }, 0, 0,      1,         0, {Aussetzerzähler}
+00E2, 00, fzabg_w_2           , 0, {#       }, 0, 0,      1,         0, {Aussetzerzähler}
+00E3, 00, fzabg_w_3           , 0, {#       }, 0, 0,      1,         0, {Aussetzerzähler}
+00E4, 00, fzabg_w_4           , 0, {#       }, 0, 0,      1,         0, {Aussetzerzähler}
+00E5, 00, fzabg_w_5           , 0, {#       }, 0, 0,      1,         0, {Aussetzerzähler}
+00E6, 00, fzabg_w_6           , 0, {#       }, 0, 0,      1,         0, {Aussetzerzähler}
+00E7, 00, fzabg_w_7           , 0, {#       }, 0, 0,      1,         0, {Aussetzerzähler}
+00E8, 00, flg_m               , 0, {        }, 0, 0,      1,         0, {Monitor Status Laufunruhe-Berechnung}
+00EF, 00, DSLSLRSlokBits1     , 0, {        }, 0, 0,      1,         0, {}
+00F0, 00, rmsl                , 0, {-       }, 0, 0, 0.0078125,      0, {relative Sekundärluftmasse}
+00F1, 00, rmsl2               , 0, {-       }, 0, 0, 0.0078125,      0, {relative Sekundärluftmasse Bank 2}
+00F2, 00, rmslt               , 0, {-       }, 0, 0, 0.0078125,      0, {relative Sekundärluftmasse ohne Offset- Korrektur}
+00F3, 00, rmslt2              , 0, {-       }, 0, 0, 0.0078125,      0, {relative Sekundärluftmasse ohne Offset- Korrektur Bank 2}
+00F9, 00, agrr_w              , 0, {%       }, 0, 0, 0.00152588,     0, {Abgasrueckfuehrrate word}
+00FA, 00, psdss_w             , 0, {mbar    }, 0, 0, 0.0390625,      0, {Saugrohrdruck gemessen (word)}
+00FB, 00, pvdkds_w            , 0, {mbar    }, 0, 0, 0.0390625,      0, {Druck vor Drosselklappe von Drucksensor (word)}
+0100, 00, frm_w               , 0, {-       }, 0, 0, 3.05176e-05,    0, {schneller Mittelwert des Lambdaregelfaktors (Word)}
+0101, 00, frm2_w              , 0, {-       }, 0, 0, 3.05176e-05,    0, {schneller Mittelwert des Lambdaregelfaktors (Word) Bank 2}
+0102, 00, katbf               , 0, {V       }, 0, 0, 0.00521569,   0.2, {Signal nach Speicher normiert vergleichbar mit ushk}
+0103, 00, katbf2              , 0, {V       }, 0, 0, 0.00521569,   0.2, {Signal nach Speicher normiert vergleichbar mit ushk Bank 2}
+0104, 00, katbfs              , 0, {-       }, 1, 0, 0.0078125,      0, {Signal nach Speicher (Kat-Modell)}
+0105, 00, katbfs2             , 0, {-       }, 1, 0, 0.0078125,      0, {Signal nach Speicher (Kat-Modell, Stereo 2.Bank)}
+0106, 00, ahkatn              , 0, {-       }, 0, 0, 0.00390625,     0, {Amplitude Sondensignal hinter Katalysator normiert}
+0107, 00, ahkatn2             , 0, {-       }, 0, 0, 0.00390625,     0, {Amplitude Sondensignal hinter Katalysator normiert Bank 2}
+0108, 00, akatbn              , 0, {-       }, 0, 0, 0.00390625,     0, {Amplitude der Katalysatorbelastungssignal}
+0109, 00, akatbn2             , 0, {-       }, 0, 0, 0.00390625,     0, {Amplitude der Katalysatorbelastungssignal Bank 2}
+010A, 00, ahktnk              , 0, {-       }, 0, 0, 0.00390625,     0, {Korrigierte Sondensignal-Amplitude normiert}
+010B, 00, ahktnk2             , 0, {-       }, 0, 0, 0.00390625,     0, {Korrigierte Sondensignal-Amplitude normiert Bank 2}
+010C, 00, ahktki_w            , 0, {s       }, 0, 0, 0.0125,         0, {Amplitude Sondensignal hinter Katalysator korrigiert und integiert}
+010D, 00, ahktki2_w           , 0, {s       }, 0, 0, 0.0125,         0, {Amplitude Sondensignal hinter Katalysator korrigiert und integiert Bank 2}
+010E, 00, katbshd_w           , 0, {g/s     }, 1, 0, 0.000868056,    0, {Signal für Fett-Verschiebung des Modells}
+010F, 00, katbshd2_w          , 0, {g/s     }, 1, 0, 0.000868056,    0, {Signal für Fett-Verschiebung des Modells Bank 2}
+0110, 00, dkatakt_w           , 0, {s       }, 0, 0,   0.05,         0, {aktive Überwachungszeit für DKAT}
+0111, 00, dkatakt2_w          , 0, {s       }, 0, 0,   0.05,         0, {aktive Überwachungszeit für DKAT Bank 2}
+0112, 00, apedkt              , 0, {#       }, 0, 0,      1,         0, {Anzahl der Prüfungen mit Fehlerergebnis bei Katdiagnose}
+0113, 00, apedkt2             , 0, {#       }, 0, 0,      1,         0, {Anzahl der Prüfungen mit Fehlerergebnis bei Katdiagnose Bank 2}
+0114, 00, fmsla               , 0, {-       }, 0, 0, 0.0078125,      0, {Korrekturfaktor Sekundärluftmasse adaptiv}
+0115, 00, fmsla2              , 0, {-       }, 0, 0, 0.0078125,      0, {Korrekturfaktor Sekundärluftmasse adaptiv Bank 2}
+0116, 00, mslt_w              , 0, {g/s     }, 0, 0, 0.02777778,     0, {temporäre Sekundärluftmasse}
+0117, 00, mslt2_w             , 0, {g/s     }, 0, 0, 0.02777778,     0, {temporäre Sekundärluftmasse Bank 2}
+0118, 00, mslift              , 0, {g/s     }, 0, 0, 0.11111111,     0, {Istwert Sekundärluftmasse, gefiltert, temporär}
+0119, 00, dfrmoff_w           , 0, {-       }, 1, 0, 3.05176e-05,    0, {frm-Offset: zur Kontrolle von Problemen der Vorsteuerung}
+011A, 00, psagr_w             , 0, {mbar    }, 0, 0, 0.0390625,      0, {Partialdruck durch externes Restgas (Restluft+Inertgas)}
+011D, 00, zlkd                , 0, {        }, 0, 0,      1,         0, {Zustand Kick-Down-Lernen}
+011E, 00, mslvt_w             , 0, {g/s     }, 1, 0, 0.02777778,     0, {temporäre Ventilleckage}
+011F, 00, mslvt2_w            , 0, {g/s     }, 1, 0, 0.02777778,     0, {temporäre Ventilleckage Bank 2}
+0120, 00, mslv_w              , 0, {g/s     }, 0, 0, 4.3402778e-04,  0, {Sekundärluftmasse für Ventildichtheitsprüfung (word)}
+0121, 00, mslv2_w             , 0, {g/s     }, 0, 0, 4.3402778e-04,  0, {Sekundärluftmasse für Ventildichtheitsprüfung (word) Bank 2}
+0122, 00, dmletan_w           , 0, {g/s     }, 1, 0, 8.6805556e-04,  0, {Abweichung Produkt Luftmasse * Zündwinkelwirkungsgrad bei Prüfung DTEV 16 Bits}
+0123, 00, frmfref_w           , 0, {-       }, 0, 0, 3.05176e-05,    0, {gefilterter Referenzwert fr für DTEV Ausfsteuerprüfung}
+0124, 00, frmitf_w            , 0, {-       }, 0, 0, 3.05176e-05,    0, {gefilterter Mittelwert fr für DTEV}
+0125, 00, ftefsoll_w          , 0, {-       }, 0, 0, 7.62939e-06,    0, {Sollwert der Spülrate Tankentlüftung}
+0126, 00, mstedtef_w          , 0, {g/s     }, 0, 0, 8.6805556e-04,  0, {Massenstrom Tankentlüftungsventil (gefiltert) für DTEV}
+0127, 00, DTEVNonVolbits      , 0, {        }, 0, 0,      1,         0, {}
+0128, 00, dlahp_w             , 0, {-       }, 1, 0, 3.05176e-05,    0, {P-Anteil der stetigen LRHK}
+0129, 00, dlahp2_w            , 0, {-       }, 1, 0, 3.05176e-05,    0, {P-Anteil der stetigen LRHK Bank 2}
+012A, 00, dynlsu_w            , 0, {-       }, 0, 0, 0.000244141,    0, {Dynamikwert der LSU}
+012B, 00, dynlsu2_w           , 0, {-       }, 0, 0, 0.000244141,    0, {Dynamikwert der LSU Bank 2}
+012C, 00, ladiff_w            , 0, {-       }, 1, 0, 3.05176e-05,    0, {Regelabweichung Lambda}
+012D, 00, ladiff2_w           , 0, {-       }, 1, 0, 3.05176e-05,    0, {Regelabweichung Lambda Bank 2}
+012E, 00, msabg_w             , 2, {g/s     }, 0, 0, 0.02777778,     0, {Abgasmassenstrom gefiltert (Word), Bank 1}
+012F, 00, msabg2_w            , 0, {g/s     }, 0, 0, 0.02777778,     0, {Abgasmassenstrom gefiltert (Word), Bank 2}
+0130, 00, zhklsu              , 0, {#       }, 0, 0,      1,         0, {Zähler Heizerkopplung LSU}
+0131, 00, zhklsu2             , 0, {#       }, 0, 0,      1,         0, {Zähler Heizerkopplung LSU Bank 2}
+0132, 00, kusvk_w             , 0, {V       }, 1, 0, 0.00488281,     0, {Korrekturwert der LSU-Spannung vor Kat}
+0133, 00, kusvk2_w            , 0, {V       }, 1, 0, 0.00488281,     0, {Korrekturwert der LSU-Spannung vor Kat Bank2}
+0134, 00, tabgm               , 0, {°C      }, 0, 0,      5,        50, {Abgastemperatur vor Kat aus Modell}
+0135, 00, tabgm2              , 0, {°C      }, 0, 0,      5,        50, {Abgastemperatur vor Kat aus Modell Bank 2}
+0136, 00, tedtml              , 0, {s       }, 0, 0,   0.01,         0, {Einschaltdauer der LSU-Heizung abhängig von der Abgastemperatur und ml}
+0137, 00, tedtml2             , 0, {s       }, 0, 0,   0.01,         0, {Einschaltdauer der LSU-Heizung abhängig von der Abgastemperatur und ml Bank 2}
+0138, 00, tedub               , 0, {s       }, 0, 0,   0.01,         0, {korrigierte Einschaltdauer der LSU-Heizung}
+0139, 00, tedub2              , 0, {s       }, 0, 0,   0.01,         0, {korrigierte Einschaltdauer der LSU-Heizung Bank 2}
+013A, 00, uhsv                , 0, {V       }, 0, 0, 0.0195312,      0, {Spannung an der Heizerendstufe vor Kat}
+013B, 00, uhsv2               , 0, {V       }, 0, 0, 0.0195312,      0, {Spannung an der Heizerendstufe vor Kat Bank 2}
+013C, 00, rinsh_w             , 0, {Ohm     }, 0, 0,      2,         0, {Grenzwert Innenwiderstand Nernstzelle der Lambdasonde hinter Kat}
+013D, 00, rinsh2_w            , 0, {Ohm     }, 0, 0,      2,         0, {Grenzwert Innenwiderstand Nernstzelle der Lambdasonde hinter Kat Bank 2}
+013E, 00, phlsnh              , 0, {-       }, 0, 0,   0.01,         0, {normierte Heizleistung der Lambdasonde hinter Kat}
+013F, 00, phlsnh2             , 0, {-       }, 0, 0,   0.01,         0, {normierte Heizleistung der Lambdasonde hinter Kat Bank 2}
+0140, 00, lamsons_w           , 0, {-       }, 0, 0, 0.000244141,    0, {Lambda-Sollwert bezogen auf Einbauort Lambda-Sensor}
+0141, 00, lamsons2_w          , 0, {-       }, 0, 0, 0.000244141,    0, {Lambda-Sollwert bezogen auf Einbauort Lambda-Sensor Bank 2}
+0142, 00, dmrlash_w           , 0, {%       }, 0, 0, 0.00152588,     0, {Momenten-Reserve für Lambdasonden-Alterungsüberwachung hinter Kat}
+0143, 00, lamlash_w           , 0, {-       }, 0, 0, 0.000244141,    0, {Lambdasoll für Test Schwingungsprüfung hinter KAT}
+0144, 00, lamlash2_w          , 0, {-       }, 0, 0, 0.000244141,    0, {Lambdasoll für Test Schwingungsprüfung hinter KAT Bank 2}
+0145, 00, mldyn_w             , 0, {g       }, 0, 0, 0.00277778,     0, {Luftmassenintegral im Schubbetrieb für Sonde hinter Kat}
+0146, 00, ushfmxstg           , 0, {mV/ms   }, 0, 0,   0.52,         0, {Gefilterte maximale Steigung der Sondenspannung hinter KAT}
+0147, 00, ushfmxstg2          , 0, {mV/ms   }, 0, 0,   0.52,         0, {Gefilterte maximale Steigung der Sondenspannung hinter KAT Bank 2}
+0148, 00, ushkmxstg           , 0, {mV/ms   }, 0, 0,   0.52,         0, {Maximale Steigung der Sondenspannung hinter KAT}
+0149, 00, ushkmxstg2          , 0, {mV/ms   }, 0, 0,   0.52,         0, {Maximale Steigung der Sondenspannung hinter KAT Bank 2}
+014A, 00, zlash_w             , 0, {s       }, 0, 0,    0.1,         0, {Zeitzähler für Sondenspannung hinter KAT ober/unterhalb des Sollwertes}
+014B, 00, zlash2_w            , 0, {s       }, 0, 0,    0.1,         0, {Zeitzähler für Sondenspannung hinter KAT ober/unterhalb des Sollwertes Bank 2}
+014C, 00, zwdynsh             , 0, {#       }, 0, 0,      1,         0, {Zähler für Anzahl der Dynamikmessungen für Sonde hinter KAT}
+014D, 00, zwdynsh2            , 0, {#       }, 0, 0,      1,         0, {Zähler für Anzahl der Dynamikmessungen für Sonde hinter KAT Bank 2}
+014E, 00, tispldp_w           , 0, {        }, 0, 0,      1,         0, {Zeit für Initialspülung bis LDP-Membran abgefallen ist}
+014F, 00, tispldpx_w          , 0, {        }, 0, 0,      1,         0, {Schwelle für Zeit für Initialspülung bis LDP-Membran abgefallen ist}
+0150, 00, tpldptc_w           , 0, {        }, 0, 0,      1,         0, {Zeit für bis LDP-Membran abgefallen ist nachdem TEV geöffnet wurde}
+0151, 00, tpldptcx_w          , 0, {        }, 0, 0,      1,         0, {Schwelle Zeit für bis LDP-Membran abgefallen ist nachdem TEV geöffnet wurde}
+0152, 00, tpfifo              , 0, {s       }, 0, 0,   0.01,         0, {FIFO-Speicher für Periodendauer}
+0153, 00, tc6ldpc             , 0, {        }, 0, 0,      1,         0, {Ausgabe Code SCAN-Tool Mode 6 aus LDP-Diagnose}
+0154, 00, tc6ldps             , 0, {        }, 0, 0,      1,         0, {Ausgabe Schwellwert SCAN-Tool Mode 6 aus LDP-Diagnose}
+0155, 00, tc6ldpw             , 0, {        }, 0, 0,      1,         0, {Ausgabe Prüfwert SCAN-Tool Mode 6 aus LDP-Diagnose}
+0156, 00, timzldp             , 0, {s       }, 0, 0,   0.01,         0, {}
+0157, 00, timrs               , 0, {s       }, 0, 0,   0.01,         0, {Timer für Reed-Switch Closed Check}
+0158, 00, fukabak_w           , 0, {-       }, 0, 0, 6.10352e-05,    0, {ÜK-Adaptionsfaktor (kalter Motor) BA}
+0159, 00, tldppmw             , 0, {s       }, 0, 0,   0.01,         0, {Gleitender Mittelwert Periodendauer bei Leckdiagnose}
+015E, 00, imlkvs_w            , 0, {kg      }, 0, 0, 0.00355556,     0, {Luftmasse nach Auftreten eines DKVS Fehles bei leerem Tank}
+015F, 00, tephc               , 0, {s       }, 0, 0,    0.1,         0, {Phasenzähler Grundadaption / Tankentlüftung}
+0160, 00, ushksteig           , 0, {mV/ms   }, 0, 0,   0.52,         0, {Steigung der Sondenspannung hinter KAT}
+0161, 00, kmstmil_w           , 0, {km      }, 0, 0,      1,         0, {Zurückgelegte Fahrstrecke mit MIL on}
+0162, 00, m6wmsl_w            , 0, {        }, 0, 0,      1,         0, {Mode 6 - Speicher: Messwert Sekundärluftmasse bei SL-Einblasung}
+0163, 00, m6smsl_w            , 0, {        }, 0, 0,      1,         0, {Mode 6 - Speicher: Schwellwert bei Prüfung Sekundärluftmasse}
+0164, 00, m6wmslv_w           , 0, {        }, 0, 0,      1,         0, {Mode 6 - Speicher: Messwert Ventildichtheit}
+0165, 00, dmletanf_w          , 0, {g/s     }, 1, 0, 8.6805556e-04,  0, {gefilterter Wert für Abweichung Leerlaufenergiebedarf während DTEV}
+0166, 00, rmstevuf_w          , 0, {%       }, 0, 0, 0.00305176,     0, {aktueller, unsigned Messwert für relative TEV-Güte}
+0167, 00, frmfdif_w           , 0, {-       }, 1, 0, 3.05176e-05,    0, {Diffrenzwert zwischen Probewert und Momentanwert}
+0168, 00, tadtea              , 0, {%       }, 0, 0, 0.390625,       0, {TEV-Tastverhältnis aus Tankentlüftungsdiagnose}
+0169, 00, frmxaf_w            , 0, {-       }, 0, 0, 3.05176e-05,    0, {fr-Max-Ausschlag: Bei Stereo LR der fr, der am weitesten von 1.0 weg (gefiltert)}
+016A, 00, msl                 , 0, {g/s     }, 0, 0, 0.11111111,     0, {Sekundärluftmassenstrom}
+016B, 00, imlpr               , 0, {-       }, 0, 0, 0.00390625,     0, {Relatives Luftmassenintegral bei Katheizung}
+016C, 00, fkpvdk_w            , 0, {-       }, 0, 0, 6.10352e-05,    0, {Korrekturfaktor langsamer Massenstromabgleich}
+016D, 00, dmvadll_w           , 0, {%       }, 1, 0, 0.00305176,     0, {Delta-Motordrehmoment aus Verlustmoment-Adaption (B_ll=1)}
+016E, 00, dmvadko_w           , 0, {%       }, 1, 0, 0.00305176,     0, {Delta-Motordrehmoment aus Verlustmoment-Adaption (B_ko=1)}
+016F, 00, dmvadfs_w           , 0, {%       }, 1, 0, 0.00305176,     0, {Delta-Motordrehmoment aus Verlustmoment-Adaption (B_fs=1)}
+0170, 00, dmvadfk_w           , 0, {%       }, 1, 0, 0.00305176,     0, {Delta-Motordrehmoment aus Verlustmoment-Adaption (B_fs=1 & B_ko=1)}
+0171, 00, mlhfmm_w            , 0, {g/s     }, 0, 0, 0.02777778,     0, {Luftmassen HFM-Mittelwert 16Bit-Wert}
+0172, 00, mldmn_w             , 0, {g/s     }, 1, 0, 0.02777778,     0, {minimale Luftmasse aus Kennfeld KFMLDMN}
+0173, 00, mldmx_w             , 0, {g/s     }, 0, 0, 0.02777778,     0, {maximale Luftmasse aus Kennfeld KFMLDMX}
+0174, 00, GGFSTbits           , 0, {        }, 0, 0,      1,         0, {}
+0175, 00, fprstep_c           , 0, {        }, 0, 0,      1,         0, {Schrittzähler DK-Rückstellfeder-Prüfung}
+0176, 00, miszul_w            , 0, {%       }, 0, 0, 0.00152588,     0, {Maximal zulässiges indiziertes Moment}
+0177, 00, mrfa_w              , 0, {%       }, 0, 0, 0.00305176,     0, {Relatives Fahrerwunschmoment aus FGR und Pedal}
+0178, 00, lamfa_w             , 0, {-       }, 0, 0, 0.000244141,    0, {Lambdasoll Fahrerwunsch (word)}
+0179, 00, lambts_w            , 0, {-       }, 0, 0, 0.000244141,    0, {Lambda für Bauteileschutz}
+017A, 00, sfplash             , 0, {        }, 0, 0,      1,         0, {Status Fehlerpfad: Lambdasondenalterung hinter Kat}
+017C, 80, B_lra               , 0, {        }, 0, 0,      1,         0, {Bedingung Gemischadaption freigegeben}
+017C, 40, B_fraur             , 0, {        }, 0, 0,      1,         0, {Bedingung frau-Integrator außerhalb reduzierter Bereich}
+017C, 20, B_rkatr             , 0, {        }, 0, 0,      1,         0, {Bedingung rkat-Integrator außerhalb reduzierten Bereich}
+017C, 08, B_frao              , 0, {        }, 0, 0,      1,         0, {Einschaltbedingung für Adaption von frao}
+017C, 10, B_rkam              , 0, {        }, 0, 0,      1,         0, {Bedingung einer der beiden additiven Bereiche aktiv}
+017C, 04, B_frau              , 0, {        }, 0, 0,      1,         0, {Einschaltbedingung für Adaption von frau}
+017C, 02, B_talval            , 0, {        }, 0, 0,      1,         0, {Bedingung : Bit Tank leer gültig}
+017C, 01, B_tal               , 0, {        }, 0, 0,      1,         0, {Bedingung Tank leer bzw. Reserve}
+017D, 80, Z_rkat              , 0, {        }, 0, 0,      1,         0, {Zyklusflag:LR-Adaption additiv pro Zeit}
+017D, 40, Z_frau              , 0, {        }, 0, 0,      1,         0, {Zyklusflag:LR-Adaption unterer multiplikativer Bereich}
+017D, 20, E_rkat              , 0, {        }, 0, 0,      1,         0, {Errorflag DKVS (additive Korrektur pro Zeit)}
+017D, 10, E_frau              , 0, {        }, 0, 0,      1,         0, {Errorflag: LR-Adaption unterer multiplikativer Bereich}
+017D, 08, B_dkvsf             , 0, {        }, 0, 0,      1,         0, {Bedingung: Freigabe des Fehlers}
+017D, 04, B_gaefra            , 0, {        }, 0, 0,      1,         0, {Bedingung Grundadaption (fra-Integrator) eingeschwungen}
+017D, 02, B_gaeing            , 0, {        }, 0, 0,      1,         0, {Bedingung Grundadaption Bank 1 eingeschwungen}
+017D, 01, B_gasp              , 0, {        }, 0, 0,      1,         0, {Bedingung Grundadaption gesperrt}
+017E, 80, B_mdarv             , 0, {        }, 0, 0,      1,         0, {kritische Aussetzerrate vorhanden}
+017E, 40, B_mdstop_m          , 0, {        }, 0, 0,      1,         0, {Monitor, Misfire Detection gesperrt}
+017E, 08, E_md03              , 0, {        }, 0, 0,      1,         0, {Errorflag: Aussetzer Zündung 3}
+017E, 04, E_md02              , 0, {        }, 0, 0,      1,         0, {Errorflag: Aussetzer Zündung 2}
+017E, 02, E_md01              , 0, {        }, 0, 0,      1,         0, {Errorflag: Aussetzer Zündung 1}
+017E, 01, E_md00              , 0, {        }, 0, 0,      1,         0, {Errorflag: Aussetzer Zündung 0}
+017F, 80, B_forn_m            , 0, {        }, 0, 0,      1,         0, {Monitor, Bedingung Adaption im aktuellen Drehzahlbereich ready}
+017F, 40, B_mdkat             , 0, {        }, 0, 0,      1,         0, {Katschädigende Aussetzerrate überschritten (zur Ausblendung anderer Funktionen)}
+017F, 08, Z_md03              , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Aussetzer Zündung 3}
+017F, 04, Z_md02              , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Aussetzer Zündung 2}
+017F, 02, Z_md01              , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Aussetzer Zündung 1}
+017F, 01, Z_md00              , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Aussetzer Zündung 0}
+0180, 00, ffonn1              , 0, {        }, 0, 0,      1,         0, {Statusbyte fuel-on/-off Adaption (KF-Bereiche fertig gelernt)}
+0181, 00, ffonn2              , 0, {        }, 0, 0,      1,         0, {Statusbyte fuel-on/-off Adaption (KF-Bereiche fertig gelernt)}
+0182, 00, ffonn3              , 0, {        }, 0, 0,      1,         0, {Statusbyte fuel-on/-off Adaption (KF-Bereiche fertig gelernt)}
+0183, 01, B_fofstp            , 0, {        }, 0, 0,      1,         0, {Bedingung fuel-off Adaption gestoppt}
+0184, 80, B_lamlash           , 0, {        }, 0, 0,      1,         0, {Bedingung für Abmagern/Anfetten in %LAMKO}
+0184, 40, B_lsahksp           , 0, {        }, 0, 0,      1,         0, {allgemeine Stop-Bedingungen für die DLSAHK}
+0184, 20, B_teslash           , 0, {        }, 0, 0,      1,         0, {Bedingung Test ausführen für Überprüfung Sonde hinter KAT}
+0184, 10, B_entest            , 0, {        }, 0, 0,      1,         0, {Bedingung Wartezeit abgeschlossen für Test-Überprüfung Sonde hinter KAT}
+0184, 08, B_dlash             , 0, {        }, 0, 0,      1,         0, {Bedingung Freigabe Schwingungsprüfung hinter Kat.}
+0184, 04, B_sbbhk             , 0, {        }, 0, 0,      1,         0, {Bedingung Sonde betriebsbereit hinter Kat}
+0184, 02, B_ushkm             , 0, {        }, 0, 0,      1,         0, {Bedingung Sondenspannung hinter KAT "Mager" (Sollwert unterschritten)}
+0184, 01, B_ushkf             , 0, {        }, 0, 0,      1,         0, {Bedingung Sondenspannung hinter Kat "Fett" (Sollwert überschritten)}
+0185, 80, B_steigm            , 0, {        }, 0, 0,      1,         0, {Bedingung Steigung des Sondensignals messen hinter KAT}
+0185, 40, B_ushsch            , 0, {        }, 0, 0,      1,         0, {Bed. Schwelle für Sonde h. KAT im Schub nicht unterschritten `statichisch`}
+0185, 20, B_dushsch           , 0, {        }, 0, 0,      1,         0, {Bedingung Schwelle für Sonde hinter KAT im Schub nicht unterschritten}
+0185, 10, B_mldyn             , 0, {        }, 0, 0,      1,         0, {Bedingung erforderliche Luftmasse im Schubbetrieb für Dynamikmessung erreicht}
+0185, 08, Z_lash              , 0, {        }, 0, 0,      1,         0, {Zyklusflag:Lambda-Sondenalterung hinter Kat.}
+0185, 04, E_lash              , 0, {        }, 0, 0,      1,         0, {Errorflag: Lambda-Sondenalterung hinter Katalysator}
+0185, 02, B_enlash            , 0, {        }, 0, 0,      1,         0, {Bedingung Test für Schwingungsprüfung abgeschlossen hinteer Kat}
+0185, 01, B_lamverg           , 0, {        }, 0, 0,      1,         0, {Bedingung Vergleich Lambdasoll in %DLSAHK mit %LAMKO übereinstimmend}
+0186, 02, B_ddylash           , 0, {        }, 0, 0,      1,         0, {Bedingung Sonde hinter KAT dynamisch langsam}
+0186, 01, B_dylash            , 0, {        }, 0, 0,      1,         0, {Bedingung Sonde hinter KAT dynamisch langsam}
+0187, 08, Z_hsh               , 0, {        }, 0, 0,      1,         0, {Zyklusflag:Lambdasonden-Heizung hinter Katalysator}
+0187, 04, E_hsh               , 0, {        }, 0, 0,      1,         0, {Errorflag: Lambdasonden-Heizung hinter Katalysator}
+0187, 02, B_ehsh              , 0, {        }, 0, 0,      1,         0, {Bedingung Error HSH}
+0187, 01, B_hsokh             , 0, {        }, 0, 0,      1,         0, {Bedingung Sondenheizung OK hinter Kat}
+0188, 40, B_sbbvk             , 0, {        }, 0, 0,      1,         0, {Bedingung Sonde betriebsbereit vor Kat}
+0188, 20, Z_hsv               , 0, {        }, 0, 0,      1,         0, {Zyklusflag:Lambdasonden-Heizung vor Katalysator}
+0188, 10, E_hsv               , 0, {        }, 0, 0,      1,         0, {Errorflag: Lambdasonden-Heizung vor Katalysator}
+0188, 08, TYP_hsv             , 0, {        }, 0, 0,      1,         0, {Fehlertyp: Heizung Lambdasonde 1 vor Kat}
+0188, 04, B_ehlsu             , 0, {        }, 0, 0,      1,         0, {Bedingung Fehler Heizung LSU}
+0188, 02, B_nphlsu            , 0, {        }, 0, 0,      1,         0, {Bedingung Signal LSU1 ist unplausibel}
+0188, 01, B_elsu              , 0, {        }, 0, 0,      1,         0, {Bedingung Fehler oder Fehler-Vormerkung LSU (keine Betriebsbereitschaft)}
+0189, 80, Z_lsh               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Lambda-Sonde hinter Kat}
+0189, 40, E_lsh               , 0, {        }, 0, 0,      1,         0, {Errorflag: Lambda-Sonde hinter Kat}
+0189, 20, B_sbbhk             , 0, {        }, 0, 0,      1,         0, {Bedingung Sonde betriebsbereit hinter Kat}
+0189, 10, B_risigh            , 0, {        }, 0, 0,      1,         0, {Bedingung Signalunterbrechung Sondenmasse mit Ri-Diagnose hinter KAT}
+0189, 08, B_trsah             , 0, {        }, 0, 0,      1,         0, {Bedingung Kabelbruch für Sonde hinter KAT}
+0189, 04, B_adshs             , 0, {        }, 0, 0,      1,         0, {Bedingung Adernschluß "setzen" bei Lambdasonden hinter Kat}
+0189, 02, B_uhsig             , 0, {        }, 0, 0,      1,         0, {Bedingung Sondenspannung hinter KAT im Spannungsband für Signalunterbrechung}
+0189, 01, B_ttbmhh            , 0, {        }, 0, 0,      1,         0, {Bedingung theoretische Sondenbetriebsbereitschaft hinter KAT mit Heizung}
+018A, 40, B_nplflsu           , 0, {        }, 0, 0,      1,         0, {Lambdasignal nicht plausibel}
+018A, 20, B_lsuna             , 0, {        }, 0, 0,      1,         0, {LSU nicht aktiv, Bank1}
+018A, 10, B_lsumx             , 0, {        }, 0, 0,      1,         0, {Maximalwert der LSU-Spannung überschritten (CJ110)}
+018A, 08, B_sigflsu           , 0, {        }, 0, 0,      1,         0, {Übersprechen vom Heizertakt auf Lambdasignal}
+018A, 04, B_maxflsu           , 0, {        }, 0, 0,      1,         0, {Lambdaoffset vor / hinter Kat zu groß, Bank1}
+018A, 02, B_elaof             , 0, {        }, 0, 0,      1,         0, {Bedingung Error Lambda-Offset LSU}
+018A, 01, B_lrhk              , 0, {        }, 0, 0,      1,         0, {Bedingung Lambdaregelung hinter Kat}
+018B, 20, B_elsu              , 0, {        }, 0, 0,      1,         0, {Bedingung Fehler oder Fehler-Vormerkung LSU (keine Betriebsbereitschaft)}
+018B, 10, Z_lsv               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Lambda-Sonde vor Kat}
+018B, 08, E_lsv               , 0, {        }, 0, 0,      1,         0, {Errorflag: Lambda-Sonde vor Kat}
+018B, 04, B_helsu             , 0, {        }, 0, 0,      1,         0, {Diagnose Heizerkopplung LSU erfolgt}
+018B, 02, B_drlmx             , 0, {        }, 0, 0,      1,         0, {Laständerung unterhalb Schwellwert}
+018B, 01, B_dylsuav           , 0, {        }, 0, 0,      1,         0, {Dynamiküberwachung LSU aktiv}
+018C, 80, B_faslarq           , 0, {        }, 0, 0,      1,         0, {Bedingung: lokale Anforderung Testdurchlauf Sekundärluft starten}
+018C, 40, B_dfrmoff           , 0, {        }, 0, 0,      1,         0, {frm-Offset-Schwelle überschritten: zeigt Vorsteuerproblem}
+018C, 20, B_dsloab            , 0, {        }, 0, 0,      1,         0, {Diagnose Sekundärluftoffset, Meßabbruch}
+018C, 10, B_dsltab            , 0, {        }, 0, 0,      1,         0, {Diagnose Ventilichtheit, Meßabbruch}
+018C, 08, B_dslmab            , 0, {        }, 0, 0,      1,         0, {Diagnose Sekundärluftmasse, Meßabbruch}
+018C, 04, B_dslerr            , 0, {        }, 0, 0,      1,         0, {Zusammenfassung Abbruchmerkmale Sekundärluftdiagnose}
+018C, 02, B_dsl               , 0, {        }, 0, 0,      1,         0, {Bedingung Diagnoseanforderung}
+018C, 01, B_dslmes            , 0, {        }, 0, 0,      1,         0, {Bedingung: Freigabe Meßfenster}
+018D, 80, Z_sls               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Sekundärluft-System}
+018D, 40, E_sls               , 0, {        }, 0, 0,      1,         0, {Errorflag: Sekundärluft-System}
+018D, 20, B_errofs            , 0, {        }, 0, 0,      1,         0, {Bedingung: zulässige Sekundärluftmassen-Offset überschritten}
+018D, 10, B_dsl5              , 0, {        }, 0, 0,      1,         0, {Diagnose Phase 5: Offset Sekundärluftmasse}
+018D, 08, B_dsl4              , 0, {        }, 0, 0,      1,         0, {Bedingung Phase 4: Sekundärluftmasse aus Adaption/Zusatzdiagnose}
+018D, 04, B_dsl3              , 0, {        }, 0, 0,      1,         0, {Diagnose Phase3: Offset Sekundärluftmasse}
+018D, 02, B_dsl2              , 0, {        }, 0, 0,      1,         0, {Diagnose Phase 2: Ventildichtheit}
+018D, 01, B_dsl1              , 0, {        }, 0, 0,      1,         0, {Diagnose Phase 1: Bestimmung Sekundärluftmasse}
+018E, 80, B_slas              , 0, {        }, 0, 0,      1,         0, {Anforderung Sekundärluftadaptionsphase setzen}
+018E, 40, B_slar              , 0, {        }, 0, 0,      1,         0, {Anforderung Sekundärluftadaptionsphase zurücksetzen}
+018E, 20, B_sla               , 0, {        }, 0, 0,      1,         0, {Anforderung Sekundärluftadaptionsphase}
+018E, 10, B_dslo              , 0, {        }, 0, 0,      1,         0, {Diagnose Sekundärluftmassenoffset}
+018E, 08, B_dslme             , 0, {        }, 0, 0,      1,         0, {Diagnose Sekundärluftmasse, Meßfreigabe}
+018E, 04, B_dsloe             , 0, {        }, 0, 0,      1,         0, {Diagnose Sekundärluftoffset, Meßfreigabe}
+018E, 02, B_mslmin            , 0, {        }, 0, 0,      1,         0, {Bedingung sehr geringe Sekundärluftmasse aus Meßphase}
+018E, 01, TYP_sls             , 0, {        }, 0, 0,      1,         0, {Fehlertyp: Sekundärluftsystem}
+018F, 80, Z_tes               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Tankentlüftungssystem}
+018F, 40, E_tes               , 0, {        }, 0, 0,      1,         0, {Errorflag: Tankentlüftungssystem}
+018F, 20, B_teviol            , 0, {        }, 0, 0,      1,         0, {Bedingung TEV aus der Reaktion der Leerlaufregelung als i.O. erkannt}
+018F, 10, B_tevnio            , 0, {        }, 0, 0,      1,         0, {Bedingung TEV in aktiver Prüfung als defekt erkannt}
+018F, 08, B_dteendl           , 0, {        }, 0, 0,      1,         0, {Bedingung Diagnose TEV über Luftprüfung erfolgreich zu Ende}
+018F, 04, B_dtelnm            , 0, {        }, 0, 0,      1,         0, {LL-Prüfung Diagnose TEV nicht möglich}
+018F, 02, B_dtest             , 0, {        }, 0, 0,      1,         0, {Start für TEV-Ansteuerung}
+018F, 01, B_dteaam            , 0, {        }, 0, 0,      1,         0, {Bedingung Aufsteuerprüfung für TEV Diagnose aktiv möglich}
+0190, 80, Z_tes               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Tankentlüftungssystem}
+0190, 40, E_tes               , 0, {        }, 0, 0,      1,         0, {Errorflag: Tankentlüftungssystem}
+0190, 20, B_dteabu            , 0, {        }, 0, 0,      1,         0, {Bedingung Abbruch TE Diagnose ohne Prüfergebnis}
+0190, 10, B_dtest             , 0, {        }, 0, 0,      1,         0, {Start für TEV-Ansteuerung}
+0190, 08, B_tevior            , 0, {        }, 0, 0,      1,         0, {Bedingung TEV aus fr-Abweichung als i.O. erkannt.}
+0190, 04, B_dternm            , 0, {        }, 0, 0,      1,         0, {Bedingung kein fr-Hub für Diagnose TEV vorhanden}
+0190, 02, B_dteres            , 0, {        }, 0, 0,      1,         0, {Bedingung TEV Diagnose Reset}
+0190, 01, B_dteaa             , 0, {        }, 0, 0,      1,         0, {Bedingung Aufsteuerprüfung für TEV Diagnose aktiv}
+0191, 20, B_dtelnm            , 0, {        }, 0, 0,      1,         0, {LL-Prüfung Diagnose TEV nicht möglich}
+0191, 80, B_tevioi            , 0, {        }, 0, 0,      1,         0, {Bedingung TEV durch DLDP (Initialspülung) als i.O. erkannt.}
+0191, 40, B_teviot            , 0, {        }, 0, 0,      1,         0, {Bedingung TEV durch DLDP (Abfallzeiterhöhung) als i.O. erkannt.}
+0191, 10, B_dternm            , 0, {        }, 0, 0,      1,         0, {Bedingung kein fr-Hub für Diagnose TEV vorhanden}
+0191, 08, B_dtepm             , 0, {        }, 0, 0,      1,         0, {Bedingung passive TEV Diagnose möglich}
+0191, 04, B_dtelbm            , 0, {        }, 0, 0,      1,         0, {Bedingung Bewertung des Lambda Reglers bei Diagnose TEV möglich}
+0191, 02, B_dtephm            , 0, {        }, 0, 0,      1,         0, {Bedingung physikalische Freigabe DTEV}
+0191, 01, B_dteenf            , 0, {        }, 0, 0,      1,         0, {Bedingung Diagnose TEV wegen System-Error nicht freigegeben}
+0192, 20, B_dteres            , 0, {        }, 0, 0,      1,         0, {Bedingung TEV Diagnose Reset}
+0192, 04, B_gap               , 0, {        }, 0, 0,      1,         0, {Bedingung Gemischadaptionsphase aktiv}
+0192, 40, B_dtelbm            , 0, {        }, 0, 0,      1,         0, {Bedingung Bewertung des Lambda Reglers bei Diagnose TEV möglich}
+0192, 10, B_dtenam            , 0, {        }, 0, 0,      1,         0, {Bedingung TEV Diagnose nur über Aufsteuerprüfung möglich}
+0192, 08, B_dtelbr            , 0, {        }, 0, 0,      1,         0, {Bedingung Reset Flip-Flop Passiv-Prüfung DTEV möglich}
+0192, 02, B_dtepm             , 0, {        }, 0, 0,      1,         0, {Bedingung passive TEV Diagnose möglich}
+0192, 01, B_teviop            , 0, {        }, 0, 0,      1,         0, {Bedingung TEV in passiver Prüfung als i.O. erkannt.}
+0193, 80, B_msloff            , 0, {        }, 0, 0,      1,         0, {Sekundärluftmasse ausgeräumt nach Sekundärluftphase}
+0193, 40, B_mslon             , 0, {        }, 0, 0,      1,         0, {Sekundärluftmasse eingeschwungen nach Start der Sekundärluft}
+0193, 20, B_dslset            , 0, {        }, 0, 0,      1,         0, {Bedingung: Setzen Sekundärluftadaption/Kurztest}
+0193, 10, B_slpena            , 0, {        }, 0, 0,      1,         0, {Bedingung Einschalten der Sekundärluftpumpe}
+0193, 08, B_trkh              , 0, {        }, 0, 0,      1,         0, {Bedingung Katheizen, Thermoreaktor wirksam}
+0193, 04, B_khll              , 0, {        }, 0, 0,      1,         0, {Bedingung Katheizen Leerlauf (Abbruchbedingung)}
+0193, 02, B_khab              , 0, {        }, 0, 0,      1,         0, {Bedingung Katheizen Abbruch}
+0193, 01, B_kh                , 0, {        }, 0, 0,      1,         0, {Bedingung Kat-Heizung}
+0194, 10, B_slsinhi           , 0, {        }, 0, 0,      1,         0, {Bedingung sperrt Setzen von Bit B_sls}
+0194, 08, B_slpofst           , 0, {        }, 0, 0,      1,         0, {Bedingung für Setzen Flip Flop  B_slpoff}
+0194, 04, B_slkhof            , 0, {        }, 0, 0,      1,         0, {Bedingung Abschalten der Sekundärluftpumpe durch imlpr-Schwelle}
+0194, 02, B_slpoff            , 0, {        }, 0, 0,      1,         0, {Sekundärluftpumpe abgeschaltet}
+0194, 01, B_slsoff            , 0, {        }, 0, 0,      1,         0, {Sekundärlufteinblasung nach Ausräumen der Sekundärluft beendet}
+0195, 40, B_fkpvdk            , 0, {        }, 0, 0,      1,         0, {Bedingung für die Freigabe des langsamen multiplikativen Füllungsabgleichs}
+0195, 20, E_dk                , 0, {        }, 0, 0,      1,         0, {Errorflag: DK - Potentiometer}
+0195, 10, E_lm                , 0, {        }, 0, 0,      1,         0, {Errorflag: Hauptlastsensor}
+0195, 08, B_fkpvmn            , 0, {        }, 0, 0,      1,         0, {langsame Massenstromadaption fkpvdk im unteren Anschlag}
+0195, 04, B_fkpvmx            , 0, {        }, 0, 0,      1,         0, {langsame Massenstromadaption fkpvdk im oberen Anschlag}
+0195, 02, B_fkmsmn            , 0, {        }, 0, 0,      1,         0, {schnelle Massenstromadaption fkmsdks im unteren Anschlag}
+0195, 01, B_fkmsmx            , 0, {        }, 0, 0,      1,         0, {schnelle Massenstromadaption fkmsdks im oberen Anschlag}
+0196, 80, Z_llr               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Diagnose Leerlaufregelung, Steller}
+0196, 40, E_llr               , 0, {        }, 0, 0,      1,         0, {Errorflag: Leerlaufregelung}
+0196, 20, B_dllr              , 0, {        }, 0, 0,      1,         0, {Aktive diagnose: Leerlaufstellerdiagnose}
+0196, 10, B_dtes              , 0, {        }, 0, 0,      1,         0, {Aktive Diagnose: Tankentlüftungssystem}
+0196, 08, B_madfk             , 0, {        }, 0, 0,      1,         0, {Bedingung Momentenadaption Fahrstufe und Klimakompressor ein}
+0196, 04, B_madfs             , 0, {        }, 0, 0,      1,         0, {Bedingung Momentenadaption Fahrstufe ein}
+0196, 02, B_madko             , 0, {        }, 0, 0,      1,         0, {Bedingung Momentenadaption Klimakompressor ein}
+0196, 01, B_madll             , 0, {        }, 0, 0,      1,         0, {Bedingung Momentenadaption ohne Last}
+0197, 08, Z_lm                , 0, {        }, 0, 0,      1,         0, {Zyklusflag:	LMM/HLM/HFM}
+0197, 04, E_lm                , 0, {        }, 0, 0,      1,         0, {Errorflag: Hauptlastsensor}
+0197, 02, B_hfm               , 0, {        }, 0, 0,      1,         0, {Bedingung HFM messbereit}
+0197, 01, B_ehfs              , 0, {        }, 0, 0,      1,         0, {Bedingung Ersatzwert Hauptfüllungssensor}
+0198, 80, Z_dvev              , 0, {        }, 0, 0,      1,         0, {Zyklusflag: DV-E Fehler bei Verstärkerabgleich}
+0198, 40, Z_dvef              , 0, {        }, 0, 0,      1,         0, {Zyklusflag: DV-E Fehler bei Federprüfung}
+0198, 20, B_fprzab            , 0, {        }, 0, 0,      1,         0, {Bedingung: DV-E-Rückstellfederprüfung Abbruch, Feder schließt nicht}
+0198, 10, B_fprrdy            , 0, {        }, 0, 0,      1,         0, {DK-Rückstellfeder-Prüfung beendet}
+0198, 08, B_fprzok            , 0, {        }, 0, 0,      1,         0, {Bedingung: DV-E-Rückstellfederprüfung i.O.}
+0198, 04, B_nlperf            , 0, {        }, 0, 0,      1,         0, {Dauer-RAM, Bedingung: NLP-Erfassung erfolgreich}
+0198, 02, B_lrnerf            , 0, {        }, 0, 0,      1,         0, {Lernerfolg Bit}
+0198, 01, B_lrnws             , 0, {        }, 0, 0,      1,         0, {Lernwertspeicherung Bit}
+0199, 40, B_mibeg             , 0, {        }, 0, 0,      1,         0, {Bedingung Momentenbegrenzung ist aktiv}
+0199, 20, E_dveu              , 0, {        }, 0, 0,      1,         0, {Errorflag: DV-E Fehler beim UMA-Lernen}
+0199, 10, E_dven              , 0, {        }, 0, 0,      1,         0, {Errorflag: DV-E Fehler bei Prüfung Notluftposition}
+0199, 08, E_dvev              , 0, {        }, 0, 0,      1,         0, {Errorflag: DV-E Fehler bei Verstärkerabgleich}
+0199, 04, E_dvef              , 0, {        }, 0, 0,      1,         0, {Errorflag: DV-E Fehler bei Federprüfung}
+0199, 02, Z_dveu              , 0, {        }, 0, 0,      1,         0, {Zyklusflag: DV-E Fehler beim UMA-Lernen}
+0199, 01, Z_dven              , 0, {        }, 0, 0,      1,         0, {Zyklusflag: DV-E Fehler bei Prüfung Notluftposition}
+019A, 80, B_lamfas            , 0, {        }, 0, 0,      1,         0, {Verbot  für Lambda Fahrerwunsch Aktivierung}
+019A, 40, B_lambts            , 0, {        }, 0, 0,      1,         0, {Lambda für Bauteileschutz ist aktiv}
+019A, 20, B_lamnswl           , 0, {        }, 0, 0,      1,         0, {Lambda-Motor-Soll für Nachstart und Warmlauf aktiv}
+019A, 10, B_lamka             , 0, {        }, 0, 0,      1,         0, {Lambda für Kat-Ausräumen aktiv}
+019A, 08, B_fasla             , 0, {        }, 0, 0,      1,         0, {Bedingung: externe Anforderung an Sekundärluft aktiv}
+019A, 04, B_kh                , 0, {        }, 0, 0,      1,         0, {Bedingung Kat-Heizung}
+019A, 02, B_lamlash           , 0, {        }, 0, 0,      1,         0, {Bedingung für Abmagern/Anfetten in %LAMKO}
+019A, 01, B_falsh             , 0, {        }, 0, 0,      1,         0, {Bedingung Funktionsanforderung Lambda-Sonde hinter KAT}
+019B, 10, B_tkatbts           , 0, {        }, 0, 0,      1,         0, {Bedingung Katalysatortemperatur für Bauteileschutz überschritten}
+019B, 08, B_tabgbts           , 0, {        }, 0, 0,      1,         0, {Bedingung Abgastemperatur für Bauteileschutz überschritten}
+019B, 04, B_lambts            , 0, {        }, 0, 0,      1,         0, {Lambda für Bauteileschutz ist aktiv}
+019B, 02, B_lalgf             , 0, {        }, 0, 0,      1,         0, {Bedingung Laufgrenze "Lambda fett" aktiv}
+019B, 01, B_bevab             , 0, {        }, 0, 0,      1,         0, {Bedingung EV-Abschaltung auf Bank/Bank1}
+01A0, 00, kldfpwm             , 0, {%       }, 0, 0, 0.390625,       0, {Generatorsignal (Kl. DFM) als PWM-Signal filtriert}
+01A1, 00, pkodrc              , 0, {bar     }, 0, 0,    0.2,         0, {Kompressordrucksignal}
+01A2, 00, uulsuv_w            , 0, {V       }, 0, 0, 0.00488281,     0, {Sondenspannung vor Kat einer Breitbandlambdasonde (ADC-Wert)}
+01A3, 00, ldtv                , 0, {%       }, 1, 0,  0.005,         0, {LDR Tastverhältnis}
+01A4, 00, ldimx_w             , 0, {%       }, 1, 0,  0.005,         0, {Aktueller Wert zur Maximalwertbegrenzung I-Anteil LDR}
+01A5, 00, ldimn_w             , 0, {%       }, 1, 0,  0.005,         0, {Aktueller Wert zur Minimalwertbegrenzung I-Anteil LDR}
+01A6, 00, dwped               , 0, {%       }, 1, 0, 0.3906,         0, {Gradient des normierten Fahrpedalwinkels}
+01A7, 04, B_ldsuas            , 0, {        }, 0, 0,      1,         0, {Bedingung Turbo Umluftsteuerung stationär aktiv}
+01A7, 02, B_ldsuad            , 0, {        }, 0, 0,      1,         0, {Bedingung Turbo Umluftsteuerung dynamisch aktiv}
+01A7, 01, B_ldsua             , 0, {        }, 0, 0,      1,         0, {Bedingung LDR Schubumluftventil aktiv (offen)}
+01A8, 00, ctrzyf0             , 0, {#       }, 0, 0,      1,         0, {Zähler für Anzahl ungeprüfter Fehlerpfade im System seit Start}
+01A9, 00, ctrzyf1             , 0, {#       }, 0, 0,      1,         0, {Zähler für Anzahl geprüfter Fehlerpfade im System seit Start}
+01AA, 00, ctrerf1             , 0, {#       }, 0, 0,      1,         0, {Zähler für Anzahl  Fehlerflags E_dfp = 1 im System seit powerfail (gefiltert)}
+01AB, 00, anzdyn              , 0, {#       }, 0, 0,      1,         0, {Anzahl der Dynamikmessungen LSU}
+01AC, 00, tplsu               , 0, {#       }, 0, 0,      1,         0, {Tripanzahlcounter}
+01AD, 00, tstarte             , 0, {s       }, 0, 0,    0.1,         0, {Summierte Startzeit von Drehbeginn bis Startende (mehrere Starts)}
+01AF, 00, dlashkm_w           , 0, {-       }, 1, 0, 3.05176e-05,    0, {Delta-Lambda aus Lambdaregelung hinter Kat (Ist-Wert fr-synchron gemittelt)}
+01B0, 00, ksta0               , 0, {-       }, 0, 0, 0.0078125,      0, {Kaltstartanreicherung Bereich 0, gepuffert}
+01B1, 00, ksta1               , 0, {-       }, 0, 0, 0.0078125,      0, {Kaltstartanreicherung Bereich 1, gepuffert}
+01B2, 00, ksta2               , 0, {-       }, 0, 0, 0.0078125,      0, {Kaltstartanreicherung Bereich 2, gepuffert}
+01B3, 00, anzumrl_w           , 0, {#       }, 0, 0,      1,         0, {Anzahl der Umschaltungen auf rl aus DK-Signal berechnet}
+01B4, 00, mslift2             , 0, {g/s     }, 0, 0, 0.11111111,     0, {Istwert Sekundärluftmasse, gefiltert, temporär (Bank 2)}
+01B5, 00, rldkofk_w           , 0, {%       }, 0, 0, 0.0234375,      0, {relative Luftfüllung aus DK-Signal berechnet ohne Einrechnung von fkmsdk}
+01B6, 00, rlzuhfs_w           , 0, {%       }, 0, 0, 0.0234375,      0, {relative Luftfüllung (zufließend) mit Hauptfüllungssensor bestimmt}
+01B7, 00, drldkzu_w           , 0, {%/seg   }, 1, 0, 0.0234375,      0, {Differenz zwischen rl aus Hauptlastsignal zu Nebenlastsignal}
+01B9, 00, ldimxak_w           , 2, {%       }, 1, 0,  0.005,         0, {Aktueller korrigierter Begrenzungswert I-Anteil LDR}
+01BA, 00, tmst                , 1, {°C      }, 0, 0,   0.75,        48, {Motorstarttemperatur}
+01BB, 00, bbdmdmil            , 0, {        }, 0, 0,      1,         0, {}
+01BC, 00, idxfob              , 0, {        }, 0, 0,      1,         0, {Index: Kennzeichnet den aktuellen KF-Bereich (Drehz., Last)}
+01BD, 00, fukabaw_w           , 0, {-       }, 0, 0, 6.10352e-05,    0, {ÜK-Adaptionsfaktor (warmer Motor) BA}
+01BE, 00, fukavak_w           , 0, {-       }, 0, 0, 6.10352e-05,    0, {ÜK-Adaptionsfaktor (kalter Motor) VA}
+01BF, 00, fukavaw_w           , 0, {-       }, 0, 0, 6.10352e-05,    0, {ÜK-Adaptionsfaktor (warmer Motor) VA}
+01C0, 00, flg_m               , 0, {        }, 0, 0,      1,         0, {Monitor Status Laufunruhe-Berechnung}
+01C1, 01, B_lustop            , 0, {        }, 0, 0,      1,         0, {Laufunruhe-Berechnung gesperrt}
+01C2, 01, B_fonstp            , 0, {        }, 0, 0,      1,         0, {Bedingung fuel-on Adaption gestoppt}
+01C3, 00, ffon                , 0, {        }, 0, 0,      1,         0, {Statusbyte Übersicht fuel-on Adaption}
+01C6, 00, dmdlfmb             , 0, {s       }, 0, 0,      1,         0, {längste Fahrzeit mit blinkender MIL}
+01C7, 00, dmdsfmb_w           , 0, {s       }, 0, 0,      1,         0, {Summe Fahrzeiten mit blinkender MIL}
+01C8, 00, dmdafmb             , 0, {#       }, 0, 0,      1,         0, {Anzahl Fahrzeiten mit blinkender MIL}
+01C9, 02, B_milabg            , 0, {        }, 0, 0,      1,         0, {Mil leuchtet Abgasrelevant}
+01C9, 01, B_milkat            , 0, {        }, 0, 0,      1,         0, {Mil blinkt wegen Kat schädigende Aussetzer}
+01CA, 00, B_mola              , 0, {        }, 0, 0,      1,         0, {Motorlagersteuerung aktiv}
+01CD, 00, wnweos              , 0, {°KW     }, 0, 0,    0.5,         0, {Sollwinkel für Nockenwelle Einlaß öffnet}
+01CE, 00, wnwass              , 0, {°KW     }, 0, 0,    0.5,         0, {Sollwinkel für Nockenwelle Auslaß schließt}
+01CF, 00, wnwise_w            , 0, {°KW     }, 1, 0, 0.00390625,     0, {Istwinkel für Einlaßnockenwelle}
+01D0, 00, wnwisa_w            , 0, {°KW     }, 1, 0, 0.00390625,     0, {Istwinkel für Auslaßnockenwelle}
+01D1, 00, upwkd_w             , 0, {V       }, 0, 0, 0.00488281,     0, {Gelernte Spannung von PWG-Poti 1 in der Kick-Down-Position}
+01D2, 10, TYP_scr             , 0, {        }, 0, 0,      1,         0, {}
+01D2, 08, TYP_scr             , 0, {        }, 0, 0,      1,         0, {}
+01D2, 04, TYP_scr             , 0, {        }, 0, 0,      1,         0, {}
+01D2, 02, Z_scr               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: CRAS-Signal}
+01D2, 01, E_scr               , 0, {        }, 0, 0,      1,         0, {Errorflag: CRAS-Signal}
+01D3, 10, B_epwmcs            , 0, {        }, 0, 0,      1,         0, {Bedingung PWM-Crash-Sensor-Signal ist fehlerhaft}
+01D3, 08, B_crcan             , 0, {        }, 0, 0,      1,         0, {Bedingung Crash erkannt (aus plausibilisiertem CAN-Signal)}
+01D3, 04, B_aircan            , 0, {        }, 0, 0,      1,         0, {Bedingung Crash vom Airbag-SG}
+01D3, 02, B_airbz             , 0, {        }, 0, 0,      1,         0, {Bedingung Botschaftszähler der Airbag-Botschaft unplausibel}
+01D3, 01, B_airbag            , 0, {        }, 0, 0,      1,         0, {Bedingung Airbag ausgelöst}
+01D8, 00, udkp1asr_w          , 0, {V       }, 0, 0, 0.0012207,      0, {Dauer-RAM: Spannung DK-Poti 1 am unteren DK-Anschlag, stationärer Anteil}
+01D9, 00, udkp2asr_w          , 0, {V       }, 0, 0, 0.0012207,      0, {Dauer-RAM: Spannung DK-Poti 2 am unteren DK-Anschlag, stationärer Anteil}
+01DA, 00, udknlp1r            , 0, {V       }, 0, 0, 0.0012207,      0, {Dauer-RAM: Spannung DK-Poti 1 im NLP}
+01DB, 00, udknlp2r            , 0, {V       }, 0, 0, 0.0012207,      0, {Dauer-RAM: Spannung DK-Poti 2 im NLP}
+01DC, 00, tvlues1             , 0, {%       }, 0, 0, 0.390625,       0, {Tastverhältnis Lüfter 1}
+01DD, 00, tvlues2             , 0, {%       }, 0, 0, 0.390625,       0, {Tastverhältnis Lüfter 2}
+01DE, 00, tvkmtr              , 0, {%       }, 0, 0, 0.390625,       0, {Tastverhältnis elektrischer Thermostat}
+01DF, 00, tmotsoll            , 0, {°C      }, 0, 0,   0.75,        48, {Soll-Wassertemperatur  für Kühlmitteltemperaturregelung}
+#
+01E0, 00, wnwadmne_w          , 0, {°KW     }, 1, 0, 0.0078125,      0, {Minimalwertauswahl von adaptierten Werten (Einlass}
+01E1, 00, wnwadmna_w          , 0, {°KW     }, 1, 0, 0.0078125,      0, {Minimalwertauswahl von adaptierten Werten (Auslass}
+# Same two from above appear also here again:
+01E2, 00, wnwadmne_w          , 0, {°KW     }, 1, 0, 0.0078125,      0, {Minimalwertauswahl von adaptierten Werten (Einlass}
+01E3, 00, wnwadmna_w          , 0, {°KW     }, 1, 0, 0.0078125,      0, {Minimalwertauswahl von adaptierten Werten (Auslass}
+#
+01E8, 00, mslv_w              , 0, {g/s     }, 0, 0, 4.3402778e-04,  0, {Sekundärluftmasse für Ventildichtheitsprüfung (word)}
+01E9, 00, mslv2_w             , 0, {g/s     }, 0, 0, 4.3402778e-04,  0, {Sekundärluftmasse für Ventildichtheitsprüfung (word) Bank 2}
+01EB, 00, vfzroh_w            , 0, {km/h    }, 0, 0, 0.0078125,      0, {Fahrzeuggeschwindigkeit Ausgabewert an SCAN-Tool}
+01EC, 00, uulsuv2_w           , 0, {V       }, 0, 0, 0.00488281,     0, {Sondenspannung vor Kat einer Breitbandlambdasonde Bank2 (ADC-Wert)}
+01ED, 00, dwnwfde_w           , 0, {°KW     }, 1, 0, 0.0078125,      0, {Differenz Ist - Sollwinkel Nockenwelle gefiltert für Diagnose Einlass}
+01EE, 00, wnwsp_w             , 0, {°KW     }, 0, 0, 0.015625,       0, {Adaptionswinkel Nockenwelle (Spätanschlag)}
+01EF, 00, dgafram_w           , 0, {        }, 0, 0, 6.10352e-05,    1, {Gemischfehler multiplikativer Anteil (Mittelwert)}
+01F0, 40, B_krldy             , 0, {        }, 0, 0,      1,         0, {Bedingung Lastdynamik für Klopferkennung aktiv}
+01F0, 20, B_krndy             , 0, {        }, 0, 0,      1,         0, {Bedingung Drehzahldynamik für Klopferkennung aktiv}
+01F0, 10, B_synph             , 0, {        }, 0, 0,      1,         0, {Bedingung Synchronisation Phase}
+01F0, 08, B_kr                , 0, {        }, 0, 0,      1,         0, {Bedingung Klopfregelung aktiv}
+01F0, 04, Z_ks4               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Klopfsensor 4}
+01F0, 02, E_ks4               , 0, {        }, 0, 0,      1,         0, {Errorflag: Klopfsensor 4}
+01F0, 01, B_syserrk           , 0, {        }, 0, 0,      1,         0, {Bedingung für mind. 1 Fehler (E_abc) im System erkannt (unmaskiert)}
+01F1, 08, B_sa                , 0, {        }, 0, 0,      1,         0, {Bedingung Schubabschalten}
+01F1, 04, Z_vfz               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Fahrzeug-Geschwindigkeit}
+01F1, 02, E_vfz               , 0, {        }, 0, 0,      1,         0, {Errorflag: Fahrzeug-Geschwindigkeit}
+01F1, 01, B_syserrk           , 0, {        }, 0, 0,      1,         0, {Bedingung für mind. 1 Fehler (E_abc) im System erkannt (unmaskiert)}
+01F2, 20, TYP_hsvsa           , 0, {        }, 0, 0,      1,         0, {}
+01F2, 10, TYP_hsv             , 0, {        }, 0, 0,      1,         0, {Fehlertyp: Heizung Lambdasonde 1 vor Kat}
+01F2, 08, B_sbbvk             , 0, {        }, 0, 0,      1,         0, {Bedingung Sonde betriebsbereit vor Kat}
+# This is Z_hsvs && Z_hsvsa for some engines
+#01F2, 04, Z_hsvsa             , 0, {        }, 0, 0,      1,         0, {Zyklusflag:  reduzierte  LSU-Heizung oder LSU-Kennlinie abgeflacht}
+# This is E_hsvs && E_hsvsa for some engines
+#01F2, 02, E_hsvsa             , 0, {        }, 0, 0,      1,         0, {Errorflag: reduzierte  LSU-Heizung oder LSU-Kennlinie abgeflacht}
+01F2, 01, B_syserrk           , 0, {        }, 0, 0,      1,         0, {Bedingung für mind. 1 Fehler (E_abc) im System erkannt (unmaskiert)}
+01F3, 20, TYP_hsvsa2          , 0, {        }, 0, 0,      1,         0, {}
+01F3, 01, B_syserrk           , 0, {        }, 0, 0,      1,         0, {Bedingung für mind. 1 Fehler (E_abc) im System erkannt (unmaskiert)}
+0203, 00, pbkv                , 0, {mbar    }, 0, 0,      5,         0, {Bremskraftverstärker-Druck von DS}
+0209, 00, tkihkm_w            , 0, {°C      }, 0, 0, 0.0234375, 273.15, {Temperatur Katalysator im Hauptkat aus Modell}
+020B, 80, B_ldp               , 0, {        }, 0, 0,      1,         0, {Bedingung LDP wird angesteuert erfüllt}
+020B, 40, B_ldpi              , 0, {        }, 0, 0,      1,         0, {Bedingung Reed-Kontakt Leckdiagnosepumpe}
+020B, 20, B_fev12             , 0, {        }, 0, 0,      1,         0, {Bedingung Reedkontakt öffnet in der Fast Pulse Phase}
+020B, 08, B_dldp              , 0, {        }, 0, 0,      1,         0, {Aktive Diagnose: Leckdiagnosemodul}
+020B, 04, Z_tesg              , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Tankentlüftungssystem Grobleck}
+020B, 02, E_ldpe              , 0, {        }, 0, 0,      1,         0, {Errorflag: Leckdiagnosepumpe Endstufe}
+020B, 01, B_syserrk           , 0, {        }, 0, 0,      1,         0, {Bedingung für mind. 1 Fehler (E_abc) im System erkannt (unmaskiert)}
+020C, 00, wnwsenp_w           , 0, {°KW     }, 1, 0, 0.0078125,      0, {Sollwinkel bei Detektierung einer nicht plausiblen NW-Stellung  (Einlass)}
+020D, 80, TYP_nwkw            , 0, {        }, 0, 0,      1,         0, {}
+020D, 40, TYP_nwkw            , 0, {        }, 0, 0,      1,         0, {}
+020D, 20, B_phad              , 0, {        }, 0, 0,      1,         0, {Adaption Kurbel/Nockenwelle erfolgt}
+020D, 10, B_nwflade           , 0, {        }, 0, 0,      1,         0, {Bedingung Flankenadaption Nockenwelle Einlaß angefordert}
+020D, 08, B_spsa              , 0, {        }, 0, 0,      1,         0, {Bedingung Winkeladaption Kurbel- zu Nockenwelle zulässig}
+020D, 04, Z_ph                , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Phasensensor}
+020D, 02, E_ph                , 0, {        }, 0, 0,      1,         0, {Errorflag: Phasensensor}
+020D, 01, B_syserrk           , 0, {        }, 0, 0,      1,         0, {Bedingung für mind. 1 Fehler (E_abc) im System erkannt (unmaskiert)}
+020E, 80, B_frmin             , 0, {        }, 0, 0,      1,         0, {Lambda-Regelung setzt Bit sobald FR am Anschlag FRMIN}
+020E, 40, B_frmax             , 0, {        }, 0, 0,      1,         0, {Lambda-Regelung setzt Bit sobald FR am Anschlag FRMAX}
+020E, 20, B_elsu              , 0, {        }, 0, 0,      1,         0, {Bedingung Fehler oder Fehler-Vormerkung LSU (keine Betriebsbereitschaft)}
+020E, 10, B_dylsuav           , 0, {        }, 0, 0,      1,         0, {Dynamiküberwachung LSU aktiv}
+020E, 08, B_falsu             , 0, {        }, 0, 0,      1,         0, {Bedingung Funktionsanforderung Lambda-Sonde vor KAT}
+020E, 04, Z_lsv               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Lambda-Sonde vor Kat}
+020E, 02, E_lsv               , 0, {        }, 0, 0,      1,         0, {Errorflag: Lambda-Sonde vor Kat}
+020E, 01, B_syserrk           , 0, {        }, 0, 0,      1,         0, {Bedingung für mind. 1 Fehler (E_abc) im System erkannt (unmaskiert)}
+0210, 80, B_frau              , 0, {        }, 0, 0,      1,         0, {Einschaltbedingung für Adaption von frau}
+0210, 40, B_rkat              , 0, {        }, 0, 0,      1,         0, {Bedingung Lernbereich additive Korrektur pro Zeit aktiv}
+0210, 20, B_lrar              , 0, {        }, 0, 0,      1,         0, {Bedingung reduzierte Korrekturbereiche in der LRA}
+0210, 10, B_lra               , 0, {        }, 0, 0,      1,         0, {Bedingung Gemischadaption freigegeben}
+0210, 08, Z_rkat              , 0, {        }, 0, 0,      1,         0, {Zyklusflag:LR-Adaption additiv pro Zeit}
+0210, 04, Z_frau              , 0, {        }, 0, 0,      1,         0, {Zyklusflag:LR-Adaption unterer multiplikativer Bereich}
+0210, 02, E_rkat              , 0, {        }, 0, 0,      1,         0, {Errorflag DKVS (additive Korrektur pro Zeit)}
+0210, 01, B_syserrk           , 0, {        }, 0, 0,      1,         0, {Bedingung für mind. 1 Fehler (E_abc) im System erkannt (unmaskiert)}
+0212, 04, Z_egfe              , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Eingangsgrößen Füllungserfassung}
+0212, 02, E_lm                , 0, {        }, 0, 0,      1,         0, {Errorflag: Hauptlastsensor}
+0212, 01, B_syserrk           , 0, {        }, 0, 0,      1,         0, {Bedingung für mind. 1 Fehler (E_abc) im System erkannt (unmaskiert)}
+0213, 10, B_atmtpk            , 0, {        }, 0, 0,      1,         0, {Bedingung Taupunkt hinter Kat ueberschritten}
+0213, 08, B_rinh              , 0, {        }, 0, 0,      1,         0, {Bedingung Innenwiderstand Ri-Messung der Nernstsonde aktiv hinter Kat}
+0213, 04, Z_hshe              , 0, {        }, 0, 0,      1,         0, {Zyklusflag:Lambdasonden-Heizung hinter Katalysator (Endstufe)}
+0213, 02, E_hshe              , 0, {        }, 0, 0,      1,         0, {Errorflag: Lambdasonden-Heizung hinter Katalysator (Endstufe)}
+0213, 01, B_syserrk           , 0, {        }, 0, 0,      1,         0, {Bedingung für mind. 1 Fehler (E_abc) im System erkannt (unmaskiert)}
+0215, 80, B_sigflsh           , 0, {        }, 0, 0,      1,         0, {Signalunterbrechung (Kabelbruch) Bei Sonde hinter KAT erkannt}
+0215, 40, B_nplflsh           , 0, {        }, 0, 0,      1,         0, {Adernschluß bei Sonde hinter KAT erkannt}
+0215, 20, B_risigh            , 0, {        }, 0, 0,      1,         0, {Bedingung Signalunterbrechung Sondenmasse mit Ri-Diagnose hinter KAT}
+0215, 10, B_sbbhk             , 0, {        }, 0, 0,      1,         0, {Bedingung Sonde betriebsbereit hinter Kat}
+0215, 08, B_falsh             , 0, {        }, 0, 0,      1,         0, {Bedingung Funktionsanforderung Lambda-Sonde hinter KAT}
+0215, 04, Z_lsh               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Lambda-Sonde hinter Kat}
+0215, 02, E_lsh               , 0, {        }, 0, 0,      1,         0, {Errorflag: Lambda-Sonde hinter Kat}
+0215, 01, B_syserrk           , 0, {        }, 0, 0,      1,         0, {Bedingung für mind. 1 Fehler (E_abc) im System erkannt (unmaskiert)}
+0217, 80, B_ushkf             , 0, {        }, 0, 0,      1,         0, {Bedingung Sondenspannung hinter Kat "Fett" (Sollwert überschritten)}
+0217, 40, B_ushkm             , 0, {        }, 0, 0,      1,         0, {Bedingung Sondenspannung hinter KAT "Mager" (Sollwert unterschritten)}
+0217, 20, B_trfash            , 0, {        }, 0, 0,      1,         0, {Bedingung Kurztrip einleiten für Schwingungsprüfung Sonde hinter KAT}
+0217, 10, B_mlustest          , 0, {        }, 0, 0,      1,         0, {Bedingung ml ist innerhalb den Schwellen}
+0217, 08, B_fash              , 0, {        }, 0, 0,      1,         0, {Bedingung Funktionsanforderung Schwingungsprüfung}
+0217, 04, Z_lash              , 0, {        }, 0, 0,      1,         0, {Zyklusflag:Lambda-Sondenalterung hinter Kat.}
+0217, 02, E_lash              , 0, {        }, 0, 0,      1,         0, {Errorflag: Lambda-Sondenalterung hinter Katalysator}
+0217, 01, B_syserrk           , 0, {        }, 0, 0,      1,         0, {Bedingung für mind. 1 Fehler (E_abc) im System erkannt (unmaskiert)}
+0219, 80, B_vekat             , 0, {        }, 0, 0,      1,         0, {Fehlerverdacht bei Katdiagnose}
+0219, 40, B_dktnr             , 0, {        }, 0, 0,      1,         0, {DKAT: n/rl-Bereich verlassen}
+0219, 20, B_dktsp             , 0, {        }, 0, 0,      1,         0, {physikalische Stoppbedingung}
+0219, 10, B_dktsb             , 0, {        }, 0, 0,      1,         0, {Bankspezifische Stoppbedingung}
+0219, 08, B_fakat             , 0, {        }, 0, 0,      1,         0, {Bedingung Funktionsanforderung Katalysatorüberwachung}
+0219, 04, Z_kat               , 0, {        }, 0, 0,      1,         0, {Zyklusflag:	Katalysator-Konvertierung}
+0219, 02, E_kat               , 0, {        }, 0, 0,      1,         0, {Errorflag: Katalysator-Konvertierung}
+0219, 01, B_syserrk           , 0, {        }, 0, 0,      1,         0, {Bedingung für mind. 1 Fehler (E_abc) im System erkannt (unmaskiert)}
+021B, 80, B_dfrmoff           , 0, {        }, 0, 0,      1,         0, {frm-Offset-Schwelle überschritten: zeigt Vorsteuerproblem}
+021B, 40, B_dslmes            , 0, {        }, 0, 0,      1,         0, {Bedingung: Freigabe Meßfenster}
+021B, 20, B_dslmab            , 0, {        }, 0, 0,      1,         0, {Diagnose Sekundärluftmasse, Meßabbruch}
+021B, 10, B_mxslvpr           , 0, {        }, 0, 0,      1,         0, {Fehlerart lokal: Sekundärluftmasse bei Ventildichtheitsprüfung zu groß}
+021B, 08, B_mnslspr           , 0, {        }, 0, 0,      1,         0, {Fehlerart lokal: Sekundärluftmasse zu gering}
+021B, 04, Z_sls               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Sekundärluft-System}
+021B, 02, E_slv               , 0, {        }, 0, 0,      1,         0, {Errorflag: Sekundärluftventil}
+021B, 01, B_syserrk           , 0, {        }, 0, 0,      1,         0, {Bedingung für mind. 1 Fehler (E_abc) im System erkannt (unmaskiert)}
+021D, 80, B_dteanfl           , 0, {        }, 0, 0,      1,         0, {abgelaufene Zeit ab die, das Tastverhälnis aus DTEV größer Schwelle}
+021D, 40, B_dteabu            , 0, {        }, 0, 0,      1,         0, {Bedingung Abbruch TE Diagnose ohne Prüfergebnis}
+021D, 20, B_dteaab            , 0, {        }, 0, 0,      1,         0, {Bedingung DTEV-Abbruch wegen Verlassen Aktivierungsbedingungen}
+021D, 10, B_dternm            , 0, {        }, 0, 0,      1,         0, {Bedingung kein fr-Hub für Diagnose TEV vorhanden}
+021D, 08, B_dtest             , 0, {        }, 0, 0,      1,         0, {Start für TEV-Ansteuerung}
+021D, 04, Z_tes               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Tankentlüftungssystem}
+021D, 02, E_tes               , 0, {        }, 0, 0,      1,         0, {Errorflag: Tankentlüftungssystem}
+021D, 01, B_syserrk           , 0, {        }, 0, 0,      1,         0, {Bedingung für mind. 1 Fehler (E_abc) im System erkannt (unmaskiert)}
+021E, 80, B_lr                , 0, {        }, 0, 0,      1,         0, {LREB: Bedingung Lambdaregelung (vor Kat); (Bank 1)}
+021E, 10, B_edkvs             , 0, {        }, 0, 0,      1,         0, {Bedingung Adaptionsfehlerschwellen aktuell überschritten}
+021E, 08, B_fakvs             , 0, {        }, 0, 0,      1,         0, {Funktionsaufforderung Diagnose Kraftstoffsystem für Schnelltest}
+021E, 04, Z_frst              , 0, {        }, 0, 0,      1,         0, {Zyklusmeldung Diagnose Kraftstoffversorgungssystem (Kurztest)}
+021E, 02, E_frst              , 0, {        }, 0, 0,      1,         0, {Errorflag: Fehler aus Diagnose Kraftstoffversorgungssystem (Kurztest)}
+021E, 01, B_syserrk           , 0, {        }, 0, 0,      1,         0, {Bedingung für mind. 1 Fehler (E_abc) im System erkannt (unmaskiert)}
+0220, 00, ldrlts_w            , 0, {%       }, 0, 0, 0.0234375,      0, {Begrenzungswert für maximale Füllung LDR für ATL-Schutz}
+0221, 00, kmst_w              , 0, {km      }, 0, 0,      6,         0, {Zurückgelegte Fahrstrecke seit Powerfail}
+0222, 00, top_w               , 0, {min     }, 0, 0,      6,         0, {Operating time seit powerfail}
+0223, 00, fforn1              , 0, {        }, 0, 0,      1,         0, {Statusbyte fuel-on/-off Adaption (n-Bereiche fertig gelernt)}
+0224, 00, vkASRAntrieb        , 0, {        }, 0, 0,      1,         0, {}
+0225, 02, B_slsoab            , 0, {        }, 0, 0,      1,         0, {Bedingung SLS ohne Abbruchkriterium durchgeführt}
+0225, 01, B_khoab             , 0, {        }, 0, 0,      1,         0, {Bedingung Katheizen ohne Abbruchkriterium durchgeführt}
+0226, 00, rlmxko_w            , 0, {%       }, 0, 0, 0.0234375,      0, {Maximalfüllung korrigiert (ohne Begrenzungen)}
+0229, 00, tmkic               , 0, {°C      }, 0, 0,   0.75,        48, {Motortemperatur aus Kombibotschaft}
+022C, 00, fzabg_w_8           , 0, {#       }, 0, 0,      1,         0, {Aussetzerzähler}
+022D, 00, fzabg_w_9           , 0, {#       }, 0, 0,      1,         0, {Aussetzerzähler}
+022E, 00, fzabg_w_10          , 0, {#       }, 0, 0,      1,         0, {Aussetzerzähler}
+022F, 00, f abg_w_11          , 0, {#       }, 0, 0,      1,         0, {Aussetzerzähler}
+0234, 00, wnwis2e_w           , 0, {°KW     }, 1, 0, 0.00390625,     0, {Istwinkel für Einlaßnockenwelle (Bank2)}
+0235, 00, wnwis2a_w           , 0, {°KW     }, 1, 0, 0.00390625,     0, {Istwinkel für Auslaßnockenwelle (Bank2)}
+0236, 00, wnweos2             , 0, {°KW     }, 0, 0,    0.5,         0, {Sollwinkel für Nockenwelle Einlaß öffnet (Bank2)}
+0237, 00, ctr_phade           , 0, {#       }, 0, 0,      1,         0, {Zähler Adaptionen Nockenwellenposition zu Kurbelwellenposition Einlaß-NW}
+0238, 00, ctr_phada           , 0, {#       }, 0, 0,      1,         0, {Zähler Adaptionen Nockenwellenposition zu Kurbelwellenposition Auslaß-NW}
+0239, 00, tanwre              , 0, {%       }, 0, 0, 0.390625,       0, {Tastverhältnis Einlaßnockenwellenregelung}
+0239, 00, tanwr2e             , 0, {%       }, 0, 0, 0.390625,       0, {Tastverhältnis Einlaßnockenwellenregelung Bank2}
+023B, 00, wubr                , 0, {V       }, 0, 0, 0.1113,         0, {Batteriespannung über Hauptrelais; vom AD-Wandler erfaßter Wert}
+023E, 00, kstaa               , 0, {-       }, 0, 0, 0.0078125,      0, {Aktueller Startmengenadaptionsfaktor}
+023F, 00, tmadb               , 0, {        }, 0, 0,      1,         0, {Bereich Motortemperatur für Startmengenadaption}
+0240, 00, abo                 , 0, {#       }, 0, 0,      1,         0, {Anzahl Starts mit Benzin im Öl}
+0241, 00, nllkh               , 0, {rpm     }, 0, 0,     10,         0, {Leerlaufdrehzahl bei Katheizen}
+0242, 00, flakh               , 0, {-       }, 0, 0, 0.00390625,     0, {Faktor Lambda-Steuerung bei Katheizen}
+0243, 00, fmdkh               , 0, {-       }, 0, 0, 0.00390625,     0, {Faktor Steuerung Drehmomentreserve für Katheizen}
+0244, 00, imlatm_w            , 2, {kg      }, 0, 0, 0.000355556,    0, {integr. Luftmassenfluss ab Startende bis max. Wert, (Word)}
+0245, 00, imlbbo              , 0, {kg      }, 0, 0, 0.0910222,      0, {Integrator Luftmasse für Erkennung Benzin im Öl}
+0246, 00, mspcv               , 0, {g/s     }, 0, 0, 0.02777778,     0, {Massenstrom über PCV Ventil}
+0254, 00, dtmtka              , 0, {°C      }, 1, 0,   0.75,         0, {Delta Kühlmitteltemperatur zu Kühleraustrittstemperatur}
+0255, 00, uhepoti             , 0, {        }, 0, 0,      1,         0, {Spannung Heizungspoti}
+0258, 01, B_br2k              , 0, {        }, 0, 0,      1,         0, {Bedingung Bremse betätigt 2-kanalig erkannt}
+0259, 00, cd_bits3_w          , 0, {        }, 0, 0,      1,         0, {}
+025A, 00, cd_bits3_w          , 0, {        }, 0, 0,      1,         0, {}
+025B, 00, cd_bits3_w          , 0, {        }, 0, 0,      1,         0, {}
+025C, 00, tanwra              , 0, {%       }, 0, 0, 0.390625,       0, {Tastverhältnis Nockenwellenregelung Auslaß}
+025D, 00, tanwr2a             , 0, {%       }, 0, 0, 0.390625,       0, {Tastverhältnis Nockenwellenregelung Auslaß Bank2}
+025F, 00, ANWSE_bits1         , 0, {        }, 0, 0,      1,         0, {}
+0263, 00, sfplsv              , 0, {        }, 0, 0,      1,         0, {Status Fehlerpfad: Diagnose Lambdasonde vor Kat}
+0265, 00, sfplsh              , 0, {        }, 0, 0,      1,         0, {Status Fehlerpfad: Diagnose Lambdasonde hinter Kat}
+0267, 00, sfpkat              , 0, {        }, 0, 0,      1,         0, {Status Fehlerpfad: Katalysator-Überwachung}
+026E, 00, wnwsp2_w            , 0, {°KW     }, 0, 0, 0.015625,       0, {Adaptionswinkel Nockenwelle 2 (Spätanschlag)}
+026F, 80, B_nws               , 0, {        }, 0, 0,      1,         0, {Bedingung Nockenwellensteuerung}
+026F, 40, B_wnws0e            , 0, {        }, 0, 0,      1,         0, {Bedingung NW-Sollwertvorgabe ist 0}
+026F, 20, B_phad              , 0, {        }, 0, 0,      1,         0, {Adaption Kurbel/Nockenwelle erfolgt}
+026F, 10, B_bm                , 0, {        }, 0, 0,      1,         0, {Bedingung Bezugsmarke erkannt}
+026F, 08, B_spsa              , 0, {        }, 0, 0,      1,         0, {Bedingung Winkeladaption Kurbel- zu Nockenwelle zulässig}
+026F, 04, Z_nwkw              , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Zuordnung Nockenwelle zu Kurbelwelle}
+026F, 02, E_nwkw              , 0, {        }, 0, 0,      1,         0, {Errorflag: Zuordnung Nockenwelle zu Kurbelwelle}
+026F, 01, B_syserrk           , 0, {        }, 0, 0,      1,         0, {Bedingung für mind. 1 Fehler (E_abc) im System erkannt (unmaskiert)}
+0270, 00, pklimakmtr          , 0, {bar     }, 0, 0,    0.2,         0, {Druck Klimaanlage für KMTR}
+0000, 00, palsu_w             , 0, {mbar    }, 0, 0, 0.0390625,      0, {Absolutdruck Abgassystem}
+0288, 00, tikatm_w            , 0, {°C      }, 0, 0, 0.0195312,     50, {Abgastemperatur im Katalysator aus Modell}
+028B, 00, lamzak_w            , 0, {-       }, 0, 0, 0.000244141,    0, {Lambdasondenistwert, korrigiert um Zusatzamplitude}
+0290, 00, imllaka_w           , 0, {        }, 0, 0,      1,         0, {Integrator Fettfläche für Katalysator-Ausräumen}
+0296, 80, B_bxf9              , 0, {        }, 0, 0,      1,         0, {Flip-Flop9: Maximalzeit nach Start für 0.5 mm - Diagnose überschritten}
+0296, 40, B_bxf8              , 0, {        }, 0, 0,      1,         0, {Flip-Flop8: Bergabfahrt während 0.5 mm - Diagnose erkannt}
+0296, 20, B_bxf7              , 0, {        }, 0, 0,      1,         0, {Flip-Flop7: Motortemperaturdifferenz im Start kleiner Minimalschwelle für 0.5 mm}
+0296, 10, B_bxf6              , 0, {        }, 0, 0,      1,         0, {Flip-Flop6: Ansauglufttemperatur größer Maximalschwelle für 0.5 mm - Diagnose}
+0296, 08, B_bxf5              , 0, {        }, 0, 0,      1,         0, {Flip-Flop5: Motortemperatur größer Maximalschwelle für 0.5 mm - Diagnose}
+0296, 04, B_bxf4              , 0, {        }, 0, 0,      1,         0, {Flip-Flop4: Laständerung größer Maximalschwelle für 0.5 mm - Diagnose}
+0296, 02, B_bxf3              , 0, {        }, 0, 0,      1,         0, {Flip-Flop3: Beschleunigung größer Maximalschwelle für 0.5 mm - Diagnose}
+0296, 01, B_bxf2              , 0, {        }, 0, 0,      1,         0, {Flip-Flop2: Untere vfz-Schwelle überschrittenh für 0.5 mm - Diagnose}
+0297, 80, B_bxf9              , 0, {        }, 0, 0,      1,         0, {Flip-Flop9: Maximalzeit nach Start für 0.5 mm - Diagnose überschritten}
+0297, 40, B_bxf8              , 0, {        }, 0, 0,      1,         0, {Flip-Flop8: Bergabfahrt während 0.5 mm - Diagnose erkannt}
+0297, 20, B_bxf7              , 0, {        }, 0, 0,      1,         0, {Flip-Flop7: Motortemperaturdifferenz im Start kleiner Minimalschwelle für 0.5 mm}
+0297, 10, B_bxf6              , 0, {        }, 0, 0,      1,         0, {Flip-Flop6: Ansauglufttemperatur größer Maximalschwelle für 0.5 mm - Diagnose}
+0297, 08, B_bxf5              , 0, {        }, 0, 0,      1,         0, {Flip-Flop5: Motortemperatur größer Maximalschwelle für 0.5 mm - Diagnose}
+0297, 04, B_bxf4              , 0, {        }, 0, 0,      1,         0, {Flip-Flop4: Laständerung größer Maximalschwelle für 0.5 mm - Diagnose}
+0297, 02, B_bxf3              , 0, {        }, 0, 0,      1,         0, {Flip-Flop3: Beschleunigung größer Maximalschwelle für 0.5 mm - Diagnose}
+0297, 01, B_bxf2              , 0, {        }, 0, 0,      1,         0, {Flip-Flop2: Untere vfz-Schwelle überschrittenh für 0.5 mm - Diagnose}
+0298, 80, B_bxf9              , 0, {        }, 0, 0,      1,         0, {Flip-Flop9: Maximalzeit nach Start für 0.5 mm - Diagnose überschritten}
+0298, 40, B_bxf8              , 0, {        }, 0, 0,      1,         0, {Flip-Flop8: Bergabfahrt während 0.5 mm - Diagnose erkannt}
+0298, 20, B_bxf7              , 0, {        }, 0, 0,      1,         0, {Flip-Flop7: Motortemperaturdifferenz im Start kleiner Minimalschwelle für 0.5 mm}
+0298, 10, B_bxf6              , 0, {        }, 0, 0,      1,         0, {Flip-Flop6: Ansauglufttemperatur größer Maximalschwelle für 0.5 mm - Diagnose}
+0298, 08, B_bxf5              , 0, {        }, 0, 0,      1,         0, {Flip-Flop5: Motortemperatur größer Maximalschwelle für 0.5 mm - Diagnose}
+0298, 04, B_bxf4              , 0, {        }, 0, 0,      1,         0, {Flip-Flop4: Laständerung größer Maximalschwelle für 0.5 mm - Diagnose}
+0298, 02, B_bxf3              , 0, {        }, 0, 0,      1,         0, {Flip-Flop3: Beschleunigung größer Maximalschwelle für 0.5 mm - Diagnose}
+0298, 01, B_bxf2              , 0, {        }, 0, 0,      1,         0, {Flip-Flop2: Untere vfz-Schwelle überschrittenh für 0.5 mm - Diagnose}
+0299, 80, B_fev12             , 0, {        }, 0, 0,      1,         0, {Bedingung Reedkontakt öffnet in der Fast Pulse Phase}
+0299, 40, B_fev11             , 0, {        }, 0, 0,      1,         0, {Bedingung TEV nicht erfüllt}
+0299, 20, B_fev10             , 0, {        }, 0, 0,      1,         0, {Bedingung kurze Lastüberschreitung rl über Maxwert}
+0299, 10, B_fev9              , 0, {        }, 0, 0,      1,         0, {Bedingung lange Lastüberschreitung rl über Maxwert}
+0299, 08, B_fev8              , 0, {        }, 0, 0,      1,         0, {Bedingung Bergabfahrt erkannt}
+0299, 04, B_fev7              , 0, {        }, 0, 0,      1,         0, {Bedingung Fahrzeuggeschwindigkeit<Minimalwert erfüllt}
+0299, 02, B_fev6              , 0, {        }, 0, 0,      1,         0, {Bedingung Höhe>Maximalwert erkannt}
+0299, 01, B_fev5              , 0, {        }, 0, 0,      1,         0, {Bedingung Differenz zwischen Motorabstell- und Motorstarttemperatur erkannt}
+029A, 00, vkASRAntrieb        , 0, {        }, 0, 0,      1,         0, {}
+02A4, 00, usvkk_w             , 0, {V       }, 0, 0, 0.00488281,     0, {LSU-Spannung vor Kat, korrigiert}
+02A5, 00, tavvkm_w            , 0, {°C      }, 0, 0, 0.0234375, 273.15, {Abgastemperatur vor Vorkat aus Modell}
+02A7, 80, B_phade             , 0, {        }, 0, 0,      1,         0, {Adaption Kurbel/Einlaßnockenwelle erfolgt}
+02A7, 20, B_nwrpose           , 0, {        }, 0, 0,      1,         0, {Bedingung: Ansteuerung der Nockenwellen-Referenzposition durch Steller (Einlass)}
+02A7, 04, Z_ph                , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Phasensensor}
+02A7, 02, E_ph                , 0, {        }, 0, 0,      1,         0, {Errorflag: Phasensensor}
+02A7, 01, B_syserrk           , 0, {        }, 0, 0,      1,         0, {Bedingung für mind. 1 Fehler (E_abc) im System erkannt (unmaskiert)}
+02AB, 40, Z_lash              , 0, {        }, 0, 0,      1,         0, {Zyklusflag:Lambda-Sondenalterung hinter Kat.}
+02AB, 20, B_elaof             , 0, {        }, 0, 0,      1,         0, {Bedingung Error Lambda-Offset LSU}
+02AB, 10, B_lrhk              , 0, {        }, 0, 0,      1,         0, {Bedingung Lambdaregelung hinter Kat}
+02AB, 08, B_falsu             , 0, {        }, 0, 0,      1,         0, {Bedingung Funktionsanforderung Lambda-Sonde vor KAT}
+02AB, 04, Z_lsv               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Lambda-Sonde vor Kat}
+02AB, 02, E_lsv               , 0, {        }, 0, 0,      1,         0, {Errorflag: Lambda-Sonde vor Kat}
+02AB, 01, B_syserrk           , 0, {        }, 0, 0,      1,         0, {Bedingung für mind. 1 Fehler (E_abc) im System erkannt (unmaskiert)}
+02AC, 80, B_vekat             , 0, {        }, 0, 0,      1,         0, {Fehlerverdacht bei Katdiagnose}
+02AC, 40, B_minflsu           , 0, {        }, 0, 0,      1,         0, {Dynamikfehler LSU, Bank1}
+02AC, 20, B_drlmx             , 0, {        }, 0, 0,      1,         0, {Laständerung unterhalb Schwellwert}
+02AC, 10, B_dylsuav           , 0, {        }, 0, 0,      1,         0, {Dynamiküberwachung LSU aktiv}
+02AC, 08, B_falsu             , 0, {        }, 0, 0,      1,         0, {Bedingung Funktionsanforderung Lambda-Sonde vor KAT}
+02AC, 04, Z_lsv               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Lambda-Sonde vor Kat}
+02AC, 02, E_lsv               , 0, {        }, 0, 0,      1,         0, {Errorflag: Lambda-Sonde vor Kat}
+02AC, 01, B_syserrk           , 0, {        }, 0, 0,      1,         0, {Bedingung für mind. 1 Fehler (E_abc) im System erkannt (unmaskiert)}
+02AD, 80, B_lsumx             , 0, {        }, 0, 0,      1,         0, {Maximalwert der LSU-Spannung überschritten (CJ110)}
+02AD, 40, B_sigflsu           , 0, {        }, 0, 0,      1,         0, {Übersprechen vom Heizertakt auf Lambdasignal}
+02AD, 20, B_hsve              , 0, {        }, 0, 0,      1,         0, {Bedingung Endstufe Sondenheizung vor Kat angesteuert}
+02AD, 10, B_heatf             , 0, {        }, 0, 0,      1,         0, {Freigabe Heizerkopplung LSU}
+02AD, 08, B_helsu             , 0, {        }, 0, 0,      1,         0, {Diagnose Heizerkopplung LSU erfolgt}
+02AD, 04, Z_lsv               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Lambda-Sonde vor Kat}
+02AD, 02, E_lsv               , 0, {        }, 0, 0,      1,         0, {Errorflag: Lambda-Sonde vor Kat}
+02AD, 01, B_syserrk           , 0, {        }, 0, 0,      1,         0, {Bedingung für mind. 1 Fehler (E_abc) im System erkannt (unmaskiert)}
+02AE, 80, B_evloc             , 0, {        }, 0, 0,      1,         0, {Status: alle lokalen Einspritzventile werden angesteuert, = B_EVTOT bei einem SG}
+02AE, 40, B_atmtpa            , 0, {        }, 0, 0,      1,         0, {Bedingung Taupunkt vor Kat ueberschritten}
+02AE, 20, B_lsumx             , 0, {        }, 0, 0,      1,         0, {Maximalwert der LSU-Spannung überschritten (CJ110)}
+02AE, 10, B_luft              , 0, {        }, 0, 0,      1,         0, {LSU an Luft}
+02AE, 08, B_lsuabgl           , 0, {        }, 0, 0,      1,         0, {Bedingung Abgleichleitung stetige Lambda-Sonde LSU unterbrochen}
+02AE, 04, Z_lsv               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Lambda-Sonde vor Kat}
+02AE, 02, E_lsv               , 0, {        }, 0, 0,      1,         0, {Errorflag: Lambda-Sonde vor Kat}
+02AE, 01, B_syserrk           , 0, {        }, 0, 0,      1,         0, {Bedingung für mind. 1 Fehler (E_abc) im System erkannt (unmaskiert)}
+02AF, 80, B_sbbvk             , 0, {        }, 0, 0,      1,         0, {Bedingung Sonde betriebsbereit vor Kat}
+02AF, 40, B_nplflsu           , 0, {        }, 0, 0,      1,         0, {Lambdasignal nicht plausibel}
+02AF, 20, B_lrasp             , 0, {        }, 0, 0,      1,         0, {Bedingung stop LRA wegen LSU-Fehler}
+02AF, 10, B_elsu              , 0, {        }, 0, 0,      1,         0, {Bedingung Fehler oder Fehler-Vormerkung LSU (keine Betriebsbereitschaft)}
+02AF, 08, B_plenvh            , 0, {        }, 0, 0,      1,         0, {Freigabe DLSU Plauspfad}
+02AF, 04, Z_lsv               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Lambda-Sonde vor Kat}
+02AF, 02, E_lsv               , 0, {        }, 0, 0,      1,         0, {Errorflag: Lambda-Sonde vor Kat}
+02AF, 01, B_syserrk           , 0, {        }, 0, 0,      1,         0, {Bedingung für mind. 1 Fehler (E_abc) im System erkannt (unmaskiert)}
+02B0, 80, B_lshswok           , 0, {        }, 0, 0,      1,         0, {Bedingung Sonde hinter KAT nach Schwingungsprüfung in Ordnung}
+02B0, 40, B_lrhkp             , 0, {        }, 0, 0,      1,         0, {LRHK: Freigabebedingung P-Anteil Lambdaregelung hinter Kat}
+02B0, 20, B_plenvh            , 0, {        }, 0, 0,      1,         0, {Freigabe DLSU Plauspfad}
+02B0, 10, B_lsumrb            , 0, {        }, 0, 0,      1,         0, {LSU Bank1 mager, nicht plausibel}
+02B0, 08, B_lsumra            , 0, {        }, 0, 0,      1,         0, {LSU Bank1 mager, nicht plausibel}
+02B0, 04, B_lsupmr            , 0, {        }, 0, 0,      1,         0, {Bedingung Lambdasondensignal plausibel mager}
+02B0, 02, B_lshkpft           , 0, {        }, 0, 0,      1,         0, {Bedingung Lambdasondensignal hinter dem Kat. plausibel fett}
+02B0, 01, B_frmax             , 0, {        }, 0, 0,      1,         0, {Lambda-Regelung setzt Bit sobald FR am Anschlag FRMAX}
+02B1, 80, Z_lash              , 0, {        }, 0, 0,      1,         0, {Zyklusflag:Lambda-Sondenalterung hinter Kat.}
+02B1, 40, Z_lsh               , 0, {        }, 0, 0,      1,         0, {Zyklusflag: Lambda-Sonde hinter Kat}
+02B1, 20, B_lsulone           , 0, {        }, 0, 0,      1,         0, {Bedingung Lambdasondensignal ist Lambda = 1}
+02B1, 10, B_lsuftb            , 0, {        }, 0, 0,      1,         0, {LSU Bank1 fett, nicht plausibel}
+02B1, 08, B_lsufta            , 0, {        }, 0, 0,      1,         0, {LSU Bank1 fett, nicht plausibel}
+02B1, 04, B_lsupft            , 0, {        }, 0, 0,      1,         0, {Bedingung Lambdasondensignal plausibel fett}
+02B1, 02, B_lshkpmr           , 0, {        }, 0, 0,      1,         0, {Bedingung Lambdasondensignal hinter dem Kat. plausibel mager}
+02B1, 01, B_frmin             , 0, {        }, 0, 0,      1,         0, {Lambda-Regelung setzt Bit sobald FR am Anschlag FRMIN}
+02B2, 10, B_lsuna             , 0, {        }, 0, 0,      1,         0, {LSU nicht aktiv, Bank1}
+02B2, 08, B_npvshns           , 0, {        }, 0, 0,      1,         0, {Bedingung nicht plaus.: Gemisch vor dem Kat Lambda=1, hinter dem Kat nicht}
+02B2, 04, B_npsna             , 0, {        }, 0, 0,      1,         0, {Bedingung nicht plaus.: Sonde nicht aktiv}
+02B2, 02, TYP_lsv             , 0, {        }, 0, 0,      1,         0, {Fehlertyp: Lambdasonde 1 vor Kat}
+02B2, 01, TYP_hsv             , 0, {        }, 0, 0,      1,         0, {Fehlertyp: Heizung Lambdasonde 1 vor Kat}
+02B4, 00, tabgbts_w           , 2, {°C      }, 0, 0, 0.0195312,     50, {Abgastemperatur für Bauteileschutz}
+02B5, 00, rmslf               , 0, {-       }, 0, 0, 0.0078125,      0, {relative Sekundärluftmasse gefiltert}
+02B6, 00, anzmsls_w           , 0, {#       }, 0, 0,      1,         0, {Anzahl der dürchgeführten Sekundärluftmessungen}
+02B9, 00, lrnstat             , 0, {        }, 0, 0,      1,         0, {Statusbyte DV-E-Adaption für Testerkommunikation}
+02BA, 00, lrnstat             , 0, {        }, 0, 0,      1,         0, {Statusbyte DV-E-Adaption für Testerkommunikation}
+02BC, 00, fzmd_0              , 0, {#       }, 0, 0,      1,         0, {Aussetzer-Zähler}
+02BD, 00, fzmd_1              , 0, {#       }, 0, 0,      1,         0, {Aussetzer-Zähler}
+02BE, 00, fzmd_2              , 0, {#       }, 0, 0,      1,         0, {Aussetzer-Zähler}
+02BF, 00, fzmd_3              , 0, {#       }, 0, 0,      1,         0, {Aussetzer-Zähler}
+02C0, 00, fzmd_4              , 0, {#       }, 0, 0,      1,         0, {Aussetzer-Zähler}
+02C1, 00, fzmd_5              , 0, {#       }, 0, 0,      1,         0, {Aussetzer-Zähler}
+02C2, 00, fzmd_6              , 0, {#       }, 0, 0,      1,         0, {Aussetzer-Zähler}
+02C3, 00, fzmd_7              , 0, {#       }, 0, 0,      1,         0, {Aussetzer-Zähler}
+02C4, 00, fzmd_8              , 0, {#       }, 0, 0,      1,         0, {Aussetzer-Zähler}
+02C5, 00, fzmd_9              , 0, {#       }, 0, 0,      1,         0, {Aussetzer-Zähler}
+02C6, 00, fzmd_10             , 0, {#       }, 0, 0,      1,         0, {Aussetzer-Zähler}
+02C7, 00, fzmd_11             , 0, {#       }, 0, 0,      1,         0, {Aussetzer-Zähler}
+02CA, 00, timx_w              , 0, {ms      }, 0, 0, 0.00266667,     0, {maximale Einspritzzeit}
+02CB, 00, timxth_w            , 0, {ms      }, 0, 0, 0.00266667,     0, {theoretische maximale Einspritzzeit}
+02D3, 00, lws_w               , 0, {°Steer  }, 1, 0, 0.0437635,      0, {Lenkwinkel}
+02EF, 01, B_kfzk              , 0, {        }, 0, 0,      1,         0, {Bedingung Kennfeld Klopfschutz}
+02F0, 00, kmdp1km_w           , 0, {km      }, 0, 0,      1,         0, {Zurückgelegte Fahrstrecke seit Fehlerspeicher Löschen oder Powerfail (1km/Ink.)}
+02F1, 00, cmibeg_w            , 0, {#       }, 0, 0,      1,         0, {Zähler aktiver Begrenzungen des inneren Moments}
+02F2, 10, B_lrhk              , 0, {        }, 0, 0,      1,         0, {Bedingung Lambdaregelung hinter Kat}
+02F2, 08, B_falrshk           , 0, {        }, 0, 0,      1,         0, {Bedingung Funktionsanforderung LRSHK}
+02F2, 04, B_dlahieg           , 0, {        }, 0, 0,      1,         0, {I-Anteil der Führungsregelung eingeschwungen}
+02F2, 02, B_elaof             , 0, {        }, 0, 0,      1,         0, {Bedingung Error Lambda-Offset LSU}
+02F2, 01, B_syserrk           , 0, {        }, 0, 0,      1,         0, {Bedingung für mind. 1 Fehler (E_abc) im System erkannt (unmaskiert)}
+02F3, 00, talsuf              , 0, {°C      }, 0, 0,      5,        50, {gefilterte Abgastemperatur aus Modell}
+02F5, 00, tahsomf_w           , 0, {°C      }, 0, 0, 0.0234375, 273.15, {gefilterte Abgastemperatur an Sonde hinter Kat aus Modell}
+02F9, 00, wnwe_w              , 0, {°KW     }, 1, 0, 0.0078125,      0, {Winkel Einlassventil oeffnet bezogen auf LWOT}
+02FB, 00, wnwse_w             , 0, {°KW     }, 1, 0, 0.0078125,      0, {Sollwinkel Nockenwelle Einlass öffnet}
+0301, 00, wnwkwas_w           , 0, {°KW     }, 0, 0, 0.015625,       0, {Winkel Nockenwelle zur Kurbelwelle im Arbeitsspiel}
+032B, 80, B_mdarv             , 0, {        }, 0, 0,      1,         0, {kritische Aussetzerrate vorhanden}
+032B, 40, B_mdstop_m          , 0, {        }, 0, 0,      1,         0, {Monitor, Misfire Detection gesperrt}
+0337, 00, dynlsu_w            , 0, {-       }, 0, 0, 0.000244141,    0, {Dynamikwert der LSU}
+
+#
+#
+#
+# Additional variables (with restype=0 and bitmask=0)
+#
+# rt, bm, varname             ,sz, {unit}    , S, I,      A,         B, {comment}
+#
+0000, 00, evz_austot          , 1, {        }, 0, 0,         1,      0, {Einspritzausblendmuster total}
+0000, 00, fho_w               , 0, {-       }, 0, 0, 6.10352e-05,    0, {Korrekturfaktor Höhe (word)}
+0000, 00, fnwue               , 0, {-       }, 0, 0, 0.00390625,     0, {Gewichtungsfaktor Nockenwellenüberschneidung (Einlaß)}
+0000, 00, fpvdk_w             , 0, {-       }, 0, 0, 6.10352e-05,    0, {Korrekturfaktor Druck vor Drosselklappe 16-Bit}
+0000, 00, ftvdk               , 0, {-       }, 0, 0, 0.0078125,      0, {Korrekturfaktor Temperatur vor Drosselklappe}
+0000, 00, lamfaws_w           , 2, {-       }, 0, 0, 0.000244141,    0, {Lambdasoll Fahrerwunsch stationärer Anteil}
+0000, 00, lamfawkr_w          , 2, {-       }, 0, 0, 0.000244141,    0, {Lambdasoll Fahrerwunsch bei Zündwinkelspätverstellung KR, WL}
+0000, 00, lamfaw_w            , 2, {-       }, 0, 0, 0.000244141,    0, {Lambdasoll Fahrerwunsch Anteil aus Kennfeld LAMFA}
+0000, 00, lamfwl_w            , 2, {-       }, 0, 0, 0.000244141,    0, {Offset Motor-Lambda-Soll im Warmlauf}
+0000, 00, lamrlmn_w           , 2, {-       }, 0, 0, 0.000244141,    0, {Lambdasollvorsteuerung zur Verbesserung der Brennbarkeit bei kleinem rl}
+0000, 00, lditv_w             , 2, {%       }, 1, 0,  0.005,         0, {LDR, Tastverhältnis vom I-Regler (word)}
+0000, 00, ldptv               , 2, {%       }, 1, 0,  0.005,         0, {LDR, Tastverhältnis vom P-Regler}
+0000, 00, ldrdtv              , 2, {%       }, 1, 0,  0.005,         0, {LDR Tastverhältnis vom D-Regler}
+0000, 00, nmot_w              , 0, {rpm     }, 0, 0,      0.25,      0, {Motordrehzahl}
+0000, 00, perffilt_w          , 2, {%       }, 0, 0,     0.025,      0, {Gefilterte Rechnerauslastung}
+0000, 00, perfmax_w           , 2, {%       }, 0, 0,     0.025,      0, {Maximale Rechnerauslastung}
+0000, 00, plsol_w             , 0, {mbar    }, 0, 0, 0.0390625,      0, {Soll-Ladedruck}
+0000, 00, pspvdk_w            , 0, {-       }, 0, 0, 3.05176e-05,    0, {Quotient Saugrohrdruck/Druck vor Drosselklappe (word)}
+0000, 00, pssol_w             , 0, {mbar    }, 0, 0, 0.0390625,      0, {Sollsaugrohrdruck}
+0000, 00, pu                  , 0, {mbar    }, 0, 0,         5,      0, {Umgebungsdruck}
+0000, 00, pu_w                , 0, {mbar    }, 0, 0, 0.0390625,      0, {Umgebungsdruck}
+0000, 00, pvdksf_w            , 0, {mbar    }, 0, 0, 0.0390625,      0, {gefilterter Druck vor Drosselklappe (Ladedruck) vom Drucksensor}
+0000, 00, pvdkdsl_w           , 0, {mbar    }, 0, 0, 0.0390625,      0, {Druck vor Drosselklappe von Ladedrucksensor (word)}
+0000, 00, pvdkds              , 0, {mbar    }, 0, 0,        10,      0, {Druck vor Drosselklappe von Drucksensor}
+0000, 00, pvdkdsu_w           , 0, {mbar    }, 0, 0, 0.0390625,      0, {Druck vor Drosselklappe von Umgebungsdrucksensor (word)}
+0000, 00, pvdk_w              , 0, {mbar    }, 0, 0, 0.0390625,      0, {Druck vor Drosselklappe 16-Bit}
+0000, 00, pvdk                , 0, {mbar    }, 0, 0,        10,      0, {Druck vor Drosselklappe}
+0000, 00, plgrus_w            , 0, {mbar    }, 0, 0, 0.0390625,      0, {Grundladedruck Sollwert}
+0000, 00, redist              , 1, {        }, 0, 0,         1,      0, {Ist-Reduzierstufe}
+0000, 00, rkat_w              , 0, {%       }, 1, 0,  0.046875,      0, {additive Gemischkorrektur (pro Zeit) der Gemischdaption (Word)}
+0000, 00, rkat2_w             , 0, {%       }, 1, 0,  0.046875,      0, {additive Gemischkorrektur (pro Zeit) der Gemischadaption Bank 2 (Word)}
+0000, 00, rkaz_w              , 0, {%       }, 1, 0,  0.046875,      0, {additive Gemischkorrektur (pro Zündung) der Gemischadaption}
+0000, 00, rkaz2_w             , 0, {%       }, 1, 0,  0.046875,      0, {additive Gemischkorrektur (pro Zündung) der Gemischadaption Bank2 (Word)}
+0000, 00, rl_w                , 0, {%       }, 0, 0, 0.0234375,      0, {relative Luftfüllung (Word)}
+0000, 00, rlroh_w             , 0, {%       }, 0, 0, 0.0234375,      0, {relative Luftfüllung: Rohwert vom Lastsensor (word)}
+0000, 00, tabgm_w             , 0, {°C      }, 0, 0, 0.0195312,     50, {Abgastemperatur vor Kat aus Modell (Word)}
+0000, 00, uhfm_w              , 2, {V       }, 0, 0, 0.00488281,     0, {HFM-Spannung}
+0000, 00, vpssplg_w           , 0, {-       }, 0, 0, 6.10352e-05,    0, {Druckverhältnis Saugrohrsolldruck zu Grundladedruck}
+0000, 00, vpsspls_w           , 0, {-       }, 0, 0, 3.05176e-05,    0, {Verhältnis Soll-Saugrohrdruck zu Druck Sollladedruck}
+0000, 00, vpsspu_w            , 0, {-       }, 0, 0, 6.10352e-05,    0, {Solldruckverhältnis Umgebung/Saugrohr}
+0000, 00, wkr_0               , 0, {°KW     }, 0, 0,     -0.75,      0, {zylinderindividuelle Zündwinkelspätverstellung KR}
+0000, 00, wkr_1               , 0, {°KW     }, 0, 0,     -0.75,      0, {zylinderindividuelle Zündwinkelspätverstellung KR}
+0000, 00, wkr_2               , 0, {°KW     }, 0, 0,     -0.75,      0, {zylinderindividuelle Zündwinkelspätverstellung KR}
+0000, 00, wkr_3               , 0, {°KW     }, 0, 0,     -0.75,      0, {zylinderindividuelle Zündwinkelspätverstellung KR}
+0000, 00, wkr_4               , 0, {°KW     }, 0, 0,     -0.75,      0, {zylinderindividuelle Zündwinkelspätverstellung KR}
+0000, 00, wkr_5               , 0, {°KW     }, 0, 0,     -0.75,      0, {zylinderindividuelle Zündwinkelspätverstellung KR}
+0000, 00, wkr_6               , 0, {°KW     }, 0, 0,     -0.75,      0, {zylinderindividuelle Zündwinkelspätverstellung KR}
+0000, 00, wkr_7               , 0, {°KW     }, 0, 0,     -0.75,      0, {zylinderindividuelle Zündwinkelspätverstellung KR}
+0000, 00, wkra_0              , 0, {°KW     }, 0, 0,     -0.75,      0, {last und drehzahlabh. Adaptionskennfeld f. wkr}
+0000, 00, wkra_159            , 0, {°KW     }, 0, 0,     -0.75,      0, {last und drehzahlabh. Adaptionskennfeld f. wkr}
+0000, 00, wkraa_0             , 0, {°KW     }, 0, 0,     -0.75,      0, {Monitor der wkra des aktuellen Adaptionsbereiches, wkra_0, _1...}
+0000, 00, wkraa_1             , 0, {°KW     }, 0, 0,     -0.75,      0, {Monitor der wkra des aktuellen Adaptionsbereiches, wkra_0, _1...}
+0000, 00, wkraa_2             , 0, {°KW     }, 0, 0,     -0.75,      0, {Monitor der wkra des aktuellen Adaptionsbereiches, wkra_0, _1...}
+0000, 00, wkraa_3             , 0, {°KW     }, 0, 0,     -0.75,      0, {Monitor der wkra des aktuellen Adaptionsbereiches, wkra_0, _1...}
+0000, 00, wkraa_4             , 0, {°KW     }, 0, 0,     -0.75,      0, {Monitor der wkra des aktuellen Adaptionsbereiches, wkra_0, _1...}
+0000, 00, wkraa_5             , 0, {°KW     }, 0, 0,     -0.75,      0, {Monitor der wkra des aktuellen Adaptionsbereiches, wkra_0, _1...}
+0000, 00, wkraa_6             , 0, {°KW     }, 0, 0,     -0.75,      0, {Monitor der wkra des aktuellen Adaptionsbereiches, wkra_0, _1...}
+0000, 00, wkraa_7             , 0, {°KW     }, 0, 0,     -0.75,      0, {Monitor der wkra des aktuellen Adaptionsbereiches, wkra_0, _1...}
+0000, 00, wped                , 0, {% PED   }, 0, 0,  0.392157,      0, {Normierter Fahrpedalwinkel}
+0000, 00, zkrvf_0             , 0, {        }, 0, 0,         1,      0, {Zähler, bestimmt die Frequenz der zyl.-individuellen Zündwinkelfrühverstellung}
+0000, 00, zkrvf_1             , 0, {        }, 0, 0,         1,      0, {Zähler, bestimmt die Frequenz der zyl.-individuellen Zündwinkelfrühverstellung}
+0000, 00, zkrvf_2             , 0, {        }, 0, 0,         1,      0, {Zähler, bestimmt die Frequenz der zyl.-individuellen Zündwinkelfrühverstellung}
+0000, 00, zkrvf_3             , 0, {        }, 0, 0,         1,      0, {Zähler, bestimmt die Frequenz der zyl.-individuellen Zündwinkelfrühverstellung}
+0000, 00, zkrvf_4             , 0, {        }, 0, 0,         1,      0, {Zähler, bestimmt die Frequenz der zyl.-individuellen Zündwinkelfrühverstellung}
+0000, 00, zkrvf_5             , 0, {        }, 0, 0,         1,      0, {Zähler, bestimmt die Frequenz der zyl.-individuellen Zündwinkelfrühverstellung}
+0000, 00, zkrvf_6             , 0, {        }, 0, 0,         1,      0, {Zähler, bestimmt die Frequenz der zyl.-individuellen Zündwinkelfrühverstellung}
+0000, 00, zkrvf_7             , 0, {        }, 0, 0,         1,      0, {Zähler, bestimmt die Frequenz der zyl.-individuellen Zündwinkelfrühverstellung}
+0000, 00, zwbasar_0           , 0, {°KW     }, 1, 0,      0.75,      0, {Basiszündwinkelarray}
+0000, 00, zwbasar_1           , 0, {°KW     }, 1, 0,      0.75,      0, {Basiszündwinkelarray}
+0000, 00, zwbasar_2           , 0, {°KW     }, 1, 0,      0.75,      0, {Basiszündwinkelarray}
+0000, 00, zwbasar_3           , 0, {°KW     }, 1, 0,      0.75,      0, {Basiszündwinkelarray}
+0000, 00, zwoutar_0           , 0, {°KW     }, 1, 0,      0.75,      0, {Zündwinkel-Ausgabe Array}
+0000, 00, zwoutar_1           , 0, {°KW     }, 1, 0,      0.75,      0, {Zündwinkel-Ausgabe Array}
+0000, 00, zwoutar_2           , 0, {°KW     }, 1, 0,      0.75,      0, {Zündwinkel-Ausgabe Array}
+0000, 00, zwoutar_3           , 0, {°KW     }, 1, 0,      0.75,      0, {Zündwinkel-Ausgabe Array}
+0000, 00, zwgru               , 1, {°KW     }, 1, 0,      0.75,      0, {Grundzündwinkel}
+0000, 00, zwmnms              , 0, {°KW     }, 1, 0,      0.75,      0, {dauerhaft spätest möglicher Zündwinkel}
+0000, 00, zwnws               , 0, {°KW     }, 1, 0,      0.75,      0, {Grundzündwinkel mit Berücksichtigung von Nockenwellensteuerung}
+0000, 00, zwopt               , 0, {°KW     }, 1, 0,      0.75,      0, {optimaler Zündwinkel}
+0000, 00, zwsol               , 1, {°KW     }, 1, 0,      0.75,      0, {Soll-Zündwinkel aus Momenteneingriff}
+0000, 00, zzylkr              , 0, {        }, 0, 0,         1,      0, {Zylinderzähler der Klopfregelung}
+0000, 00, B_ns2               , 2, {        }, 0, 0,         1,      0, {Bedingung Solldrehzahl 2 aktiv}
+0000, 00, B_brems             , 2, {        }, 0, 0,         1,      0, {Bedingung Bremse betätigt}
+0000, 00, B_epcl              , 2, {        }, 0, 0,         1,      0, {EPCL-Ansteuerung}
+0000, 00, S_epcl              , 2, {        }, 0, 0,         1,      0, {Schalter EPCL}
+0000, 00, S_mil               , 2, {        }, 0, 0,         1,      0, {Schalter MIL}
+
+#
+#
+# More variables (with restype=0 and bitmask=0 and size=1|2)
+#
+# rt, bm, varname             ,sz, {unit}    , S, I,      A,         B, {comment}
+#
+0000, 00, detazwbs            , 1, {%       }, 0, 0,       0.5,      0, {Delta ZW-Wirkungsgrad für Bauteileschutz}
+0000, 00, dns                 , 1, {rpm     }, 1, 0,        10,      0, {LLR: Drehzahlabweichung zur stationären Solldrehzahl}
+0000, 00, dzwg                , 1, {°KW     }, 1, 0,      0.75,      0, {Delta Zündwinkel Grund-ZW zu Optimal-ZW}
+0000, 00, dzwlamfaw           , 1, {°KW     }, 0, 0,     -0.75,      0, {Delta Zündwinkel bei KR-Eingriff oder Warmlauf für Anfettung über Lambda}
+0000, 00, fkhfm               , 1, {-       }, 0, 0, 0.0078125,      0, {HFM-Korrekturfaktor}
+0000, 00, frkte_w             , 2, {ms/%    }, 0, 0, 0.000111111,    0, {Faktor Umrechnung rel. Kraftstoffmasse rk in effekt. Einspritzzeit te}
+0000, 00, ftek_w              , 2, {-       }, 0, 0, 3.05176e-05,    0, {Korrekturfaktor für effektive Einspritzzeit}
+0000, 00, gangllr             , 1, {        }, 0, 0,         1,      0, {Ganginformation zur Berechnung der Leerlaufdrehzahl}
+0000, 00, imlatm              , 1, {kg      }, 0, 0, 0.0910222,      0, {integr. Luftmassenfluss ab Motorstart bis Max.wert}
+0000, 00, lde                 , 1, {mBar    }, 1, 0,        10,      0, {LDR-Regelabweichung (Sollwert - Istwert)}
+0000, 00, ldtvr_w             , 2, {%       }, 1, 0,     0.005,      0, {LDR Tastverhältnis vom Regler}
+0000, 00, mifa                , 1, {%       }, 0, 0, 0.390625,       0, {indiziertes Motormoment Fahrerwunsch}
+0000, 00, mifa_w              , 2, {%       }, 0, 0, 0.00152588,     0, {indiziertes Motormoment Fahrerwunsch}
+0000, 00, misopl1_w           , 2, {%       }, 0, 0, 0.00152588,     0, {Solluftmoment, rückgerechnet auf Lambda=1 und zwopt}
+0000, 00, msabg               , 1, {g/s     }, 0, 0, 1.11111111,     0, {Abgasmassenfluss gefiltert, Bank 1}
+0000, 00, ngfil               , 1, {rpm/s   }, 1, 0,       100,      0, {gefilterter Drehzahlgradient}
+0000, 00, ngfil_w             , 2, {rpm/s   }, 1, 0,   0.39063,      0, {gefilterter Drehzahlgradient}
+0000, 00, nmot_um             , 1, {rpm     }, 0, 0,        40,      0, {Motordrehzahl in der Funktionsüberwachung}
+0000, 00, plsolr_w            , 2, {mbar    }, 0, 0, 0.0390625,      0, {Relativer Solladedruck LDR}
+0000, 00, rl_um               , 1, {%       }, 0, 0,      0.75,      0, {relative Luftfüllung in der Funktionsüberwachung}
+0000, 00, tsel                , 1, {°C      }, 0, 0,      0.75,     48, {Selektierte Temperatur (tans/tumc)}
+0000, 00, tsrldyn             , 1, {ms      }, 0, 0,       0.1,      0, {Last- und Dynamikkorrigierte Schließzeit}
+0000, 00, uzue                , 1, {V       }, 0, 0,    0.0704,      0, {}
+0000, 00, wkrmsu_w            , 2, {°KW     }, 0, 0,    0.1875,      0, {Summenwert aus dynamischem und statischem Mittelwert der KR Verstellwinkel}
+0000, 00, wdkbadmn_w          , 2, {% DK    }, 1, 0, 0.0244141,      0, {Winkel-DK für Adressierung von KFMLDMN}
+0000, 00, wdkbadmx_w          , 2, {% DK    }, 1, 0, 0.0244141,      0, {Winkel-DK für Adressierung von KFMLDMX}
+0000, 00, tevfa_w             , 2, {ms      }, 0, 0, 0.00266667,     0, {effektive Einspritzzeit vor Feinabgleich (word)}
+0000, 00, tevfakge_w          , 2, {ms      }, 0, 0, 0.00266667,     0, {Adressierung Kennfeld FKKVS mit effektiver Einspritzzeit vor Feinabgleich}
+0000, 00, tmotrvmx            , 1, {°C      }, 0, 0,      0.75,     48, {Resultierende Motortemperatur für Berechnung Maximalgeschwindigkeit}
+0000, 00, tmotrvmx_b2w        , 2, {°C      }, 0, 0,      0.75,     48, {DUMMY axis ariable (byte -> word)}
+0000, 00, tnst                , 1, {s       }, 0, 0,         1,      0, {Zeit nach Startende}
+0000, 00, toelk_w             , 2, {°C      }, 0, 0, 0.0234375, 273.15, {(Motor-) Öltemperatur, Ausgabe in Grad C, intern in Kelvin}
+0000, 00, tolc                , 1, {°C      }, 0, 0,         1,     60, {Öltemperatur aus Kombibotschaft od. aus COWIV abhängig von LH}
+0000, 00, tolc_b2w            , 2, {°C      }, 0, 0,         1,     60, {DUMMY axis variable (byte -> word)}
+0000, 00, zwspae              , 1, {°KW     }, 1, 0,      0.75,      0, {Spätester Zündwinkel}
+0000, 00, zwbas               , 1, {°KW     }, 1, 0,      0.75,      0, {Basiszündwinkel}
+
+

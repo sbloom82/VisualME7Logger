@@ -1,0 +1,134 @@
+-> Reading log config file C:\Users\steve\Desktop\VW\ECUTuning\ME7Logger\logs\Al
+lroad - Config.cfg .... done
+-> Reading ecu characteristics file C:\Users\steve\Desktop\VW\ECUTuning\ME7Logge
+r\ecus\Audi A6 allroad 2.7T BEL 250HP 4Z7907551R.ori.ecu .... done
+Used Ecu definition is:
+[Communication]
+Connect      = SLOW-0x11
+Communicate  = HM0
+LogSpeed     = 56000
+
+[Identification]
+HWNumber           = "0261207769"
+SWNumber           = "1037366370"
+PartNumber         = "4Z7907551R"
+EngineId           = "2.7L V6/5VT"
+
+Logged variables are:
+#no.: name                , alias                           , addr  ,sz, bitm, S
+, I,  A         ,   B, unit
+#-------------------------------------------------------------------------------
+-----------------------------
+#001: gangi               , SelectedGear                    , 38061D, 1, 0000, 0
+, 0,           1,   0, 'gear'
+#002: milsol_w            , Driver-req torque cyl. charge   , 38251A, 2, 0000, 0
+, 0,  0.00152588,   0, '%'
+#003: misol_w             ,                                 , 00F9DC, 2, 0000, 0
+, 0,  0.00152588,   0, '%'
+#004: misopl1_w           ,                                 , 381E36, 2, 0000, 0
+, 0,  0.00152588,   0, '%'
+#005: mshfm_w             , MassAirFlow                     , 00F994, 2, 0000, 0
+, 0,   0.0277778,   0, 'g/s'
+#006: nmot                , EngineSpeed                     , 00F888, 1, 0000, 0
+, 0,          40,   0, 'rpm'
+#007: perffilt_w          , CPU-Load                        , 3826B8, 2, 0000, 0
+, 0,       0.025,   0, '%'
+#008: perfmax_w           , MAX-Load                        , 383D6C, 2, 0000, 0
+, 0,       0.025,   0, '%'
+#009: plsol               , BoostPressureDesired            , 38067D, 1, 0000, 0
+, 0,          10,   0, 'mbar'
+#010: pvdkds_w            , BoostPressureActual             , 381D6E, 2, 0000, 0
+, 0,   0.0390625,   0, 'mbar'
+#011: rl                  , EngineLoad                      , 00F9A3, 1, 0000, 0
+, 0,        0.75,   0, '%'
+#012: rlmax_w             , EngineLoadCorrected             , 384B60, 2, 0000, 0
+, 0,   0.0234375,   0, '%'
+#013: rlmx_w              , EngineLoadSpecified             , 384CD4, 2, 0000, 0
+, 0,   0.0234375,   0, '%'
+#014: rlsol_w             , EngineLoadRequested             , 381E3C, 2, 0000, 0
+, 0,   0.0234375,   0, '%'
+#015: tans                , IntakeAirTemperature            , 3806D9, 1, 0000, 0
+, 0,        0.75,  48, '¦C'
+#016: uhfm_w              , MAFSensorVoltage                , 380B18, 2, 0000, 0
+, 0,  0.00488281,   0, 'V'
+#017: wdkba               , ThrottlePlateAngle              , 380632, 1, 0000, 0
+, 0,    0.392157,   0, '% DK'
+#018: wkr_0               , IgnRetardKnockControlCyl1       , 00F9C4, 1, 0000, 0
+, 0,       -0.75,   0, '¦KW'
+#019: wkr_1               , IgnRetardKnockControlCyl5       , 00F9C5, 1, 0000, 0
+, 0,       -0.75,   0, '¦KW'
+#020: wkr_2               , IgnRetardKnockControlCyl3       , 00F9C6, 1, 0000, 0
+, 0,       -0.75,   0, '¦KW'
+#021: wkr_3               , IgnRetardKnockControlCyl2       , 00F9C7, 1, 0000, 0
+, 0,       -0.75,   0, '¦KW'
+#022: wkr_4               , IgnRetardKnockControlCyl6       , 00F9C8, 1, 0000, 0
+, 0,       -0.75,   0, '¦KW'
+#023: wkr_5               , IgnRetardKnockControlCyl4       , 00F9C9, 1, 0000, 0
+, 0,       -0.75,   0, '¦KW'
+Logged data size is 34 bytes.
+Really logged are 20 entries with 34 bytes.
+Start connecting to ECU at 16.10.2013 20:56:54.020
+try connect slow(11)
+=> FLASH (slowinit)
+ecuid reports software version
+Started session86, speed=56000
+-> Read ECU ID's .... done
+-> Checked ECU ID's
+Found bootrom version 06.02/06.05 via readmem
+Read pointer ... done
+Store handler ... done
+Verify handler ... done
+Redirect pointer ... done
+Test handler ... done
+Opened logfile C:\Users\steve\Desktop\VW\ECUTuning\ME7Logger\logs\allroadtestSTA
+GE2v13.csv
+-> Start logging (logdata size=34, 10 samples/second, 56000 baud) at 16.10.2013
+20:56:57.381
+TimeStamp, gangi     , milsol_w  , misol_w   , misopl1_w , mshfm_w   , nmot
+ , perffilt_w, perfmax_w , plsol     , pvdkds_w  , rl        , rlmax_w   , rlmx_
+w    , rlsol_w   , tans      , uhfm_w    , wdkba     , wkr_0     , wkr_1     , w
+kr_2     , wkr_3     , wkr_4     , wkr_5
+  sec.ms , gear      , , , , g/s       , rpm       , , , mbar      , mbar      ,
+ , , , , ¦C        , V         , DK      , ¦KW       , ¦KW       , ¦KW       , ¦
+KW       , ¦KW       , ¦KW
+"TIME","SelectedGear","Driver-req torque cyl. charge","","","MassAirFlow","Engin
+eSpeed","CPU-Load","MAX-Load","BoostPressureDesired","BoostPressureActual","Engi
+neLoad","EngineLoadCorrected","EngineLoadSpecified","EngineLoadRequested","Intak
+eAirTemperature","MAFSensorVoltage","ThrottlePlateAngle","IgnRetardKnockControlC
+yl1","IgnRetardKnockControlCyl5","IgnRetardKnockControlCyl3","IgnRetardKnockCont
+rolCyl2","IgnRetardKnockControlCyl6","IgnRetardKnockControlCyl4"
+Press ^C to stop logging
+    0.000, 0         , 15.2344   , 15.2344   , 15.0833   , 0         , 0
+ , 58.675    , 79.975    , 970       , 950.391   , 99.75     , 109.523   , 109.5
+47   , 33.8203   , 63        , 0         , 4.70588   , -0        , -0        , -
+0        , -0        , -0        , -0
+    0.100, 0         , 15.2344   , 15.2344   , 15.0833   , 0         , 0
+ , 58.475    , 79.975    , 970       , 949.102   , 99.75     , 109.523   , 109.5
+47   , 33.8203   , 63        , 0         , 4.70588   , -0        , -0        , -
+0        , -0        , -0        , -0
+    0.200, 0         , 15.2344   , 15.2344   , 15.0833   , 0         , 0
+ , 58.125    , 79.975    , 970       , 951.719   , 99.75     , 109.523   , 109.5
+47   , 33.8203   , 63        , 0         , 4.70588   , -0        , -0        , -
+0        , -0        , -0        , -0
+    0.300, 0         , 15.2344   , 15.2344   , 15.0833   , 0         , 0
+ , 58.075    , 79.975    , 970       , 950.547   , 99.75     , 109.523   , 109.5
+47   , 33.8203   , 63        , 0         , 4.70588   , -0        , -0        , -
+0        , -0        , -0        , -0
+    0.400, 0         , 15.2344   , 15.2344   , 15.0833   , 0         , 0
+ , 57.85     , 79.975    , 970       , 950.391   , 99.75     , 109.523   , 109.5
+47   , 33.8203   , 63        , 0         , 4.70588   , -0        , -0        , -
+0        , -0        , -0        , -0
+    0.500, 0         , 15.2344   , 15.2344   , 15.0833   , 0         , 0
+ , 57.775    , 79.975    , 970       , 950.352   , 99.75     , 109.523   , 109.5
+47   , 33.8203   , 63        , 0         , 4.70588   , -0        , -0        , -
+0        , -0        , -0        , -0
+    0.600, 0         , 15.2344   , 15.2344   , 15.0833   , 0         , 0
+ , 57.65     , 79.975    , 970       , 950.352   , 99.75     , 109.523   , 109.5
+47   , 33.8203   , 63        , 0         , 4.70588   , -0        , -0        , -
+0        , -0        , -0        , -0
+    0.700, 0         , 15.2344   , 15.2344   , 15.0833   , 0         , 0
+ , 57.65     , 79.975    , 970       , 950.391   , 99.75     , 109.523   , 109.5
+47   , 33.8203   , 63        , 0         , 4.70588   , -0        , -0        , -
+0        , -0        , -0        , -0
+
+C:\Users\steve\Desktop\VW\ECUTuning\ME7Logger>
