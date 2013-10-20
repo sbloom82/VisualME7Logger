@@ -61,7 +61,9 @@ namespace VisualME7Logger.Log
                     else if (ready)
                     {
                         this.ReadLine(line);
-                        System.Threading.Thread.Sleep(wait - (int)sw.ElapsedMilliseconds);
+                        int waitTime = wait - (int)sw.ElapsedMilliseconds;
+                        if(waitTime > 0)
+                            System.Threading.Thread.Sleep(waitTime);
                     }
                 }
                 sw.Stop();
@@ -88,8 +90,10 @@ namespace VisualME7Logger.Log
         public ME7LoggerLog Log { get; private set; }
         public decimal TimeStamp { get; private set; }
         public int LineNumber { get; private set; }
-        private Dictionary<int, Variable> variables = new Dictionary<int, Variable>();
-        public IEnumerable<Variable> Variables { get { return this.variables.Values; } }
+        private Dictionary<int, Variable> variablesByNumber = new Dictionary<int, Variable>();
+        private Dictionary<string, Variable> variablesByName = new Dictionary<string, Variable>();
+
+        public IEnumerable<Variable> Variables { get { return this.variablesByNumber.Values; } }
 
         public LogLine(ME7LoggerLog log, string line, int lineNumber)
         {
@@ -105,13 +109,20 @@ namespace VisualME7Logger.Log
             TimeStamp = decimal.Parse(values[0]);
             for (int i = 1; i < values.Length; ++i)
             {
-                variables.Add(i, new Variable(Log.Session.Variables.GetByNumber(i), values[i].Trim()));
+                Variable v = new Variable(Log.Session.Variables.GetByNumber(i), values[i].Trim());
+                variablesByNumber.Add(i, v);
+                variablesByName.Add(v.SessionVariable.Name, v);
             }
         }
 
         public Variable GetVariableByNumber(int number)
         {
-            return variables[number];
+            return variablesByNumber[number];
+        }
+
+        public Variable GetVariableByName(string name)
+        {
+            return variablesByName[name];
         }
     }
 

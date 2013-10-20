@@ -48,11 +48,7 @@ namespace VisualME7Logger.Session
         public SessionVariables Variables { get; private set; }
         public ME7LoggerLog Log { get; private set; }
 
-        public string CommandLine
-        {
-            get { return @"C:\ME7Logger.exe -p COM1 -s 10 -R C:\ME7Logger\logs\Allroad-Config.cfg"; }
-        }
-
+       
         private string parameters;
         private string configFilePath;
         public ME7LoggerSession(string parameters, string configFilePath, bool ey)
@@ -74,6 +70,12 @@ namespace VisualME7Logger.Session
         }
 
         Process p;
+        public string CommandLine
+        {
+            get { return @"C:\ME7Logger.exe -p COM1 -s 10 -R C:\ME7Logger\logs\Allroad-Config.cfg"; }
+        }
+        public int ExitCode { get; private set; }
+        public string ErrorText { get; private set; }
         public void Open()
         {
             this.Status = Statuses.Opening;
@@ -111,9 +113,7 @@ namespace VisualME7Logger.Session
                 p.BeginErrorReadLine();
             }
         }
-
-        public int ExitCode { get; private set; }
-        public string ErrorText { get; private set; }
+        
         void p_Exited(object sender, EventArgs e)
         {
             this.ExitCode = p.ExitCode;
