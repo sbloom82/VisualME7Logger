@@ -14,11 +14,16 @@ namespace VisualME7Logger.Log
         public delegate void LogComplete();
         public LogLineRead LineRead;
 
+        internal ME7LoggerLog(ME7LoggerSession session)
+        {
+            this.Session = session;
+        }
+
         //For testing using text files
         public ME7LoggerLog(ME7LoggerSession session, string logFilePath)
+            : this(session)
         {
             this.logFilePath = logFilePath;
-            this.Session = session;
         }
 
         private int lineNumber;
@@ -62,7 +67,7 @@ namespace VisualME7Logger.Log
                     {
                         this.ReadLine(line);
                         int waitTime = wait - (int)sw.ElapsedMilliseconds;
-                        if(waitTime > 0)
+                        if (waitTime > 0)
                             System.Threading.Thread.Sleep(waitTime);
                     }
                 }
@@ -78,11 +83,6 @@ namespace VisualME7Logger.Log
                 LineRead(logLine);
             }
         }
-
-        internal ME7LoggerLog(ME7LoggerSession session)
-        {
-            this.Session = session;
-        }
     }
 
     public class LogLine
@@ -91,8 +91,9 @@ namespace VisualME7Logger.Log
         public decimal TimeStamp { get; private set; }
         public int LineNumber { get; private set; }
         private Dictionary<int, Variable> variablesByNumber = new Dictionary<int, Variable>();
+        public Variable this[int number] { get { return variablesByNumber[number]; } }
         private Dictionary<string, Variable> variablesByName = new Dictionary<string, Variable>();
-
+        public Variable this[string name] { get { return variablesByName[name]; } }
         public IEnumerable<Variable> Variables { get { return this.variablesByNumber.Values; } }
 
         public LogLine(ME7LoggerLog log, string line, int lineNumber)
@@ -109,12 +110,12 @@ namespace VisualME7Logger.Log
             TimeStamp = decimal.Parse(values[0]);
             for (int i = 1; i < values.Length; ++i)
             {
-                Variable v = new Variable(Log.Session.Variables.GetByNumber(i), values[i].Trim());
+                Variable v = new Variable(Log.Session.Variables[i], values[i].Trim());
                 variablesByNumber.Add(i, v);
                 variablesByName.Add(v.SessionVariable.Name, v);
             }
         }
-
+    
         public Variable GetVariableByNumber(int number)
         {
             return variablesByNumber[number];

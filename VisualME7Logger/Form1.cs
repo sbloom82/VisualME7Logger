@@ -28,9 +28,10 @@ namespace VisualME7Logger
         public Form1()
         {
             InitializeComponent();
-
-
-
+            
+            cmbChartType.DataSource = Enum.GetValues(typeof(SeriesChartType));
+            cmbChartType.SelectedItem = SeriesChartType.FastLine;
+            
             session = new ME7LoggerSession(@"C:\ME7Logger\out5.out", @"C:\ME7Logger\logs\allroadtestSTAGE2v13.csv");
             //session = new ME7LoggerSession("-p COM1 -R", @"C:\me7logger\logs\allroad-config.cfg", true);
             session.StatusChanged += new ME7LoggerSession.LoggerSessionStatusChanged(this.SessionStatusChanged);
@@ -62,6 +63,16 @@ namespace VisualME7Logger
                 }
                 txtNames.Text = namesBuilder.ToString();
 
+                txtCommunication.Text = string.Format("Connect={0}, Communicate={1}, LogSpeed={2}",
+                    session.CommunicationInfo.Connect,
+                    session.CommunicationInfo.Communicate,
+                    session.CommunicationInfo.LogSpeed);
+                txtIdentification.Text = string.Format("HW#={0}, SW#={1}, Part#={2}, EngineId={3}",
+                    session.IdentificationInfo.HWNumber,
+                    session.IdentificationInfo.SWNumber,
+                    session.IdentificationInfo.PartNumber,
+                    session.IdentificationInfo.EngineId);
+
                 this.BuildChart();
             }
             else if (status == ME7LoggerSession.Statuses.Closed)
@@ -88,17 +99,17 @@ namespace VisualME7Logger
             Series s;
             foreach (string chartVariable in chartVariables)
             {
-                var = session.Variables.GetByName(chartVariable);
+                var = session.Variables[chartVariable];
                 s = new Series(var.ToString());
                 
-                s.ChartType = SeriesChartType.FastLine;
+                s.ChartType = (SeriesChartType)cmbChartType.SelectedItem;
                 chart1.Series.Add(s);
                 for (int i = 0; i < 100; ++i)
                     s.Points.Add(0, 0);
             }
 
             chart2.Series.Clear();
-            var = session.Variables.GetByName("nmot");
+            var = session.Variables["nmot"];
             if (var != null)
             {
                 s = new Series(var.ToString());
@@ -117,7 +128,7 @@ namespace VisualME7Logger
             Series s;
             foreach (string chartVariable in chartVariables)
             {
-                v = line.GetVariableByName(chartVariable);
+                v = line[chartVariable];
                 s = chart1.Series[i++];
                 double parse;
                 if (double.TryParse(v.Value, out parse))
@@ -126,16 +137,15 @@ namespace VisualME7Logger
                 s.Points.RemoveAt(0);
             }
 
-            v = line.GetVariableByName("nmot");
+            v = line["nmot"];
             if (v != null)
             {
                 s = chart2.Series[0];
                 double parse = double.Parse(v.Value);
                 s.Points.Clear();
-                s.Points.AddY(parse);
-                s.Points.AddY(parse - 7000);
+                s.Points.Add(parse);
+                s.Points.Add(parse - 7000);
             }
-
         }
 
         void LogLineRead(LogLine line)
@@ -177,6 +187,17 @@ namespace VisualME7Logger
                 MessageBox.Show("please stop the active logging session");
                 e.Cancel = true;
             }
+        }
+
+        private void cmbChartType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SeriesChartType type = (SeriesChartType)cmbChartType.SelectedItem;
+            chart1.SuspendLayout();
+            foreach (Series s in chart1.Series)
+            {
+                s.ChartType = type;
+            }
+            chart1.ResumeLayout();
         }
     }
 }

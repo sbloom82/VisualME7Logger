@@ -12,11 +12,11 @@ namespace VisualME7Logger.Session
     {
         public enum Statuses
         {
-            New = 0,
-            Opening = 1,
-            Open = 2,
-            Closing = 3,
-            Closed = 4
+            New,
+            Opening,
+            Open,
+            Closing,
+            Closed
         }
 
         public enum SessionTypes
@@ -37,18 +37,18 @@ namespace VisualME7Logger.Session
                 this._status = value;
                 if (changed && StatusChanged != null)
                 {
-                    StatusChanged(this._status);
+                    StatusChanged(_status);
                 }
             }
         }
+        public short SamplesPerSecond { get; private set; }
         public LoggerSessionStatusChanged StatusChanged;
         public SessionTypes SessionType { get; private set; }
         public CommunicationInfo CommunicationInfo { get; private set; }
         public IdentificationInfo IdentificationInfo { get; private set; }
         public SessionVariables Variables { get; private set; }
         public ME7LoggerLog Log { get; private set; }
-
-       
+               
         private string parameters;
         private string configFilePath;
         public ME7LoggerSession(string parameters, string configFilePath, bool ey)
@@ -173,9 +173,7 @@ namespace VisualME7Logger.Session
 
         private string logConfigFile;
         private string ecuCharacteristicsFile;
-        private string ecuDef;
-
-        public short SamplesPerSecond { get; private set; }
+        private string ecuDef;   
         private bool ReadLine(string line)
         {
             if (line == null)
@@ -223,8 +221,8 @@ namespace VisualME7Logger.Session
             }
             else if (line.StartsWith("-> Start logging"))
             {
-                //TODO
-                SamplesPerSecond = 10;
+                SamplesPerSecond = short.Parse(line.Substring(line.IndexOf(",") + 2,
+                    line.IndexOf("samples/second") - line.IndexOf(",") - 3));
                 return true;
             }
             return false;
@@ -283,10 +281,34 @@ namespace VisualME7Logger.Session
         {
             if (string.IsNullOrEmpty(line))
             {
-                Complete = true;
+                this.Complete = true;
+                return;
             }
 
-            //TODO
+            string[] parts = line.Split('=');
+            if (parts.Length == 2)
+            {
+                parts[0] = parts[0].Trim();
+                parts[1] = parts[1].Trim().Trim('"');
+                if (parts[0] == "HWNumber")
+                {
+                    HWNumber = parts[1];
+                }
+                else if (parts[0] == "SWNumber")
+                {
+                    SWNumber = parts[1];
+                }
+                else if (parts[0] == "PartNumber")
+                {
+                    PartNumber = parts[1];
+                }
+                else if (parts[0] == "EngineId")
+                {
+                    EngineId = parts[1];
+                }
+                return;
+            }
+            throw new Exception("Invalid line for [Identification]");
         }
     }
 
@@ -334,7 +356,9 @@ namespace VisualME7Logger.Session
 
         private List<SessionVariable> list = new List<SessionVariable>();
         private Dictionary<int, SessionVariable> byNumber = new Dictionary<int, SessionVariable>();
+        public SessionVariable this[int number] { get { return this.byNumber[number]; } }
         private Dictionary<string, SessionVariable> byName = new Dictionary<string, SessionVariable>(StringComparer.InvariantCultureIgnoreCase);
+        public SessionVariable this[string name] { get { return this.byName[name]; } } 
 
         internal SessionVariables() { }
 
@@ -380,9 +404,9 @@ namespace VisualME7Logger.Session
             {
                 this.Add(new SessionVariable(line));
             }
-            else if (line.StartsWith("Logged data size"))
+            else if (line.StartsWith("Logged data size is"))
             {
-                //todo set loggeddatasize
+                LoggedDataSize = short.Parse(line.Replace("Logged data size is ", "").Replace(" bytes.", "").Trim());
             }
         }
     }
