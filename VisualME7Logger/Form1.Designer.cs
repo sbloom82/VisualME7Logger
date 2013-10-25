@@ -43,6 +43,12 @@
             this.label2 = new System.Windows.Forms.Label();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.chart2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtIdentification = new System.Windows.Forms.TextBox();
+            this.txtCommunication = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.cmbChartType = new System.Windows.Forms.ComboBox();
+            this.label5 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
             this.SuspendLayout();
@@ -60,7 +66,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(147, 17);
+            this.label1.Location = new System.Drawing.Point(90, 18);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(61, 13);
             this.label1.TabIndex = 1;
@@ -68,7 +74,7 @@
             // 
             // txtTimestamp
             // 
-            this.txtTimestamp.Location = new System.Drawing.Point(214, 14);
+            this.txtTimestamp.Location = new System.Drawing.Point(153, 14);
             this.txtTimestamp.Name = "txtTimestamp";
             this.txtTimestamp.Size = new System.Drawing.Size(100, 20);
             this.txtTimestamp.TabIndex = 2;
@@ -85,7 +91,7 @@
             // 
             // txtRunningTime
             // 
-            this.txtRunningTime.Location = new System.Drawing.Point(214, 38);
+            this.txtRunningTime.Location = new System.Drawing.Point(153, 38);
             this.txtRunningTime.Name = "txtRunningTime";
             this.txtRunningTime.Size = new System.Drawing.Size(100, 20);
             this.txtRunningTime.TabIndex = 22;
@@ -110,7 +116,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(154, 42);
+            this.label2.Location = new System.Drawing.Point(97, 42);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(54, 13);
             this.label2.TabIndex = 25;
@@ -123,9 +129,9 @@
             legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
             legend1.Name = "Legend1";
             this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(320, 12);
+            this.chart1.Location = new System.Drawing.Point(320, 67);
             this.chart1.Name = "chart1";
-            this.chart1.Size = new System.Drawing.Size(455, 355);
+            this.chart1.Size = new System.Drawing.Size(455, 455);
             this.chart1.TabIndex = 26;
             this.chart1.Text = "chart";
             // 
@@ -145,11 +151,67 @@
             title1.Text = "RPM";
             this.chart2.Titles.Add(title1);
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(272, 42);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(70, 13);
+            this.label3.TabIndex = 31;
+            this.label3.Text = "Identification:";
+            // 
+            // txtIdentification
+            // 
+            this.txtIdentification.Location = new System.Drawing.Point(344, 38);
+            this.txtIdentification.Name = "txtIdentification";
+            this.txtIdentification.Size = new System.Drawing.Size(431, 20);
+            this.txtIdentification.TabIndex = 30;
+            // 
+            // txtCommunication
+            // 
+            this.txtCommunication.Location = new System.Drawing.Point(344, 14);
+            this.txtCommunication.Name = "txtCommunication";
+            this.txtCommunication.Size = new System.Drawing.Size(431, 20);
+            this.txtCommunication.TabIndex = 29;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(260, 18);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(82, 13);
+            this.label4.TabIndex = 28;
+            this.label4.Text = "Communication:";
+            // 
+            // cmbChartType
+            // 
+            this.cmbChartType.FormattingEnabled = true;
+            this.cmbChartType.Location = new System.Drawing.Point(604, 527);
+            this.cmbChartType.Name = "cmbChartType";
+            this.cmbChartType.Size = new System.Drawing.Size(171, 21);
+            this.cmbChartType.TabIndex = 32;
+            this.cmbChartType.SelectedIndexChanged += new System.EventHandler(this.cmbChartType_SelectedIndexChanged);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(536, 530);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(62, 13);
+            this.label5.TabIndex = 33;
+            this.label5.Text = "Chart Type:";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(787, 560);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.cmbChartType);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.txtIdentification);
+            this.Controls.Add(this.txtCommunication);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.chart2);
             this.Controls.Add(this.chart1);
             this.Controls.Add(this.label2);
@@ -182,6 +244,12 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox txtIdentification;
+        private System.Windows.Forms.TextBox txtCommunication;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox cmbChartType;
+        private System.Windows.Forms.Label label5;
     }
 }
 
