@@ -124,6 +124,8 @@
             // 
             // chart1
             // 
+            chartArea1.Area3DStyle.Enable3D = true;
+            chartArea1.CursorX.LineColor = System.Drawing.Color.RoyalBlue;
             chartArea1.Name = "ChartArea1";
             this.chart1.ChartAreas.Add(chartArea1);
             legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;

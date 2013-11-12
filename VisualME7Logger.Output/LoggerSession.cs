@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Diagnostics;
 using VisualME7Logger.Log;
+using VisualME7Logger.Common;
 
 namespace VisualME7Logger.Session
 {
@@ -226,89 +227,6 @@ namespace VisualME7Logger.Session
                 return true;
             }
             return false;
-        }
-    }
-    public class CommunicationInfo
-    {
-        public string Connect { get; private set; }
-        public string Communicate { get; private set; }
-        public string LogSpeed { get; private set; }
-        internal CommunicationInfo() { }
-
-        internal bool Complete { get; private set; }
-        internal void ReadLine(string line)
-        {
-            if (string.IsNullOrEmpty(line))
-            {
-                this.Complete = true;
-                return;
-            }
-
-            string[] parts = line.Split('=');
-            if (parts.Length == 2)
-            {
-                parts[0] = parts[0].Trim();
-                parts[1] = parts[1].Trim();
-                if (parts[0] == "Connect")
-                {
-                    Connect = parts[1];
-                }
-                else if (parts[0] == "Communicate")
-                {
-                    Communicate = parts[1];
-                }
-                else if (parts[0] == "LogSpeed")
-                {
-                    LogSpeed = parts[1];
-                }
-                return;
-            }
-            throw new Exception("Invalid line for [Communication]");
-        }
-    }
-
-    public class IdentificationInfo
-    {
-        public string HWNumber { get; private set; }
-        public string SWNumber { get; private set; }
-        public string PartNumber { get; private set; }
-        public string EngineId { get; private set; }
-
-        internal IdentificationInfo() { }
-
-        internal bool Complete { get; private set; }
-        internal void ReadLine(string line)
-        {
-            if (string.IsNullOrEmpty(line))
-            {
-                this.Complete = true;
-                return;
-            }
-
-            string[] parts = line.Split('=');
-            if (parts.Length == 2)
-            {
-                parts[0] = parts[0].Trim();
-                parts[1] = parts[1].Trim().Trim('"');
-                if (parts[0] == "HWNumber")
-                {
-                    HWNumber = parts[1];
-                }
-                else if (parts[0] == "SWNumber")
-                {
-                    SWNumber = parts[1];
-                }
-                else if (parts[0] == "PartNumber")
-                {
-                    PartNumber = parts[1];
-                }
-                else if (parts[0] == "EngineId")
-                {
-                    EngineId = parts[1];
-                }
-                return;
-            }
-            throw new Exception("Invalid line for [Identification]");
         }
     }
 
