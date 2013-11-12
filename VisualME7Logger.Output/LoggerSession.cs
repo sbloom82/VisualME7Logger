@@ -193,30 +193,30 @@ namespace VisualME7Logger.Session
             {
                 ecuDef = line;
             }
-            else if (CommunicationInfo == null)
+            else if (CommunicationInfo == null && line == "[Communication]")
             {
                 //[Communication]
                 CommunicationInfo = new CommunicationInfo();
             }
-            else if (!CommunicationInfo.Complete)
+            else if (CommunicationInfo != null && !CommunicationInfo.Complete)
             {
                 CommunicationInfo.ReadLine(line);
             }
-            else if (IdentificationInfo == null)
+            else if (IdentificationInfo == null && line == "[Identification]")
             {
                 //[Identification]
                 IdentificationInfo = new IdentificationInfo();
             }
-            else if (!IdentificationInfo.Complete)
+            else if (IdentificationInfo != null && !IdentificationInfo.Complete)
             {
                 IdentificationInfo.ReadLine(line);
             }
-            else if (Variables == null)
+            else if (Variables == null && line == "Logged variables are:")
             {
                 //logged variables are:
                 Variables = new SessionVariables();
             }
-            else if (!Variables.Complete)
+            else if (Variables != null && !Variables.Complete)
             {
                 Variables.ReadLine(line);
             }
