@@ -13,6 +13,10 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,6 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommunicationInfo.cs" />
+    <Compile Include="ECUFile.cs" />
+    <Compile Include="IdentificationInfo.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="LoggerSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
