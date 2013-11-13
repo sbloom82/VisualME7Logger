@@ -31,6 +31,8 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadECUFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadConfigFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clearConfigFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lstAvailMeasurements = new System.Windows.Forms.ListBox();
             this.btnAddMeasurement = new System.Windows.Forms.Button();
@@ -42,9 +44,17 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.txtLogFile = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtConfigFile = new System.Windows.Forms.TextBox();
+            this.txtECUFile = new System.Windows.Forms.TextBox();
+            this.btnStartLog = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -61,6 +71,8 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadECUFileToolStripMenuItem,
+            this.loadConfigFileToolStripMenuItem,
+            this.clearConfigFileToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -69,14 +81,29 @@
             // loadECUFileToolStripMenuItem
             // 
             this.loadECUFileToolStripMenuItem.Name = "loadECUFileToolStripMenuItem";
-            this.loadECUFileToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.loadECUFileToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
             this.loadECUFileToolStripMenuItem.Text = "Load ECU File";
             this.loadECUFileToolStripMenuItem.Click += new System.EventHandler(this.loadECUFileToolStripMenuItem_Click);
+            // 
+            // loadConfigFileToolStripMenuItem
+            // 
+            this.loadConfigFileToolStripMenuItem.Enabled = false;
+            this.loadConfigFileToolStripMenuItem.Name = "loadConfigFileToolStripMenuItem";
+            this.loadConfigFileToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.loadConfigFileToolStripMenuItem.Text = "Load Config File";
+            this.loadConfigFileToolStripMenuItem.Click += new System.EventHandler(this.loadConfigFileToolStripMenuItem_Click);
+            // 
+            // clearConfigFileToolStripMenuItem
+            // 
+            this.clearConfigFileToolStripMenuItem.Name = "clearConfigFileToolStripMenuItem";
+            this.clearConfigFileToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.clearConfigFileToolStripMenuItem.Text = "Clear Config File";
+            this.clearConfigFileToolStripMenuItem.Click += new System.EventHandler(this.clearConfigFileToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -87,9 +114,11 @@
             this.lstAvailMeasurements.FormattingEnabled = true;
             this.lstAvailMeasurements.Location = new System.Drawing.Point(9, 32);
             this.lstAvailMeasurements.Name = "lstAvailMeasurements";
+            this.lstAvailMeasurements.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.lstAvailMeasurements.Size = new System.Drawing.Size(300, 147);
             this.lstAvailMeasurements.TabIndex = 3;
             this.lstAvailMeasurements.SelectedValueChanged += new System.EventHandler(this.lstAvailMeasurements_SelectedValueChanged);
+            this.lstAvailMeasurements.KeyUp += new System.Windows.Forms.KeyEventHandler(this.lstAvailMeasurements_KeyUp);
             // 
             // btnAddMeasurement
             // 
@@ -144,9 +173,11 @@
             this.lstSelectedMeasurements.FormattingEnabled = true;
             this.lstSelectedMeasurements.Location = new System.Drawing.Point(396, 32);
             this.lstSelectedMeasurements.Name = "lstSelectedMeasurements";
+            this.lstSelectedMeasurements.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.lstSelectedMeasurements.Size = new System.Drawing.Size(328, 147);
             this.lstSelectedMeasurements.TabIndex = 8;
             this.lstSelectedMeasurements.SelectedValueChanged += new System.EventHandler(this.lstSelectedMeasurements_SelectedValueChanged);
+            this.lstSelectedMeasurements.KeyUp += new System.Windows.Forms.KeyEventHandler(this.lstSelectedMeasurements_KeyUp);
             // 
             // label1
             // 
@@ -177,29 +208,106 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.txtLogFile);
+            this.panel2.Controls.Add(this.label5);
+            this.panel2.Controls.Add(this.label4);
+            this.panel2.Controls.Add(this.label3);
+            this.panel2.Controls.Add(this.txtConfigFile);
+            this.panel2.Controls.Add(this.txtECUFile);
+            this.panel2.Controls.Add(this.btnStartLog);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 209);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(733, 213);
+            this.panel2.Size = new System.Drawing.Size(733, 97);
             this.panel2.TabIndex = 10;
+            // 
+            // txtLogFile
+            // 
+            this.txtLogFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtLogFile.Location = new System.Drawing.Point(69, 62);
+            this.txtLogFile.Name = "txtLogFile";
+            this.txtLogFile.Size = new System.Drawing.Size(571, 20);
+            this.txtLogFile.TabIndex = 6;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(19, 65);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(47, 13);
+            this.label5.TabIndex = 5;
+            this.label5.Text = "Log File:";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(7, 37);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(59, 13);
+            this.label4.TabIndex = 4;
+            this.label4.Text = "Config File:";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(15, 11);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(51, 13);
+            this.label3.TabIndex = 3;
+            this.label3.Text = "ECU File:";
+            // 
+            // txtConfigFile
+            // 
+            this.txtConfigFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtConfigFile.Location = new System.Drawing.Point(69, 34);
+            this.txtConfigFile.Name = "txtConfigFile";
+            this.txtConfigFile.ReadOnly = true;
+            this.txtConfigFile.Size = new System.Drawing.Size(652, 20);
+            this.txtConfigFile.TabIndex = 2;
+            // 
+            // txtECUFile
+            // 
+            this.txtECUFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtECUFile.Location = new System.Drawing.Point(69, 8);
+            this.txtECUFile.Name = "txtECUFile";
+            this.txtECUFile.ReadOnly = true;
+            this.txtECUFile.Size = new System.Drawing.Size(652, 20);
+            this.txtECUFile.TabIndex = 1;
+            this.txtECUFile.Text = "   ";
+            // 
+            // btnStartLog
+            // 
+            this.btnStartLog.Location = new System.Drawing.Point(646, 60);
+            this.btnStartLog.Name = "btnStartLog";
+            this.btnStartLog.Size = new System.Drawing.Size(75, 23);
+            this.btnStartLog.TabIndex = 0;
+            this.btnStartLog.Text = "Start Log";
+            this.btnStartLog.UseVisualStyleBackColor = true;
+            this.btnStartLog.Click += new System.EventHandler(this.btnStartLog_Click);
             // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(733, 422);
+            this.ClientSize = new System.Drawing.Size(733, 306);
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "SettingsForm";
-            this.Text = "SettingsForm";
+            this.ShowIcon = false;
+            this.Text = "Visual ME7Logger";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.panel1.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -221,6 +329,15 @@
         private System.Windows.Forms.Splitter splitter1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button btnStartLog;
+        private System.Windows.Forms.ToolStripMenuItem loadConfigFileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem clearConfigFileToolStripMenuItem;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox txtConfigFile;
+        private System.Windows.Forms.TextBox txtECUFile;
+        private System.Windows.Forms.TextBox txtLogFile;
+        private System.Windows.Forms.Label label5;
 
 
     }

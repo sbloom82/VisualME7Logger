@@ -12,17 +12,18 @@ namespace VisualME7Logger
 {
     public partial class SettingsForm : Form
     {
-        ECUFile SelectedECUFile{get; set;}
-        
+        ECUFile SelectedECUFile { get; set; }
 
         public SettingsForm()
         {
             InitializeComponent();
+            this.txtLogFile.Text = System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs", "VisualME7Logger_log.txt");
         }
 
         private void loadECUFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
+            ofd.InitialDirectory = System.IO.Path.Combine(Program.ME7LoggerDirectory, "ecus");
             if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 this.SelectedECUFile = null;
@@ -38,7 +39,10 @@ namespace VisualME7Logger
             this.Clear();
             if (this.SelectedECUFile != null)
             {
-                this.Text = string.Format("ECU File: {0}", this.SelectedECUFile.FilePath);
+                this.txtECUFile.Text = this.SelectedECUFile.FilePath;
+                this.loadConfigFileToolStripMenuItem.Enabled = true;
+                this.btnStartLog.Enabled = true;
+
                 foreach (Measurement m in this.SelectedECUFile.Measurements.Values.Where(m => !string.IsNullOrEmpty(m.Alias)).OrderBy(m => m.Alias).ThenBy(m => m.Name))
                 {
                     lstAvailMeasurements.Items.Add(m);
@@ -54,7 +58,11 @@ namespace VisualME7Logger
         {
             lstAvailMeasurements.Items.Clear();
             lstSelectedMeasurements.Items.Clear();
-            btnAddMeasurement.Enabled = btnRemoveMeasurement.Enabled = false;
+            txtConfigFile.Text = string.Empty;
+            btnAddMeasurement.Enabled =
+                btnRemoveMeasurement.Enabled =
+                loadConfigFileToolStripMenuItem.Enabled =
+                btnStartLog.Enabled = false;
         }
 
         private void btnAddMeasurement_Click(object sender, EventArgs e)
@@ -62,10 +70,10 @@ namespace VisualME7Logger
             List<object> oList = new List<object>();
             foreach (object o in lstAvailMeasurements.SelectedItems)
             {
-                oList.Add(o);               
+                oList.Add(o);
             }
 
-            foreach(object o in oList)
+            foreach (object o in oList)
             {
                 lstSelectedMeasurements.Items.Add(o);
                 lstAvailMeasurements.Items.Remove(o);
@@ -100,6 +108,97 @@ namespace VisualME7Logger
         private void lstSelectedMeasurements_SelectedValueChanged(object sender, EventArgs e)
         {
             this.btnRemoveMeasurement.Enabled = lstSelectedMeasurements.SelectedItems.Count > 0;
-        }       
+        }
+
+        private void btnStartLog_Click(object sender, EventArgs e)
+        {
+            if (lstSelectedMeasurements.Items.Count > 0)
+            {
+                if (string.IsNullOrEmpty(this.txtConfigFile.Text))
+                {
+                    SaveFileDialog d = new SaveFileDialog();
+                    d.Title = "Save Config File As...";
+                    d.InitialDirectory = System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs");
+                    if (d.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                    { 
+                        return;
+                    }
+                    this.txtConfigFile.Text = d.FileName;
+                }
+
+                Measurements ms = new Measurements();
+                foreach (Measurement m in lstSelectedMeasurements.Items)
+                {
+                    ms.AddMeasurement(m);
+                }
+
+                ConfigFile configFile = new ConfigFile(this.SelectedECUFile.FileName, ms);
+                configFile.Write(txtConfigFile.Text);
+
+                string parameters = "-p COM1 -R";
+                if(!string.IsNullOrEmpty(this.txtLogFile.Text))
+                {
+                    parameters += " -o \"" + this.txtLogFile.Text.Trim() + "\"";
+                }
+
+                Form1 logForm = new Form1(txtConfigFile.Text, parameters);
+                logForm.ShowDialog(this);            
+            }
+        }
+
+        private void loadConfigFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.InitialDirectory = System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs");
+            if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                ConfigFile configFile = new ConfigFile(this.SelectedECUFile.FileName);
+                try
+                {
+                    configFile.Read(ofd.FileName);
+                    this.txtConfigFile.Text = ofd.FileName;
+
+                    lstAvailMeasurements.Items.Clear();
+                    lstSelectedMeasurements.Items.Clear();
+
+                    foreach (Measurement m in this.SelectedECUFile.Measurements.Values)
+                    {
+                        if (configFile.Measurements[m.Name] != null)
+                        {
+                            lstSelectedMeasurements.Items.Add(m);
+                        }
+                        else
+                        {
+                            lstAvailMeasurements.Items.Add(m);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
+            }
+        }
+
+        private void clearConfigFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.txtConfigFile.Text = string.Empty;
+        }
+
+        private void lstSelectedMeasurements_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
+            {
+                btnRemoveMeasurement_Click(sender, e);
+            }
+        }
+
+        private void lstAvailMeasurements_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
+            {
+                btnAddMeasurement_Click(sender, e);
+            }
+        }
     }
 }

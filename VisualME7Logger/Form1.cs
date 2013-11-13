@@ -26,23 +26,29 @@ namespace VisualME7Logger
             //{"rl", new List<double>(){0, 5}} ,//EngineLoad,
             //{"vfzg", new List<double>(){0, 7}}//speed
         };
-        public Form1()
+
+        public Form1(string configFile, string parameters)
         {
             InitializeComponent();
 
             cmbChartType.DataSource = Enum.GetValues(typeof(SeriesChartType));
             cmbChartType.SelectedItem = SeriesChartType.FastLine;
 
-            session = new ME7LoggerSession(@"C:\ME7Logger\out7.out", @"C:\ME7Logger\logs\allroad.log");
-            //session = new ME7LoggerSession(@"-p COM1 -R -o C:\me7logger\logs\allroad.log", @"C:\me7logger\logs\allroad-config.cfg", true);
+            session = new ME7LoggerSession(Program.ME7LoggerDirectory, parameters, configFile);
+            //session = new ME7LoggerSession(@"C:\ME7Logger\out7.out", @"C:\ME7Logger\logs\allroad.log");
+            //session = new ME7LoggerSession(Program.ME7LoggerDirectory, @"-p COM1 -R -o C:\me7logger\logs\allroad.log", @"C:\me7logger\logs\allroad-config.cfg");
             session.StatusChanged += new ME7LoggerSession.LoggerSessionStatusChanged(this.SessionStatusChanged);
             session.Log.LineRead += new ME7LoggerLog.LogLineRead(this.LogLineRead);
+            session.Open();
         }
 
         DateTime start;
         private void button1_Click(object sender, EventArgs e)
         {
-            session.Open();
+            if (session.Status != ME7LoggerSession.Statuses.Open)
+            {
+                session.Open();
+            }
         }
 
         void SessionStatusChanged(ME7LoggerSession.Statuses status)
@@ -104,14 +110,15 @@ namespace VisualME7Logger
             foreach (string chartVariable in chartVariables.Keys)
             {
                 var = session.Variables[chartVariable];
+                if (var != null)
+                {
+                    s = new Series(var.ToString());
 
-                s = new Series(var.ToString());
-
-                s.ChartType = (SeriesChartType)cmbChartType.SelectedItem;
-                chart1.Series.Add(s);
-                for (int i = 0; i < 250; ++i)
-                    s.Points.Add(0, 0);
-                
+                    s.ChartType = (SeriesChartType)cmbChartType.SelectedItem;
+                    chart1.Series.Add(s);
+                    for (int i = 0; i < 250; ++i)
+                        s.Points.Add(0, 0);
+                }
             }
 
             chart2.Series.Clear();

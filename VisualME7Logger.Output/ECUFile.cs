@@ -15,6 +15,8 @@ namespace VisualME7Logger.Configuration
         public Measurements Measurements { get; private set; }
 
         public string FilePath { get; private set; }
+        public string FileName { get { return Path.GetFileName(this.FilePath); } }
+        
         public ECUFile(string filePath)
         {
             this.FilePath = filePath;
@@ -72,24 +74,117 @@ namespace VisualME7Logger.Configuration
         }
     }
 
+    public class ConfigFile
+    {
+        public Measurements Measurements { get; private set; }
+        public string ECUCharacteristics { get; private set; }
+        public short SamplesPerSecond { get; private set; }
+
+        public ConfigFile(string ecuCharacteristics)
+        {
+            this.ECUCharacteristics = ecuCharacteristics;
+        }
+        public ConfigFile(string ecuCharacteristics, Measurements measurements) 
+            : this(ecuCharacteristics)
+        {
+            this.Measurements = measurements;            
+        }
+
+        public void Write(string filePath)
+        {
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                writer.WriteLine("[Configuration]");
+                writer.WriteLine("ECUCharacteristics = {0}", ECUCharacteristics);
+                writer.WriteLine("SamplesPerSecond = 20");
+                writer.WriteLine("");
+                writer.WriteLine("[LogVariables]");
+                writer.WriteLine(";Name            [Alias]                             [; Comment]");
+                
+                foreach (Measurement m in Measurements.Values)
+                {
+                    writer.WriteLine("{0};{1}; {2}",
+                        m.Name.PadRight(16), 
+                        m.Alias.PadRight(37), 
+                        m.Comment); 
+                }
+            }
+        }
+
+        public void Read(string filePath)
+        {
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                this.Measurements = null;
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(line))
+                    {
+                        line = line.Trim();
+                        if (!line.StartsWith(";"))
+                        {
+                            if (this.Measurements == null && line == "[LogVariables]")
+                            {
+                                this.Measurements = new Measurements();
+                            }
+                            else if (this.Measurements != null && !this.Measurements.Complete)
+                            {
+                                this.Measurements.ReadLine(line);
+                            }
+                            else if (line.StartsWith("ECUCharacteristics"))
+                            {
+                                this.ECUCharacteristics = line.Split('=')[1].Trim();
+                            }
+                            else if (line.StartsWith("SamplesPerSecond"))
+                            {
+                                this.SamplesPerSecond = short.Parse(line.Split('=')[1].Trim());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public class Measurements
     {
         private List<Measurement> measurements = new List<Measurement>();
+        private Dictionary<string, Measurement> measurementsByName = new Dictionary<string, Measurement>();
         public IEnumerable<Measurement> Values
         {
             get { return this.measurements; }
         }
-
+        public Measurement this[string name]
+        {
+            get
+            {
+                if (this.measurementsByName.ContainsKey(name))
+                {
+                    return measurementsByName[name];
+                }
+                return null;
+            }
+        }       
+        
         internal bool Complete { get; private set; }
         internal void ReadLine(string line)
         {
-            if (!string.IsNullOrEmpty(line) &&
+            if (!string.IsNullOrWhiteSpace(line) &&
                 !line.TrimStart().StartsWith(";"))
             {
                 Measurement m = new Measurement();
                 if (m.Read(line))
-                    measurements.Add(m);
+                {
+                    this.AddMeasurement(m);
+                }
             }
+        }
+
+        public void AddMeasurement(Measurement m)
+        {
+            this.measurements.Add(m);
+            this.measurementsByName[m.Name] = m;
         }
     }
 
@@ -124,6 +219,13 @@ namespace VisualME7Logger.Configuration
                 catch { }
                 Offset = decimal.Parse(parts[9].Trim());
                 Comment = parts[10].Trim().Replace("{", "").Replace("}", "");
+                return true;
+            }
+            else
+            {
+                this.Name = line;
+                if (Name.IndexOf(" ") > -1)
+                    this.Name = Name.Substring(0, Name.IndexOf(" "));
                 return true;
             }
             return false;

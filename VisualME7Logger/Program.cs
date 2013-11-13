@@ -7,15 +7,22 @@ namespace VisualME7Logger
 {
     static class Program
     {
+        public static string ME7LoggerDirectory;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
+            ME7LoggerDirectory = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+            if (args.Length > 0)
+            {
+                ME7LoggerDirectory = args[0];
+            }
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new SettingsForm());
         }
     }
 }
