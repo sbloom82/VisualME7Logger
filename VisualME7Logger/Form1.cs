@@ -62,6 +62,14 @@ namespace VisualME7Logger
 
             if (status == ME7LoggerSession.Statuses.Open)
             {
+                foreach (string varName in this.chartVariables.Keys.ToList())
+                {
+                    if (session.Variables.GetByName(varName) == null)
+                    {
+                        chartVariables.Remove(varName);
+                    }
+                }
+
                 //Initailization logic here  
                 StringBuilder namesBuilder = new StringBuilder();
                 foreach (SessionVariable var in session.Variables.Values)
