@@ -52,11 +52,13 @@ namespace VisualME7Logger.Session
                
         private string parameters;
         private string configFilePath;
-        public ME7LoggerSession(string parameters, string configFilePath, bool ey)
+        private string ME7LoggerDirectory;
+        public ME7LoggerSession(string ME7LoggerDirectory, string parameters, string configFilePath)
         {
             this.Status = Statuses.New;
             this.SessionType = SessionTypes.RealTime;
             this.Log = new ME7LoggerLog(this);
+            this.ME7LoggerDirectory = ME7LoggerDirectory;
             this.parameters = parameters;
             this.configFilePath = configFilePath;
         }
@@ -71,10 +73,6 @@ namespace VisualME7Logger.Session
         }
 
         Process p;
-        public string CommandLine
-        {
-            get { return @"C:\ME7Logger.exe -p COM1 -s 10 -R C:\ME7Logger\logs\Allroad-Config.cfg"; }
-        }
         public int ExitCode { get; private set; }
         public string ErrorText { get; private set; }
         public void Open()
@@ -99,7 +97,9 @@ namespace VisualME7Logger.Session
             {
                 logReady = false;
                 p = new Process();
-                p.StartInfo = new ProcessStartInfo("C:\\ME7Logger\\bin\\ME7Logger.exe", string.Format("{0} {1}", parameters, configFilePath));
+                p.StartInfo = new ProcessStartInfo(
+                    Path.Combine(ME7LoggerDirectory, "bin", "ME7Logger.exe"),
+                    string.Format("{0} \"{1}\"", parameters, configFilePath));
                 p.StartInfo.UseShellExecute = false;
                 p.StartInfo.CreateNoWindow = true;
                 p.StartInfo.RedirectStandardOutput = true;
@@ -152,24 +152,30 @@ namespace VisualME7Logger.Session
 
         public void Close()
         {
-            Status = Statuses.Closing;
-            if (p != null)
+            lock (this)
             {
-                if (!p.HasExited)
+                if (this.Status != Statuses.Closed)
                 {
-                    p.Kill();
-                    //don't know how to send in control + c;
-                    //string end = "\x3";
-                    //p.StandardInput.WriteLine(end);
-                    //p.StandardInput.Close();
-                    return;
-                }
-                p.Close();
-                p.Dispose();
-            }
+                    Status = Statuses.Closing;
+                    if (p != null)
+                    {
+                        if (!p.HasExited)
+                        {
+                            p.Kill();
+                            //don't know how to send in control + c;
+                            //string end = "\x3";
+                            //p.StandardInput.WriteLine(end);
+                            //p.StandardInput.Close();
+                            return;
+                        }
+                        p.Close();
+                        p.Dispose();
+                    }
 
-            this.Log.Close();
-            Status = Statuses.Closed;
+                    this.Log.Close();
+                    Status = Statuses.Closed;
+                }
+            }
         }
 
         private string logConfigFile;
@@ -238,10 +244,10 @@ namespace VisualME7Logger.Session
         public string Address { get; private set; }
         public short Size { get; private set; }
         public string BitMask { get; private set; }
-        public short S { get; private set; }
-        public short I { get; private set; }
-        public decimal A { get; private set; }
-        public short B { get; private set; }
+        public bool Signed { get; private set; }
+        public bool Inverse { get; private set; }
+        public decimal Factor { get; private set; }
+        public decimal Offset { get; private set; }
         public string Unit { get; private set; }
 
         internal SessionVariable(string line)
@@ -254,10 +260,11 @@ namespace VisualME7Logger.Session
             this.Address = parts[2].Trim();
             this.Size = short.Parse(parts[3].Trim());
             this.BitMask = parts[4].Trim();
-            this.S = short.Parse(parts[5].Trim());
-            this.I = short.Parse(parts[6].Trim());
-            this.A = decimal.Parse(parts[7].Trim());
-            this.B = short.Parse(parts[8].Trim());
+            this.Signed = parts[5].Trim() == "1";
+            this.Inverse = parts[6].Trim() == "1";
+            try { Factor = decimal.Parse(parts[7].Trim()); }
+            catch { }
+            this.Offset = decimal.Parse(parts[8].Trim());
             this.Unit = parts[9].Trim();
             this.Unit = Unit.Substring(1, Unit.Length - 2);
         }
