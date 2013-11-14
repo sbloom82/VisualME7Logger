@@ -354,10 +354,10 @@ namespace VisualME7Logger.Session
         public string FTDIInfo { get; set; }
         public int BaudRate { get; set; }
         public bool OverrideBaudRate { get; set; }
-  
+
         public bool OverrideSampleRate { get; set; }
-        public int SampleRate { get; set;}
-        
+        public int SampleRate { get; set; }
+
         public bool TimeSync { get; set; }
         public bool WriteAbsoluteTimestamp { get; set; }
         public bool WriteMilliSecondTimestamps { get; set; }
@@ -365,7 +365,7 @@ namespace VisualME7Logger.Session
         public bool ReadSingleMeasurement { get; set; }
         public bool WriteLogRealTime { get; set; }
         public bool RealTimeOutput { get; set; }
-        
+
         public bool WriteLogToFile { get; set; }
         public string LogFile { get; set; }
 
@@ -378,6 +378,7 @@ namespace VisualME7Logger.Session
             LogFile = System.IO.Path.Combine(ME7LoggerDirectory, "logs", "VisualME7Logger.log");
             RealTimeOutput = true;
             BaudRate = 56000;
+            SampleRate = 20;
         }
 
         public void Read(XElement element)
@@ -400,7 +401,7 @@ namespace VisualME7Logger.Session
                         case "ReadSingleMeasurement":
                             this.ReadSingleMeasurement = bool.Parse(att.Value);
                             break;
-                    } 
+                    }
                 }
 
                 foreach (XElement ele in element.Elements())
@@ -408,13 +409,13 @@ namespace VisualME7Logger.Session
                     switch (ele.Name.LocalName)
                     {
                         case "Communication":
-                           
-                            foreach(XAttribute att in ele.Attributes())
+
+                            foreach (XAttribute att in ele.Attributes())
                             {
-                                switch(att.Name.LocalName)
+                                switch (att.Name.LocalName)
                                 {
                                     case "Type":
-                                        this.ConnectionType = (ConnectionTypes)Enum.Parse(typeof(ConnectionTypes),att.Value);
+                                        this.ConnectionType = (ConnectionTypes)Enum.Parse(typeof(ConnectionTypes), att.Value);
                                         break;
                                     case "COMPort":
                                         this.COMPort = att.Value;
@@ -447,24 +448,24 @@ namespace VisualME7Logger.Session
         public XElement Write()
         {
             XElement root = new XElement("Options");
-            
+
             XElement communication = new XElement("Communication");
             communication.Add(new XAttribute("Type", ConnectionType));
             communication.Add(new XAttribute("COMPort", COMPort));
             communication.Add(new XAttribute("FTDIInfo", FTDIInfo));
-            
+
             XElement baud = new XElement("BaudRate", this.BaudRate);
             baud.Add(new XAttribute("Override", this.OverrideBaudRate));
             communication.Add(baud);
 
             root.Add(communication);
-            
+
             XElement sampleRate = new XElement("SampleRate", SampleRate);
             sampleRate.Add(new XAttribute("Override", this.OverrideSampleRate));
             root.Add(sampleRate);
-            
+
             XElement logFile = new XElement("LogFile", this.LogFile);
-            logFile.Add(new XAttribute("WriteToFile",  this.WriteLogToFile));
+            logFile.Add(new XAttribute("WriteToFile", this.WriteLogToFile));
             root.Add(logFile);
 
             root.Add(new XAttribute("WriteLogRealTime", WriteLogRealTime));
@@ -472,7 +473,7 @@ namespace VisualME7Logger.Session
             root.Add(new XAttribute("WriteAbsoluteTimestamp", WriteAbsoluteTimestamp));
             root.Add(new XAttribute("ReadSingleMeasurement", ReadSingleMeasurement));
 
-            return root;        
+            return root;
         }
 
         public override string ToString()

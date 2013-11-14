@@ -300,5 +300,13 @@ namespace VisualME7Logger
         {
             btnRemoveMeasurement_Click(sender, e);
         }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+
+        
     }
 }
