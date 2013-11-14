@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using VisualME7Logger.Common;
 using System.IO;
+using System.Diagnostics;
 
 namespace VisualME7Logger.Configuration
 {
@@ -72,6 +73,38 @@ namespace VisualME7Logger.Configuration
             }
             return true;
         }
+
+        public static ECUFile Create(string ME7LoggerDirectory, string imageFilePath)
+        {
+            using(Process p = new Process())
+            {
+                p.StartInfo = new ProcessStartInfo(Path.Combine(ME7LoggerDirectory, "bin\\ME7Info.exe"), "\"" + imageFilePath + "\"");               
+                p.StartInfo.UseShellExecute = false;
+                p.StartInfo.CreateNoWindow = true;
+                p.StartInfo.RedirectStandardOutput = true;
+                p.StartInfo.RedirectStandardError = true;
+                p.StartInfo.RedirectStandardInput = true;
+                p.Start();
+                p.WaitForExit(10000);
+                          
+                if (p.ExitCode == 0)
+                {
+                    string line;
+                    while ((line = p.StandardError.ReadLine()) != null)
+                    {
+                        if(line.StartsWith("written output to file "))
+                        {
+                            return new ECUFile(line.Replace("written output to file ", string.Empty));
+                        }
+                    }
+                }
+                else
+                {
+                    throw new Exception(p.StandardError.ReadToEnd());
+                }
+            }
+            throw new Exception("Unknown error occurred");
+        }       
     }
 
     public class ConfigFile
