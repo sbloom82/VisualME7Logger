@@ -6,6 +6,7 @@ using System.IO;
 using System.Diagnostics;
 using VisualME7Logger.Log;
 using VisualME7Logger.Common;
+using System.Xml.Linq;
 
 namespace VisualME7Logger.Session
 {
@@ -49,17 +50,17 @@ namespace VisualME7Logger.Session
         public IdentificationInfo IdentificationInfo { get; private set; }
         public SessionVariables Variables { get; private set; }
         public ME7LoggerLog Log { get; private set; }
-               
-        private string parameters;
+
+        private LoggerOptions options;
         private string configFilePath;
         private string ME7LoggerDirectory;
-        public ME7LoggerSession(string ME7LoggerDirectory, string parameters, string configFilePath)
+        public ME7LoggerSession(string ME7LoggerDirectory, LoggerOptions options, string configFilePath)
         {
             this.Status = Statuses.New;
             this.SessionType = SessionTypes.RealTime;
             this.Log = new ME7LoggerLog(this);
             this.ME7LoggerDirectory = ME7LoggerDirectory;
-            this.parameters = parameters;
+            this.options = options;
             this.configFilePath = configFilePath;
         }
 
@@ -99,7 +100,7 @@ namespace VisualME7Logger.Session
                 p = new Process();
                 p.StartInfo = new ProcessStartInfo(
                     Path.Combine(ME7LoggerDirectory, "bin", "ME7Logger.exe"),
-                    string.Format("{0} \"{1}\"", parameters, configFilePath));
+                    string.Format("{0} \"{1}\"", options, configFilePath));
                 p.StartInfo.UseShellExecute = false;
                 p.StartInfo.CreateNoWindow = true;
                 p.StartInfo.RedirectStandardOutput = true;
@@ -114,7 +115,7 @@ namespace VisualME7Logger.Session
                 p.BeginErrorReadLine();
             }
         }
-        
+
         void p_Exited(object sender, EventArgs e)
         {
             this.ExitCode = p.ExitCode;
@@ -180,7 +181,7 @@ namespace VisualME7Logger.Session
 
         private string logConfigFile;
         private string ecuCharacteristicsFile;
-        private string ecuDef;   
+        private string ecuDef;
         private bool ReadLine(string line)
         {
             if (line == null)
@@ -283,7 +284,7 @@ namespace VisualME7Logger.Session
         private Dictionary<int, SessionVariable> byNumber = new Dictionary<int, SessionVariable>();
         public SessionVariable this[int number] { get { return this.byNumber[number]; } }
         private Dictionary<string, SessionVariable> byName = new Dictionary<string, SessionVariable>(StringComparer.InvariantCultureIgnoreCase);
-        public SessionVariable this[string name] { get { return this.byName[name]; } } 
+        public SessionVariable this[string name] { get { return this.byName[name]; } }
 
         internal SessionVariables() { }
 
@@ -333,6 +334,211 @@ namespace VisualME7Logger.Session
             {
                 LoggedDataSize = short.Parse(line.Replace("Logged data size is ", "").Replace(" bytes.", "").Trim());
             }
+        }
+    }
+
+    public class LoggerOptions
+    {
+        public enum ConnectionTypes
+        {
+            Default,
+            COM,
+            FTDI,
+            FTDISerial,
+            FTDIDescription,
+            FTDILocation
+        }
+
+        public ConnectionTypes ConnectionType { get; set; }
+        public string COMPort { get; set; }
+        public string FTDIInfo { get; set; }
+        public int BaudRate { get; set; }
+        public bool OverrideBaudRate { get; set; }
+  
+        public bool OverrideSampleRate { get; set; }
+        public int SampleRate { get; set;}
+        
+        public bool TimeSync { get; set; }
+        public bool WriteAbsoluteTimestamp { get; set; }
+        public bool WriteMilliSecondTimestamps { get; set; }
+        public bool SuppressHeaderInfoInLog { get; set; }
+        public bool ReadSingleMeasurement { get; set; }
+        public bool WriteLogRealTime { get; set; }
+        public bool RealTimeOutput { get; set; }
+        
+        public bool WriteLogToFile { get; set; }
+        public string LogFile { get; set; }
+
+        public LoggerOptions(string ME7LoggerDirectory)
+        {
+            ConnectionType = ConnectionTypes.Default;
+            COMPort = "COM1";
+            FTDIInfo = string.Empty;
+            WriteLogToFile = true;
+            LogFile = System.IO.Path.Combine(ME7LoggerDirectory, "logs", "VisualME7Logger.log");
+            RealTimeOutput = true;
+            BaudRate = 56000;
+        }
+
+        public void Read(XElement element)
+        {
+            if (element.Name.LocalName == "Options")
+            {
+                foreach (XAttribute att in element.Attributes())
+                {
+                    switch (att.Name.LocalName)
+                    {
+                        case "WriteLogRealTime":
+                            this.WriteLogRealTime = bool.Parse(att.Value);
+                            break;
+                        case "TimeSync":
+                            this.TimeSync = bool.Parse(att.Value);
+                            break;
+                        case "WriteAbsoluteTimestamp":
+                            this.WriteAbsoluteTimestamp = bool.Parse(att.Value);
+                            break;
+                        case "ReadSingleMeasurement":
+                            this.ReadSingleMeasurement = bool.Parse(att.Value);
+                            break;
+                    } 
+                }
+
+                foreach (XElement ele in element.Elements())
+                {
+                    switch (ele.Name.LocalName)
+                    {
+                        case "Communication":
+                           
+                            foreach(XAttribute att in ele.Attributes())
+                            {
+                                switch(att.Name.LocalName)
+                                {
+                                    case "Type":
+                                        this.ConnectionType = (ConnectionTypes)Enum.Parse(typeof(ConnectionTypes),att.Value);
+                                        break;
+                                    case "COMPort":
+                                        this.COMPort = att.Value;
+                                        break;
+                                    case "FTDIInfo":
+                                        this.FTDIInfo = att.Value;
+                                        break;
+                                }
+                            }
+                            XElement baud = ele.Elements().FirstOrDefault();
+                            if (baud != null)
+                            {
+                                this.BaudRate = int.Parse(baud.Value);
+                                this.OverrideBaudRate = bool.Parse(baud.Attributes().First().Value);
+                            }
+                            break;
+                        case "SampleRate":
+                            this.OverrideSampleRate = bool.Parse(ele.Attributes().First().Value);
+                            this.SampleRate = int.Parse(ele.Value);
+                            break;
+                        case "LogFile":
+                            this.WriteLogToFile = bool.Parse(ele.Attributes().First().Value);
+                            this.LogFile = ele.Value;
+                            break;
+                    }
+                }
+            }
+        }
+
+        public XElement Write()
+        {
+            XElement root = new XElement("Options");
+            
+            XElement communication = new XElement("Communication");
+            communication.Add(new XAttribute("Type", ConnectionType));
+            communication.Add(new XAttribute("COMPort", COMPort));
+            communication.Add(new XAttribute("FTDIInfo", FTDIInfo));
+            
+            XElement baud = new XElement("BaudRate", this.BaudRate);
+            baud.Add(new XAttribute("Override", this.OverrideBaudRate));
+            communication.Add(baud);
+
+            root.Add(communication);
+            
+            XElement sampleRate = new XElement("SampleRate", SampleRate);
+            sampleRate.Add(new XAttribute("Override", this.OverrideSampleRate));
+            root.Add(sampleRate);
+            
+            XElement logFile = new XElement("LogFile", this.LogFile);
+            logFile.Add(new XAttribute("WriteToFile",  this.WriteLogToFile));
+            root.Add(logFile);
+
+            root.Add(new XAttribute("WriteLogRealTime", WriteLogRealTime));
+            root.Add(new XAttribute("TimeSync", TimeSync));
+            root.Add(new XAttribute("WriteAbsoluteTimestamp", WriteAbsoluteTimestamp));
+            root.Add(new XAttribute("ReadSingleMeasurement", ReadSingleMeasurement));
+
+            return root;        
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            if (this.ConnectionType == ConnectionTypes.COM)
+            {
+                sb.Append(" -p ").Append(this.COMPort);
+            }
+            else if (this.ConnectionType != ConnectionTypes.Default)
+            {
+                sb.Append(" -f");
+                if (this.ConnectionType == ConnectionTypes.FTDISerial)
+                {
+                    sb.AppendFormat(" -S{0}", FTDIInfo);
+                }
+                else if (this.ConnectionType == ConnectionTypes.FTDIDescription)
+                {
+                    sb.AppendFormat(" -D{0}", FTDIInfo);
+                }
+                else if (this.ConnectionType == ConnectionTypes.FTDILocation)
+                {
+                    sb.AppendFormat(" -L{0}", FTDIInfo);
+                }
+            }
+            if (OverrideSampleRate)
+            {
+                sb.Append(" -s ").Append(this.SampleRate);
+            }
+            if (OverrideBaudRate)
+            {
+                sb.Append(" -b ").Append(this.BaudRate);
+            }
+            if (TimeSync)
+            {
+                sb.Append(" -t");
+            }
+            if (WriteAbsoluteTimestamp)
+            {
+                sb.Append(" -a");
+            }
+            if (WriteMilliSecondTimestamps)
+            {
+                sb.Append(" -m");
+            }
+            if (SuppressHeaderInfoInLog)
+            {
+                sb.Append(" - h");
+            }
+            if (ReadSingleMeasurement)
+            {
+                sb.Append(" -1");
+            }
+            if (WriteLogRealTime)
+            {
+                sb.Append(" -r");
+            }
+            if (RealTimeOutput)
+            {
+                sb.Append(" -R");
+            }
+            if (WriteLogToFile)
+            {
+                sb.AppendFormat(" -o {0}", LogFile);
+            }
+            return sb.ToString();
         }
     }
 }

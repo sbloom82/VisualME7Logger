@@ -27,14 +27,14 @@ namespace VisualME7Logger
             //{"vfzg", new List<double>(){0, 7}}//speed
         };
 
-        public Form1(string configFile, string parameters)
+        public Form1(string configFile, VisualME7Logger.Session.LoggerOptions options)
         {
             InitializeComponent();
 
             cmbChartType.DataSource = Enum.GetValues(typeof(SeriesChartType));
             cmbChartType.SelectedItem = SeriesChartType.FastLine;
 
-            session = new ME7LoggerSession(Program.ME7LoggerDirectory, parameters, configFile);
+            session = new ME7LoggerSession(Program.ME7LoggerDirectory, options, configFile);
             //session = new ME7LoggerSession(@"C:\ME7Logger\out7.out", @"C:\ME7Logger\logs\allroad.log");
             //session = new ME7LoggerSession(Program.ME7LoggerDirectory, @"-p COM1 -R -o C:\me7logger\logs\allroad.log", @"C:\me7logger\logs\allroad-config.cfg");
             session.StatusChanged += new ME7LoggerSession.LoggerSessionStatusChanged(this.SessionStatusChanged);

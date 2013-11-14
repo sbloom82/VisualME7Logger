@@ -14,12 +14,13 @@ namespace VisualME7Logger
     public partial class SettingsForm : Form
     {
         ECUFile SelectedECUFile { get; set; }
+        VisualME7Logger.Session.LoggerOptions LoggerOptions { get; set; }
 
         public SettingsForm()
         {
             InitializeComponent();
+            this.LoggerOptions = new Session.LoggerOptions(Program.ME7LoggerDirectory);
             this.LoadSettings();
-            this.txtLogFile.Text = System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs", "VisualME7Logger_log.txt");
         }
 
         private void loadECUFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -136,14 +137,8 @@ namespace VisualME7Logger
 
                 ConfigFile configFile = new ConfigFile(this.SelectedECUFile.FileName, ms);
                 configFile.Write(txtConfigFile.Text);
-
-                string parameters = "-p COM1 -R";
-                if (!string.IsNullOrEmpty(this.txtLogFile.Text))
-                {
-                    parameters += " -o \"" + this.txtLogFile.Text.Trim() + "\"";
-                }
-
-                Form1 logForm = new Form1(txtConfigFile.Text, parameters);
+                              
+                Form1 logForm = new Form1(txtConfigFile.Text, this.LoggerOptions);
                 logForm.ShowDialog(this);
             }
             else
@@ -151,7 +146,7 @@ namespace VisualME7Logger
                 MessageBox.Show("No Measurements Selected");
             }
         }
-        
+
         private void loadConfigFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
@@ -247,25 +242,25 @@ namespace VisualME7Logger
                 XElement root = new XElement("VisualME7LoggerSettings");
                 root.Add(new XAttribute("ECUFile", this.txtECUFile.Text));
                 root.Add(new XAttribute("ConfigFile", this.txtConfigFile.Text));
-                root.Add(new XAttribute("LogFile", this.txtLogFile.Text));
-                root.Save(System.IO.Path.Combine(Program.ME7LoggerDirectory, "VisualME7Logger.cfg"));
+                root.Add(this.LoggerOptions.Write());
+                root.Save(System.IO.Path.Combine(Program.ME7LoggerDirectory, "VisualME7Logger.cfg.xml"));
             }
             catch { }
         }
 
         void LoadSettings()
         {
-            string filePath = System.IO.Path.Combine(Program.ME7LoggerDirectory, "VisualME7Logger.cfg");                
-            if(System.IO.File.Exists(filePath))
+            string filePath = System.IO.Path.Combine(Program.ME7LoggerDirectory, "VisualME7Logger.cfg.xml");
+            if (System.IO.File.Exists(filePath))
             {
                 XElement root = XElement.Load(filePath);
-                foreach(XAttribute att in root.Attributes())
+                foreach (XAttribute att in root.Attributes())
                 {
-                    switch(att.Name.LocalName)
+                    switch (att.Name.LocalName)
                     {
-                        case "ECUFile":                        
+                        case "ECUFile":
                             ECUFile file = new ECUFile(att.Value);
-                            if(file.Open())
+                            if (file.Open())
                             {
                                 txtECUFile.Text = att.Value;
                                 this.SelectedECUFile = file;
@@ -275,12 +270,35 @@ namespace VisualME7Logger
                         case "ConfigFile":
                             this.LoadConfigFile(att.Value);
                             break;
-                        case "LogFile":
-                            txtLogFile.Text = att.Value;
+                    }
+                }
+
+                foreach (XElement ele in root.Elements())
+                {
+                    switch (ele.Name.LocalName)
+                    {
+                        case "Options":
+                            this.LoggerOptions.Read(ele);
                             break;
                     }
                 }
-            }            
+            }
+        }
+
+        private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new OptionsForm(this.LoggerOptions).ShowDialog();            
+       
+        }
+
+        private void lstAvailMeasurements_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            btnAddMeasurement_Click(sender, e);
+        }
+
+        private void lstSelectedMeasurements_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            btnRemoveMeasurement_Click(sender, e);
         }
     }
 }
