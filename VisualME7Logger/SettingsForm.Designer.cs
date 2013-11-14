@@ -38,6 +38,7 @@
             this.createECUFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lstAvailMeasurements = new System.Windows.Forms.ListBox();
             this.btnAddMeasurement = new System.Windows.Forms.Button();
             this.btnRemoveMeasurement = new System.Windows.Forms.Button();
@@ -46,14 +47,13 @@
             this.lstSelectedMeasurements = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.splitter1 = new System.Windows.Forms.Splitter();
             this.panel2 = new System.Windows.Forms.Panel();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.txtConfigFile = new System.Windows.Forms.TextBox();
             this.txtECUFile = new System.Windows.Forms.TextBox();
             this.btnStartLog = new System.Windows.Forms.Button();
-            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.splitter1 = new System.Windows.Forms.Splitter();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -137,6 +137,13 @@
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
+            // optionsToolStripMenuItem
+            // 
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.optionsToolStripMenuItem.Text = "Options";
+            this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
+            // 
             // lstAvailMeasurements
             // 
             this.lstAvailMeasurements.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -145,7 +152,7 @@
             this.lstAvailMeasurements.Location = new System.Drawing.Point(9, 32);
             this.lstAvailMeasurements.Name = "lstAvailMeasurements";
             this.lstAvailMeasurements.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lstAvailMeasurements.Size = new System.Drawing.Size(300, 147);
+            this.lstAvailMeasurements.Size = new System.Drawing.Size(300, 277);
             this.lstAvailMeasurements.TabIndex = 3;
             this.lstAvailMeasurements.SelectedValueChanged += new System.EventHandler(this.lstAvailMeasurements_SelectedValueChanged);
             this.lstAvailMeasurements.KeyUp += new System.Windows.Forms.KeyEventHandler(this.lstAvailMeasurements_KeyUp);
@@ -182,10 +189,11 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(733, 185);
+            this.groupBox1.Size = new System.Drawing.Size(733, 318);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Measurements:";
+            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
             // label2
             // 
@@ -205,7 +213,7 @@
             this.lstSelectedMeasurements.Location = new System.Drawing.Point(396, 32);
             this.lstSelectedMeasurements.Name = "lstSelectedMeasurements";
             this.lstSelectedMeasurements.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lstSelectedMeasurements.Size = new System.Drawing.Size(328, 147);
+            this.lstSelectedMeasurements.Size = new System.Drawing.Size(328, 277);
             this.lstSelectedMeasurements.TabIndex = 8;
             this.lstSelectedMeasurements.SelectedValueChanged += new System.EventHandler(this.lstSelectedMeasurements_SelectedValueChanged);
             this.lstSelectedMeasurements.KeyUp += new System.Windows.Forms.KeyEventHandler(this.lstSelectedMeasurements_KeyUp);
@@ -223,20 +231,11 @@
             // panel1
             // 
             this.panel1.Controls.Add(this.groupBox1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 24);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(733, 185);
+            this.panel1.Size = new System.Drawing.Size(733, 318);
             this.panel1.TabIndex = 8;
-            // 
-            // splitter1
-            // 
-            this.splitter1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.splitter1.Location = new System.Drawing.Point(0, 209);
-            this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(733, 3);
-            this.splitter1.TabIndex = 9;
-            this.splitter1.TabStop = false;
             // 
             // panel2
             // 
@@ -245,10 +244,10 @@
             this.panel2.Controls.Add(this.txtConfigFile);
             this.panel2.Controls.Add(this.txtECUFile);
             this.panel2.Controls.Add(this.btnStartLog);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(0, 209);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel2.Location = new System.Drawing.Point(0, 345);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(733, 97);
+            this.panel2.Size = new System.Drawing.Size(733, 89);
             this.panel2.TabIndex = 10;
             // 
             // label4
@@ -300,21 +299,23 @@
             this.btnStartLog.UseVisualStyleBackColor = true;
             this.btnStartLog.Click += new System.EventHandler(this.btnStartLog_Click);
             // 
-            // optionsToolStripMenuItem
+            // splitter1
             // 
-            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-            this.optionsToolStripMenuItem.Text = "Options";
-            this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
+            this.splitter1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.splitter1.Location = new System.Drawing.Point(0, 342);
+            this.splitter1.Name = "splitter1";
+            this.splitter1.Size = new System.Drawing.Size(733, 3);
+            this.splitter1.TabIndex = 11;
+            this.splitter1.TabStop = false;
             // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(733, 306);
+            this.ClientSize = new System.Drawing.Size(733, 434);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.panel2);
-            this.Controls.Add(this.panel1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "SettingsForm";
@@ -345,7 +346,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ListBox lstSelectedMeasurements;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Splitter splitter1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnStartLog;
@@ -360,6 +360,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.Windows.Forms.Splitter splitter1;
 
 
     }

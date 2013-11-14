@@ -15,8 +15,6 @@ namespace VisualME7Logger
         public OptionsForm(VisualME7Logger.Session.LoggerOptions options)
         {
             InitializeComponent();
-            this.txtLogFilePath.Text = System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs", "VisualME7Logger_log.txt");
-            this.cmbBaudRate.Text = "56000";
             this.Options = options;
             this.LoadOptions();
             this.SwitchUI();
@@ -24,12 +22,74 @@ namespace VisualME7Logger
 
         private void LoadOptions()
         {
-            //todo
+            radCommDefault.Checked = Options.ConnectionType == Session.LoggerOptions.ConnectionTypes.Default;
+            radCommCOMPort.Checked = Options.ConnectionType == Session.LoggerOptions.ConnectionTypes.COM;
+            radFTDI.Checked = !radCommDefault.Checked && !radCommCOMPort.Checked;
+            chkFTDISerial.Checked = Options.ConnectionType == Session.LoggerOptions.ConnectionTypes.FTDISerial;
+            chkFTDIDesc.Checked = Options.ConnectionType == Session.LoggerOptions.ConnectionTypes.FTDIDescription;
+            chkFTDILocation.Checked = Options.ConnectionType == Session.LoggerOptions.ConnectionTypes.FTDILocation;
+
+            txtCOMPort.Text = Options.COMPort;
+            txtFTDIInfo.Text = Options.FTDIInfo;
+
+            chkOverrideBaudRate.Checked = Options.OverrideBaudRate;
+            cmbBaudRate.Text = Options.BaudRate.ToString();
+
+            chkOverrideSampleRate.Checked = Options.OverrideSampleRate;
+            nudSampleRate.Value = Options.SampleRate;
+
+            chkWriteToLogRealTime.Checked = Options.WriteLogRealTime;
+            chkTimeSync.Checked = Options.TimeSync;
+            chkWriteAbsoluteTimeStamp.Checked = Options.WriteAbsoluteTimestamp;
+            chkReadSingleMeasurement.Checked = Options.ReadSingleMeasurement;
+
+            chkWriteToLog.Checked = Options.WriteLogToFile;
+            txtLogFilePath.Text = Options.LogFile;
         }
 
         private void SaveOptions()
         {
-            //todo
+            if (radCommDefault.Checked)
+            {
+                Options.ConnectionType = Session.LoggerOptions.ConnectionTypes.Default;
+            }
+            else if (radCommCOMPort.Checked)
+            {
+                Options.ConnectionType = Session.LoggerOptions.ConnectionTypes.COM;
+            }
+            else
+            {
+                 Options.ConnectionType = Session.LoggerOptions.ConnectionTypes.FTDI;
+                if (chkFTDIDesc.Checked)
+                {
+                    Options.ConnectionType = Session.LoggerOptions.ConnectionTypes.FTDIDescription;
+                }
+                else if (chkFTDILocation.Checked)
+                {
+                    Options.ConnectionType = Session.LoggerOptions.ConnectionTypes.FTDILocation;
+                }
+                else if (chkFTDISerial.Checked)
+                {
+                    Options.ConnectionType = Session.LoggerOptions.ConnectionTypes.FTDISerial;
+                }
+            }
+
+            Options.COMPort = txtCOMPort.Text;
+            Options.FTDIInfo = txtFTDIInfo.Text;
+
+            Options.OverrideBaudRate = chkOverrideBaudRate.Checked;
+            Options.BaudRate = int.Parse(cmbBaudRate.Text);
+
+            Options.OverrideSampleRate = chkOverrideSampleRate.Checked;
+            Options.SampleRate = (int)nudSampleRate.Value;
+
+            Options.WriteLogRealTime = chkWriteToLogRealTime.Checked;
+            Options.TimeSync = chkTimeSync.Checked;
+            Options.WriteAbsoluteTimestamp = chkWriteAbsoluteTimeStamp.Checked;
+            Options.ReadSingleMeasurement = chkReadSingleMeasurement.Checked;
+
+            Options.WriteLogToFile = chkWriteToLog.Checked;
+            Options.LogFile = txtLogFilePath.Text;           
         }
 
         private void SwitchUI()
@@ -40,7 +100,8 @@ namespace VisualME7Logger
                 this.chkFTDISerial.Enabled = 
                 this.txtFTDIInfo.Enabled = radFTDI.Checked;
             this.cmbBaudRate.Enabled = this.chkOverrideBaudRate.Checked;
-            this.nudSampleRate.Enabled = this.chkOverrideSampleRate.Checked; 
+            this.nudSampleRate.Enabled = this.chkOverrideSampleRate.Checked;
+            this.txtLogFilePath.Enabled = this.chkWriteToLog.Checked;
         }
                
         private void chkFTDISerial_CheckedChanged(object sender, EventArgs e)
@@ -102,6 +163,11 @@ namespace VisualME7Logger
         {
             SaveOptions();
             DialogResult = System.Windows.Forms.DialogResult.OK;
+        }
+
+        private void chkWriteToLog_CheckedChanged(object sender, EventArgs e)
+        {
+            this.SwitchUI();
         }
     }
 }

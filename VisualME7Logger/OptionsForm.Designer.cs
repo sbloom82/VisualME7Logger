@@ -116,6 +116,7 @@
             // 
             // cmbBaudRate
             // 
+            this.cmbBaudRate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbBaudRate.FormattingEnabled = true;
             this.cmbBaudRate.Items.AddRange(new object[] {
             "10400",
@@ -220,6 +221,7 @@
             this.chkWriteToLog.TabIndex = 6;
             this.chkWriteToLog.Text = "Write log to file:";
             this.chkWriteToLog.UseVisualStyleBackColor = true;
+            this.chkWriteToLog.CheckedChanged += new System.EventHandler(this.chkWriteToLog_CheckedChanged);
             // 
             // chkReadSingleMeasurement
             // 
@@ -326,6 +328,7 @@
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximumSize = new System.Drawing.Size(450, 396);
             this.MinimumSize = new System.Drawing.Size(450, 396);
             this.Name = "OptionsForm";
