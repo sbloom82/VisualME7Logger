@@ -51,6 +51,10 @@
             this.txtConfigFile = new System.Windows.Forms.TextBox();
             this.txtECUFile = new System.Windows.Forms.TextBox();
             this.btnStartLog = new System.Windows.Forms.Button();
+            this.createECUFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -71,8 +75,12 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadECUFileToolStripMenuItem,
+            this.toolStripMenuItem1,
             this.loadConfigFileToolStripMenuItem,
             this.clearConfigFileToolStripMenuItem,
+            this.toolStripMenuItem2,
+            this.createECUFileToolStripMenuItem,
+            this.toolStripMenuItem3,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -288,6 +296,28 @@
             this.btnStartLog.UseVisualStyleBackColor = true;
             this.btnStartLog.Click += new System.EventHandler(this.btnStartLog_Click);
             // 
+            // createECUFileToolStripMenuItem
+            // 
+            this.createECUFileToolStripMenuItem.Name = "createECUFileToolStripMenuItem";
+            this.createECUFileToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.createECUFileToolStripMenuItem.Text = "Create ECU File";
+            this.createECUFileToolStripMenuItem.Click += new System.EventHandler(this.createECUFileToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(158, 6);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(158, 6);
+            // 
+            // toolStripMenuItem3
+            // 
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(158, 6);
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -338,6 +368,10 @@
         private System.Windows.Forms.TextBox txtECUFile;
         private System.Windows.Forms.TextBox txtLogFile;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ToolStripMenuItem createECUFileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
 
 
     }

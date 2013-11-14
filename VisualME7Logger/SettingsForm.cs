@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using VisualME7Logger.Configuration;
+using System.Xml.Linq;
 
 namespace VisualME7Logger
 {
@@ -17,6 +18,7 @@ namespace VisualME7Logger
         public SettingsForm()
         {
             InitializeComponent();
+            this.LoadSettings();
             this.txtLogFile.Text = System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs", "VisualME7Logger_log.txt");
         }
 
@@ -24,6 +26,8 @@ namespace VisualME7Logger
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.InitialDirectory = System.IO.Path.Combine(Program.ME7LoggerDirectory, "ecus");
+            ofd.Title = "Select ECU File";
+            ofd.Filter = "ECU Files (*.ecu)|*.ecu";
             if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 this.SelectedECUFile = null;
@@ -43,11 +47,7 @@ namespace VisualME7Logger
                 this.loadConfigFileToolStripMenuItem.Enabled = true;
                 this.btnStartLog.Enabled = true;
 
-                foreach (Measurement m in this.SelectedECUFile.Measurements.Values.Where(m => !string.IsNullOrEmpty(m.Alias)).OrderBy(m => m.Alias).ThenBy(m => m.Name))
-                {
-                    lstAvailMeasurements.Items.Add(m);
-                }
-                foreach (Measurement m in this.SelectedECUFile.Measurements.Values.Where(m => string.IsNullOrEmpty(m.Alias)).OrderBy(m => m.Name))
+                foreach (Measurement m in this.SelectedECUFile.Measurements.Values)
                 {
                     lstAvailMeasurements.Items.Add(m);
                 }
@@ -120,11 +120,13 @@ namespace VisualME7Logger
                     d.Title = "Save Config File As...";
                     d.InitialDirectory = System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs");
                     if (d.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                    { 
+                    {
                         return;
                     }
                     this.txtConfigFile.Text = d.FileName;
                 }
+
+                this.SaveSettings();
 
                 Measurements ms = new Measurements();
                 foreach (Measurement m in lstSelectedMeasurements.Items)
@@ -136,46 +138,57 @@ namespace VisualME7Logger
                 configFile.Write(txtConfigFile.Text);
 
                 string parameters = "-p COM1 -R";
-                if(!string.IsNullOrEmpty(this.txtLogFile.Text))
+                if (!string.IsNullOrEmpty(this.txtLogFile.Text))
                 {
                     parameters += " -o \"" + this.txtLogFile.Text.Trim() + "\"";
                 }
 
                 Form1 logForm = new Form1(txtConfigFile.Text, parameters);
-                logForm.ShowDialog(this);            
+                logForm.ShowDialog(this);
+            }
+            else
+            {
+                MessageBox.Show("No Measurements Selected");
             }
         }
-
+        
         private void loadConfigFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.InitialDirectory = System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs");
+            ofd.Title = "Select Config File";
+            ofd.Filter = "Config Files (*.cfg)|*.cfg";
             if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                ConfigFile configFile = new ConfigFile(this.SelectedECUFile.FileName);
                 try
                 {
-                    configFile.Read(ofd.FileName);
-                    this.txtConfigFile.Text = ofd.FileName;
-
-                    lstAvailMeasurements.Items.Clear();
-                    lstSelectedMeasurements.Items.Clear();
-
-                    foreach (Measurement m in this.SelectedECUFile.Measurements.Values)
-                    {
-                        if (configFile.Measurements[m.Name] != null)
-                        {
-                            lstSelectedMeasurements.Items.Add(m);
-                        }
-                        else
-                        {
-                            lstAvailMeasurements.Items.Add(m);
-                        }
-                    }
+                    this.LoadConfigFile(ofd.FileName);
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.ToString());
+                }
+            }
+        }
+
+        private void LoadConfigFile(string filePath)
+        {
+            ConfigFile configFile = new ConfigFile(this.SelectedECUFile.FileName);
+            configFile.Read(filePath);
+            this.txtConfigFile.Text = filePath;
+
+            lstAvailMeasurements.Items.Clear();
+            lstSelectedMeasurements.Items.Clear();
+
+            foreach (Measurement m in this.SelectedECUFile.Measurements.Values)
+            {
+                if (configFile.Measurements[m.Name] != null)
+                {
+                    lstSelectedMeasurements.Items.Add(m);
+                }
+                else
+                {
+                    lstAvailMeasurements.Items.Add(m);
                 }
             }
         }
@@ -199,6 +212,75 @@ namespace VisualME7Logger
             {
                 btnAddMeasurement_Click(sender, e);
             }
+        }
+
+        private void createECUFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.InitialDirectory = System.IO.Path.Combine(Program.ME7LoggerDirectory, "images");
+            ofd.Title = "Select ECU Image File";
+            ofd.Filter = "ECU Images (*.bin)|*.bin";
+            if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                try
+                {
+                    ECUFile ecuFile = ECUFile.Create(Program.ME7LoggerDirectory, ofd.FileName);
+                    if (DialogResult.Yes == MessageBox.Show(string.Format("ECU File Created at:{1}{1}{0}{1}{1}Would you like to load this ECU File now?", ecuFile.FilePath, Environment.NewLine),
+                                                            "ECU File created successfully", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1))
+                    {
+                        if (ecuFile.Open())
+                            this.SelectedECUFile = ecuFile;
+                        this.LoadECUFile();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
+            }
+        }
+
+        void SaveSettings()
+        {
+            try
+            {
+                XElement root = new XElement("VisualME7LoggerSettings");
+                root.Add(new XAttribute("ECUFile", this.txtECUFile.Text));
+                root.Add(new XAttribute("ConfigFile", this.txtConfigFile.Text));
+                root.Add(new XAttribute("LogFile", this.txtLogFile.Text));
+                root.Save(System.IO.Path.Combine(Program.ME7LoggerDirectory, "VisualME7Logger.cfg"));
+            }
+            catch { }
+        }
+
+        void LoadSettings()
+        {
+            string filePath = System.IO.Path.Combine(Program.ME7LoggerDirectory, "VisualME7Logger.cfg");                
+            if(System.IO.File.Exists(filePath))
+            {
+                XElement root = XElement.Load(filePath);
+                foreach(XAttribute att in root.Attributes())
+                {
+                    switch(att.Name.LocalName)
+                    {
+                        case "ECUFile":                        
+                            ECUFile file = new ECUFile(att.Value);
+                            if(file.Open())
+                            {
+                                txtECUFile.Text = att.Value;
+                                this.SelectedECUFile = file;
+                                LoadECUFile();
+                            }
+                            break;
+                        case "ConfigFile":
+                            this.LoadConfigFile(att.Value);
+                            break;
+                        case "LogFile":
+                            txtLogFile.Text = att.Value;
+                            break;
+                    }
+                }
+            }            
         }
     }
 }
