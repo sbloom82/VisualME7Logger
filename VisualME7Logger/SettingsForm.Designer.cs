@@ -291,6 +291,7 @@
             // 
             // btnStartLog
             // 
+            this.btnStartLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnStartLog.Location = new System.Drawing.Point(646, 60);
             this.btnStartLog.Name = "btnStartLog";
             this.btnStartLog.Size = new System.Drawing.Size(75, 23);
