@@ -13,14 +13,49 @@ namespace VisualME7Logger
 {
     public partial class SettingsForm : Form
     {
+        enum GridColumns
+        {
+            Selected = 0,
+            Name = 1,
+            Alias = 2,
+            Unit = 3,
+            Comment = 4,
+            MeasurementObject = 5
+        }
+
         ECUFile SelectedECUFile { get; set; }
         VisualME7Logger.Session.LoggerOptions LoggerOptions { get; set; }
 
         public SettingsForm()
         {
             InitializeComponent();
+
+            SetupGrid();
+
             this.LoggerOptions = new Session.LoggerOptions(Program.ME7LoggerDirectory);
             this.LoadSettings();
+        }
+
+        void SetupGrid()
+        {
+            CheckBox ckBox = new CheckBox();
+            //Get the column header cell bounds
+            Rectangle rect = this.dataGridView1.GetCellDisplayRectangle(0, -1, true);
+            ckBox.Size = new Size(13, 13);
+            //Change the location of the CheckBox to make it stay on the header
+            ckBox.Location = new Point(5, 5);
+            ckBox.CheckedChanged += ckBox_CheckedChanged;
+            //Add the CheckBox into the DataGridView
+            this.dataGridView1.Controls.Add(ckBox);
+        }
+
+        void ckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            bool chked = ((CheckBox)sender).Checked;            
+            foreach (DataGridViewRow r in dataGridView1.Rows)
+            {
+                r.Cells[(int)GridColumns.Selected].Value = chked;                
+            }
         }
 
         private void loadECUFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -48,15 +83,22 @@ namespace VisualME7Logger
                 this.loadConfigFileToolStripMenuItem.Enabled = true;
                 this.btnStartLog.Enabled = true;
 
-                foreach (Measurement m in this.SelectedECUFile.Measurements.Values)
+                foreach (Measurement m in this.SelectedECUFile.Measurements.Values.Where(m => !string.IsNullOrEmpty(m.Alias)).OrderBy(m => m.Alias).ThenBy(m => m.Name))
                 {
                     lstAvailMeasurements.Items.Add(m);
+                    dataGridView1.Rows.Add(false, m.Name, m.Alias, m.Unit, m.Comment,m);
+                }
+                foreach (Measurement m in this.SelectedECUFile.Measurements.Values.Where(m => string.IsNullOrEmpty(m.Alias)).OrderBy(m => m.Alias).ThenBy(m => m.Name))
+                {
+                    lstAvailMeasurements.Items.Add(m);
+                    dataGridView1.Rows.Add(false, m.Name, m.Alias, m.Unit, m.Comment, m);
                 }
             }
         }
 
         private void Clear()
         {
+            dataGridView1.Rows.Clear();
             lstAvailMeasurements.Items.Clear();
             lstSelectedMeasurements.Items.Clear();
             txtConfigFile.Text = string.Empty;
@@ -113,7 +155,16 @@ namespace VisualME7Logger
 
         private void btnStartLog_Click(object sender, EventArgs e)
         {
-            if (lstSelectedMeasurements.Items.Count > 0)
+            Measurements ms = new Measurements();
+            foreach (DataGridViewRow r in this.dataGridView1.Rows)
+            {
+                if ((bool)r.Cells[(int)GridColumns.Selected].Value == true)
+                {
+                    ms.AddMeasurement((Measurement)r.Cells[(int)GridColumns.MeasurementObject].Value);
+                }
+            }
+
+            if (ms.Values.Count() > 0)
             {
                 if (string.IsNullOrEmpty(this.txtConfigFile.Text))
                 {
@@ -129,11 +180,12 @@ namespace VisualME7Logger
 
                 this.SaveSettings();
 
+                /*
                 Measurements ms = new Measurements();
                 foreach (Measurement m in lstSelectedMeasurements.Items)
                 {
                     ms.AddMeasurement(m);
-                }
+                }*/
 
                 ConfigFile configFile = new ConfigFile(this.SelectedECUFile.FileName, ms);
                 configFile.Write(txtConfigFile.Text);
@@ -180,6 +232,14 @@ namespace VisualME7Logger
                 if (configFile.Measurements[m.Name] != null)
                 {
                     lstSelectedMeasurements.Items.Add(m);
+
+                    foreach (DataGridViewRow r in this.dataGridView1.Rows)
+                    {
+                        if (r.Cells[(int)GridColumns.Name].Value == m.Name)
+                        {
+                            r.Cells[(int)GridColumns.Selected].Value = true;
+                        }
+                    }
                 }
                 else
                 {
@@ -300,13 +360,16 @@ namespace VisualME7Logger
         {
             btnRemoveMeasurement_Click(sender, e);
         }
-
-        private void groupBox1_Enter(object sender, EventArgs e)
+               
+        private void dataGridView1_KeyDown(object sender, KeyEventArgs e)
         {
-
-        }
-
-
-        
+            if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
+            {
+                foreach (DataGridViewRow r in this.dataGridView1.SelectedRows)
+                {
+                    r.Cells[(int)GridColumns.Selected].Value = !(bool)r.Cells[(int)GridColumns.Selected].Value;
+                }
+            }
+        }        
     }
 }
