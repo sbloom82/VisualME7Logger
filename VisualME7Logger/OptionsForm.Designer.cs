@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.radLogFile = new System.Windows.Forms.RadioButton();
             this.txtFTDIInfo = new System.Windows.Forms.TextBox();
             this.chkFTDILocation = new System.Windows.Forms.CheckBox();
             this.chkFTDIDesc = new System.Windows.Forms.CheckBox();
@@ -39,24 +40,28 @@
             this.radFTDI = new System.Windows.Forms.RadioButton();
             this.radCommCOMPort = new System.Windows.Forms.RadioButton();
             this.radCommDefault = new System.Windows.Forms.RadioButton();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.txtLogFilePath = new System.Windows.Forms.TextBox();
-            this.chkWriteToLog = new System.Windows.Forms.CheckBox();
+            this.gpOther = new System.Windows.Forms.GroupBox();
             this.chkReadSingleMeasurement = new System.Windows.Forms.CheckBox();
             this.chkWriteAbsoluteTimeStamp = new System.Windows.Forms.CheckBox();
             this.nudSampleRate = new System.Windows.Forms.NumericUpDown();
             this.chkTimeSync = new System.Windows.Forms.CheckBox();
             this.chkWriteToLogRealTime = new System.Windows.Forms.CheckBox();
             this.chkOverrideSampleRate = new System.Windows.Forms.CheckBox();
+            this.txtLogFilePath = new System.Windows.Forms.TextBox();
+            this.chkWriteToLog = new System.Windows.Forms.CheckBox();
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btnChooseLogPath = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            this.gpOther.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudSampleRate)).BeginInit();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.radLogFile);
             this.groupBox1.Controls.Add(this.txtFTDIInfo);
             this.groupBox1.Controls.Add(this.chkFTDILocation);
             this.groupBox1.Controls.Add(this.chkFTDIDesc);
@@ -69,25 +74,36 @@
             this.groupBox1.Controls.Add(this.radCommDefault);
             this.groupBox1.Location = new System.Drawing.Point(3, 1);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(424, 114);
+            this.groupBox1.Size = new System.Drawing.Size(424, 125);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Communication";
             // 
+            // radLogFile
+            // 
+            this.radLogFile.AutoSize = true;
+            this.radLogFile.Location = new System.Drawing.Point(6, 35);
+            this.radLogFile.Name = "radLogFile";
+            this.radLogFile.Size = new System.Drawing.Size(62, 17);
+            this.radLogFile.TabIndex = 1;
+            this.radLogFile.Text = "Log File";
+            this.radLogFile.UseVisualStyleBackColor = true;
+            this.radLogFile.CheckedChanged += new System.EventHandler(this.radLogFile_CheckedChanged);
+            // 
             // txtFTDIInfo
             // 
-            this.txtFTDIInfo.Location = new System.Drawing.Point(265, 63);
+            this.txtFTDIInfo.Location = new System.Drawing.Point(265, 73);
             this.txtFTDIInfo.Name = "txtFTDIInfo";
             this.txtFTDIInfo.Size = new System.Drawing.Size(114, 20);
-            this.txtFTDIInfo.TabIndex = 7;
+            this.txtFTDIInfo.TabIndex = 8;
             // 
             // chkFTDILocation
             // 
             this.chkFTDILocation.AutoSize = true;
-            this.chkFTDILocation.Location = new System.Drawing.Point(192, 66);
+            this.chkFTDILocation.Location = new System.Drawing.Point(192, 76);
             this.chkFTDILocation.Name = "chkFTDILocation";
             this.chkFTDILocation.Size = new System.Drawing.Size(67, 17);
-            this.chkFTDILocation.TabIndex = 6;
+            this.chkFTDILocation.TabIndex = 7;
             this.chkFTDILocation.Text = "Location";
             this.chkFTDILocation.UseVisualStyleBackColor = true;
             this.chkFTDILocation.CheckedChanged += new System.EventHandler(this.chkFTDILocation_CheckedChanged);
@@ -95,10 +111,10 @@
             // chkFTDIDesc
             // 
             this.chkFTDIDesc.AutoSize = true;
-            this.chkFTDIDesc.Location = new System.Drawing.Point(113, 66);
+            this.chkFTDIDesc.Location = new System.Drawing.Point(113, 76);
             this.chkFTDIDesc.Name = "chkFTDIDesc";
             this.chkFTDIDesc.Size = new System.Drawing.Size(79, 17);
-            this.chkFTDIDesc.TabIndex = 5;
+            this.chkFTDIDesc.TabIndex = 6;
             this.chkFTDIDesc.Text = "Description";
             this.chkFTDIDesc.UseVisualStyleBackColor = true;
             this.chkFTDIDesc.CheckedChanged += new System.EventHandler(this.chkFTDIDesc_CheckedChanged);
@@ -106,10 +122,10 @@
             // chkFTDISerial
             // 
             this.chkFTDISerial.AutoSize = true;
-            this.chkFTDISerial.Location = new System.Drawing.Point(61, 66);
+            this.chkFTDISerial.Location = new System.Drawing.Point(61, 76);
             this.chkFTDISerial.Name = "chkFTDISerial";
             this.chkFTDISerial.Size = new System.Drawing.Size(52, 17);
-            this.chkFTDISerial.TabIndex = 4;
+            this.chkFTDISerial.TabIndex = 5;
             this.chkFTDISerial.Text = "Serial";
             this.chkFTDISerial.UseVisualStyleBackColor = true;
             this.chkFTDISerial.CheckedChanged += new System.EventHandler(this.chkFTDISerial_CheckedChanged);
@@ -126,37 +142,37 @@
             "56000",
             "76800",
             "125000"});
-            this.cmbBaudRate.Location = new System.Drawing.Point(129, 87);
+            this.cmbBaudRate.Location = new System.Drawing.Point(129, 97);
             this.cmbBaudRate.Name = "cmbBaudRate";
             this.cmbBaudRate.Size = new System.Drawing.Size(121, 21);
-            this.cmbBaudRate.TabIndex = 9;
+            this.cmbBaudRate.TabIndex = 10;
             // 
             // chkOverrideBaudRate
             // 
             this.chkOverrideBaudRate.AutoSize = true;
-            this.chkOverrideBaudRate.Location = new System.Drawing.Point(6, 89);
+            this.chkOverrideBaudRate.Location = new System.Drawing.Point(6, 99);
             this.chkOverrideBaudRate.Name = "chkOverrideBaudRate";
             this.chkOverrideBaudRate.Size = new System.Drawing.Size(117, 17);
-            this.chkOverrideBaudRate.TabIndex = 8;
+            this.chkOverrideBaudRate.TabIndex = 9;
             this.chkOverrideBaudRate.Text = "Override baud rate:";
             this.chkOverrideBaudRate.UseVisualStyleBackColor = true;
             this.chkOverrideBaudRate.CheckedChanged += new System.EventHandler(this.chkOverrideBaudRate_CheckedChanged);
             // 
             // txtCOMPort
             // 
-            this.txtCOMPort.Location = new System.Drawing.Point(86, 42);
+            this.txtCOMPort.Location = new System.Drawing.Point(86, 54);
             this.txtCOMPort.Name = "txtCOMPort";
             this.txtCOMPort.Size = new System.Drawing.Size(114, 20);
-            this.txtCOMPort.TabIndex = 2;
+            this.txtCOMPort.TabIndex = 3;
             this.txtCOMPort.Text = "COM1";
             // 
             // radFTDI
             // 
             this.radFTDI.AutoSize = true;
-            this.radFTDI.Location = new System.Drawing.Point(6, 65);
+            this.radFTDI.Location = new System.Drawing.Point(6, 75);
             this.radFTDI.Name = "radFTDI";
             this.radFTDI.Size = new System.Drawing.Size(52, 17);
-            this.radFTDI.TabIndex = 3;
+            this.radFTDI.TabIndex = 4;
             this.radFTDI.Text = "FTDI:";
             this.radFTDI.UseVisualStyleBackColor = true;
             this.radFTDI.CheckedChanged += new System.EventHandler(this.radFTDI_CheckedChanged);
@@ -164,10 +180,10 @@
             // radCommCOMPort
             // 
             this.radCommCOMPort.AutoSize = true;
-            this.radCommCOMPort.Location = new System.Drawing.Point(6, 42);
+            this.radCommCOMPort.Location = new System.Drawing.Point(6, 55);
             this.radCommCOMPort.Name = "radCommCOMPort";
             this.radCommCOMPort.Size = new System.Drawing.Size(74, 17);
-            this.radCommCOMPort.TabIndex = 1;
+            this.radCommCOMPort.TabIndex = 2;
             this.radCommCOMPort.Text = "COM Port:";
             this.radCommCOMPort.UseVisualStyleBackColor = true;
             this.radCommCOMPort.CheckedChanged += new System.EventHandler(this.radCommCOMPort_CheckedChanged);
@@ -176,7 +192,7 @@
             // 
             this.radCommDefault.AutoSize = true;
             this.radCommDefault.Checked = true;
-            this.radCommDefault.Location = new System.Drawing.Point(6, 19);
+            this.radCommDefault.Location = new System.Drawing.Point(6, 15);
             this.radCommDefault.Name = "radCommDefault";
             this.radCommDefault.Size = new System.Drawing.Size(59, 17);
             this.radCommDefault.TabIndex = 0;
@@ -185,43 +201,20 @@
             this.radCommDefault.UseVisualStyleBackColor = true;
             this.radCommDefault.CheckedChanged += new System.EventHandler(this.radCommDefault_CheckedChanged);
             // 
-            // groupBox2
+            // gpOther
             // 
-            this.groupBox2.Controls.Add(this.txtLogFilePath);
-            this.groupBox2.Controls.Add(this.chkWriteToLog);
-            this.groupBox2.Controls.Add(this.chkReadSingleMeasurement);
-            this.groupBox2.Controls.Add(this.chkWriteAbsoluteTimeStamp);
-            this.groupBox2.Controls.Add(this.nudSampleRate);
-            this.groupBox2.Controls.Add(this.chkTimeSync);
-            this.groupBox2.Controls.Add(this.chkWriteToLogRealTime);
-            this.groupBox2.Controls.Add(this.chkOverrideSampleRate);
-            this.groupBox2.Location = new System.Drawing.Point(3, 115);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(424, 207);
-            this.groupBox2.TabIndex = 1;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Other";
-            // 
-            // txtLogFilePath
-            // 
-            this.txtLogFilePath.Location = new System.Drawing.Point(6, 157);
-            this.txtLogFilePath.Multiline = true;
-            this.txtLogFilePath.Name = "txtLogFilePath";
-            this.txtLogFilePath.Size = new System.Drawing.Size(412, 44);
-            this.txtLogFilePath.TabIndex = 7;
-            // 
-            // chkWriteToLog
-            // 
-            this.chkWriteToLog.AutoSize = true;
-            this.chkWriteToLog.Checked = true;
-            this.chkWriteToLog.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkWriteToLog.Location = new System.Drawing.Point(6, 133);
-            this.chkWriteToLog.Name = "chkWriteToLog";
-            this.chkWriteToLog.Size = new System.Drawing.Size(99, 17);
-            this.chkWriteToLog.TabIndex = 6;
-            this.chkWriteToLog.Text = "Write log to file:";
-            this.chkWriteToLog.UseVisualStyleBackColor = true;
-            this.chkWriteToLog.CheckedChanged += new System.EventHandler(this.chkWriteToLog_CheckedChanged);
+            this.gpOther.Controls.Add(this.chkReadSingleMeasurement);
+            this.gpOther.Controls.Add(this.chkWriteAbsoluteTimeStamp);
+            this.gpOther.Controls.Add(this.nudSampleRate);
+            this.gpOther.Controls.Add(this.chkTimeSync);
+            this.gpOther.Controls.Add(this.chkWriteToLogRealTime);
+            this.gpOther.Controls.Add(this.chkOverrideSampleRate);
+            this.gpOther.Location = new System.Drawing.Point(3, 220);
+            this.gpOther.Name = "gpOther";
+            this.gpOther.Size = new System.Drawing.Size(424, 132);
+            this.gpOther.TabIndex = 2;
+            this.gpOther.TabStop = false;
+            this.gpOther.Text = "Other";
             // 
             // chkReadSingleMeasurement
             // 
@@ -296,12 +289,33 @@
             this.chkOverrideSampleRate.UseVisualStyleBackColor = true;
             this.chkOverrideSampleRate.CheckedChanged += new System.EventHandler(this.chkOverrideSampleRate_CheckedChanged);
             // 
+            // txtLogFilePath
+            // 
+            this.txtLogFilePath.Location = new System.Drawing.Point(6, 42);
+            this.txtLogFilePath.Multiline = true;
+            this.txtLogFilePath.Name = "txtLogFilePath";
+            this.txtLogFilePath.Size = new System.Drawing.Size(410, 44);
+            this.txtLogFilePath.TabIndex = 1;
+            // 
+            // chkWriteToLog
+            // 
+            this.chkWriteToLog.AutoSize = true;
+            this.chkWriteToLog.Checked = true;
+            this.chkWriteToLog.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkWriteToLog.Location = new System.Drawing.Point(6, 19);
+            this.chkWriteToLog.Name = "chkWriteToLog";
+            this.chkWriteToLog.Size = new System.Drawing.Size(99, 17);
+            this.chkWriteToLog.TabIndex = 0;
+            this.chkWriteToLog.Text = "Write log to file:";
+            this.chkWriteToLog.UseVisualStyleBackColor = true;
+            this.chkWriteToLog.CheckedChanged += new System.EventHandler(this.chkWriteToLog_CheckedChanged);
+            // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(352, 328);
+            this.btnOk.Location = new System.Drawing.Point(352, 355);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
-            this.btnOk.TabIndex = 3;
+            this.btnOk.TabIndex = 4;
             this.btnOk.Text = "OK";
             this.btnOk.UseVisualStyleBackColor = true;
             this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
@@ -309,12 +323,34 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(271, 328);
+            this.btnCancel.Location = new System.Drawing.Point(271, 355);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 2;
+            this.btnCancel.TabIndex = 3;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.btnChooseLogPath);
+            this.groupBox3.Controls.Add(this.chkWriteToLog);
+            this.groupBox3.Controls.Add(this.txtLogFilePath);
+            this.groupBox3.Location = new System.Drawing.Point(3, 127);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(423, 92);
+            this.groupBox3.TabIndex = 1;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Log File";
+            // 
+            // btnChooseLogPath
+            // 
+            this.btnChooseLogPath.Location = new System.Drawing.Point(341, 15);
+            this.btnChooseLogPath.Name = "btnChooseLogPath";
+            this.btnChooseLogPath.Size = new System.Drawing.Size(75, 23);
+            this.btnChooseLogPath.TabIndex = 2;
+            this.btnChooseLogPath.Text = "Choose";
+            this.btnChooseLogPath.UseVisualStyleBackColor = true;
+            this.btnChooseLogPath.Click += new System.EventHandler(this.btnChooseLogPath_Click);
             // 
             // OptionsForm
             // 
@@ -322,24 +358,25 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(434, 357);
+            this.ClientSize = new System.Drawing.Size(431, 381);
             this.ControlBox = false;
+            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
-            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.gpOther);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.MaximumSize = new System.Drawing.Size(450, 396);
-            this.MinimumSize = new System.Drawing.Size(450, 396);
             this.Name = "OptionsForm";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Visual ME7Logger Options";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            this.gpOther.ResumeLayout(false);
+            this.gpOther.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudSampleRate)).EndInit();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -351,7 +388,7 @@
         private System.Windows.Forms.RadioButton radFTDI;
         private System.Windows.Forms.RadioButton radCommCOMPort;
         private System.Windows.Forms.RadioButton radCommDefault;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox gpOther;
         private System.Windows.Forms.CheckBox chkReadSingleMeasurement;
         private System.Windows.Forms.CheckBox chkWriteAbsoluteTimeStamp;
         private System.Windows.Forms.NumericUpDown nudSampleRate;
@@ -368,5 +405,8 @@
         private System.Windows.Forms.CheckBox chkFTDILocation;
         private System.Windows.Forms.CheckBox chkFTDIDesc;
         private System.Windows.Forms.CheckBox chkFTDISerial;
+        private System.Windows.Forms.RadioButton radLogFile;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Button btnChooseLogPath;
     }
 }

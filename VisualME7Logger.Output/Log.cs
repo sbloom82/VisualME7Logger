@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using VisualME7Logger.Session;
+using VisualME7Logger.Common;
 
 namespace VisualME7Logger.Log
 {
@@ -28,6 +29,58 @@ namespace VisualME7Logger.Log
 
         private int lineNumber;
         private string logFilePath;
+        internal void Open(IdentificationInfo identificationInfo, CommunicationInfo communicationInfo, SessionVariables variables)
+        {
+            bool idinfostarted = false,
+                commInfoStarted = false,
+                variablesStarted = false;
+            using (StreamReader sr = new StreamReader(logFilePath))
+            {
+                string line = null;
+                while((line = sr.ReadLine()) != null)
+                {
+                    if (!identificationInfo.Complete)
+                    {
+                        if (!idinfostarted)
+                        {
+                            idinfostarted = line == "ECU identified with following data:";
+                        }
+                        else
+                        {
+                            identificationInfo.ReadLine(line, true);
+                        }
+                    }
+                    else if (!communicationInfo.Complete)
+                    {
+                        if (!commInfoStarted)
+                        {
+                            commInfoStarted = line == "";
+                        }
+                        else
+                        {
+                            communicationInfo.ReadLine(line, true);
+                        }
+                    }
+                    else if (!variables.Complete)
+                    {
+                        if (!variablesStarted)
+                        {
+                            variablesStarted = line == "";
+                        }
+                        else
+                        {
+                            variables.ReadLine(line, true);
+                        }
+
+                        if (variables.Complete)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+            this.Open();
+        }
         internal void Open()
         {
             lineNumber = 0;

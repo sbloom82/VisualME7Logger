@@ -23,8 +23,10 @@ namespace VisualME7Logger
         private void LoadOptions()
         {
             radCommDefault.Checked = Options.ConnectionType == Session.LoggerOptions.ConnectionTypes.Default;
+            radLogFile.Checked = Options.ConnectionType == Session.LoggerOptions.ConnectionTypes.LogFile;
             radCommCOMPort.Checked = Options.ConnectionType == Session.LoggerOptions.ConnectionTypes.COM;
-            radFTDI.Checked = !radCommDefault.Checked && !radCommCOMPort.Checked;
+            radFTDI.Checked = !radCommDefault.Checked && !radCommCOMPort.Checked && !radLogFile.Checked;
+
             chkFTDISerial.Checked = Options.ConnectionType == Session.LoggerOptions.ConnectionTypes.FTDISerial;
             chkFTDIDesc.Checked = Options.ConnectionType == Session.LoggerOptions.ConnectionTypes.FTDIDescription;
             chkFTDILocation.Checked = Options.ConnectionType == Session.LoggerOptions.ConnectionTypes.FTDILocation;
@@ -53,13 +55,17 @@ namespace VisualME7Logger
             {
                 Options.ConnectionType = Session.LoggerOptions.ConnectionTypes.Default;
             }
+            else if (radLogFile.Checked)
+            {
+                Options.ConnectionType = Session.LoggerOptions.ConnectionTypes.LogFile;
+            }
             else if (radCommCOMPort.Checked)
             {
                 Options.ConnectionType = Session.LoggerOptions.ConnectionTypes.COM;
             }
             else
             {
-                 Options.ConnectionType = Session.LoggerOptions.ConnectionTypes.FTDI;
+                Options.ConnectionType = Session.LoggerOptions.ConnectionTypes.FTDI;
                 if (chkFTDIDesc.Checked)
                 {
                     Options.ConnectionType = Session.LoggerOptions.ConnectionTypes.FTDIDescription;
@@ -101,7 +107,10 @@ namespace VisualME7Logger
                 this.txtFTDIInfo.Enabled = radFTDI.Checked;
             this.cmbBaudRate.Enabled = this.chkOverrideBaudRate.Checked;
             this.nudSampleRate.Enabled = this.chkOverrideSampleRate.Checked;
-            this.txtLogFilePath.Enabled = this.chkWriteToLog.Checked;
+            this.txtLogFilePath.Enabled = this.chkWriteToLog.Checked || radLogFile.Checked;
+            this.gpOther.Enabled =
+                this.chkWriteToLog.Enabled =
+                this.chkOverrideBaudRate.Enabled = !this.radLogFile.Checked;
         }
                
         private void chkFTDISerial_CheckedChanged(object sender, EventArgs e)
@@ -165,9 +174,26 @@ namespace VisualME7Logger
             DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
+
         private void chkWriteToLog_CheckedChanged(object sender, EventArgs e)
         {
             this.SwitchUI();
+        }
+
+        private void radLogFile_CheckedChanged(object sender, EventArgs e)
+        {
+            SwitchUI();
+        }  
+
+        private void btnChooseLogPath_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.InitialDirectory = System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs");
+            ofd.Title = "Select a log file";
+            if (ofd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+            {
+                this.txtLogFilePath.Text = ofd.FileName;
+            }
         }
     }
 }
