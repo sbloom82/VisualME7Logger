@@ -45,12 +45,6 @@
             this.btnRemoveMeasurement = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.Selected = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Name1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Alais = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Unit = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Comment = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Object = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label2 = new System.Windows.Forms.Label();
             this.lstSelectedMeasurements = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -62,6 +56,12 @@
             this.txtECUFile = new System.Windows.Forms.TextBox();
             this.btnStartLog = new System.Windows.Forms.Button();
             this.splitter1 = new System.Windows.Forms.Splitter();
+            this.Selected = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Name1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Alais = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Unit = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Comment = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Object = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -232,56 +232,6 @@
             this.dataGridView1.TabIndex = 10;
             this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView1_KeyDown);
             // 
-            // Selected
-            // 
-            this.Selected.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.Selected.Frozen = true;
-            this.Selected.HeaderText = "";
-            this.Selected.Name = "Selected";
-            this.Selected.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Selected.Width = 20;
-            // 
-            // Name1
-            // 
-            this.Name1.Frozen = true;
-            this.Name1.HeaderText = "Name";
-            this.Name1.Name = "Name1";
-            this.Name1.ReadOnly = true;
-            // 
-            // Alais
-            // 
-            this.Alais.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Alais.Frozen = true;
-            this.Alais.HeaderText = "Alias";
-            this.Alais.Name = "Alais";
-            this.Alais.ReadOnly = true;
-            this.Alais.Width = 54;
-            // 
-            // Unit
-            // 
-            this.Unit.Frozen = true;
-            this.Unit.HeaderText = "Unit";
-            this.Unit.Name = "Unit";
-            this.Unit.ReadOnly = true;
-            this.Unit.Width = 35;
-            // 
-            // Comment
-            // 
-            this.Comment.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Comment.Frozen = true;
-            this.Comment.HeaderText = "Comment";
-            this.Comment.Name = "Comment";
-            this.Comment.ReadOnly = true;
-            this.Comment.Width = 76;
-            // 
-            // Object
-            // 
-            this.Object.Frozen = true;
-            this.Object.HeaderText = "";
-            this.Object.Name = "Object";
-            this.Object.ReadOnly = true;
-            this.Object.Visible = false;
-            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -395,6 +345,51 @@
             this.splitter1.Size = new System.Drawing.Size(733, 3);
             this.splitter1.TabIndex = 11;
             this.splitter1.TabStop = false;
+            // 
+            // Selected
+            // 
+            this.Selected.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Selected.Frozen = true;
+            this.Selected.HeaderText = "";
+            this.Selected.Name = "Selected";
+            this.Selected.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.Selected.Width = 20;
+            // 
+            // Name1
+            // 
+            this.Name1.HeaderText = "Name";
+            this.Name1.Name = "Name1";
+            this.Name1.ReadOnly = true;
+            // 
+            // Alais
+            // 
+            this.Alais.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Alais.HeaderText = "Alias";
+            this.Alais.Name = "Alais";
+            this.Alais.ReadOnly = true;
+            this.Alais.Width = 54;
+            // 
+            // Unit
+            // 
+            this.Unit.HeaderText = "Unit";
+            this.Unit.Name = "Unit";
+            this.Unit.ReadOnly = true;
+            this.Unit.Width = 35;
+            // 
+            // Comment
+            // 
+            this.Comment.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Comment.HeaderText = "Comment";
+            this.Comment.Name = "Comment";
+            this.Comment.ReadOnly = true;
+            this.Comment.Width = 76;
+            // 
+            // Object
+            // 
+            this.Object.HeaderText = "";
+            this.Object.Name = "Object";
+            this.Object.ReadOnly = true;
+            this.Object.Visible = false;
             // 
             // SettingsForm
             // 

@@ -44,6 +44,7 @@ namespace VisualME7Logger.Session
             }
         }
         public short SamplesPerSecond { get; private set; }
+        public DateTime LogStarted { get; private set; }
         public LoggerSessionStatusChanged StatusChanged;
         public SessionTypes SessionType { get; private set; }
         public CommunicationInfo CommunicationInfo { get; private set; }
@@ -64,13 +65,11 @@ namespace VisualME7Logger.Session
             this.configFilePath = configFilePath;
         }
 
-        private string sessionTextFilePath;
-        public ME7LoggerSession(string sessionTextFilePath, string logFilePath)
+        public ME7LoggerSession(string logFilePath)
         {
             this.Status = Statuses.New;
             this.SessionType = SessionTypes.File;
             this.Log = new ME7LoggerLog(this, logFilePath);
-            this.sessionTextFilePath = sessionTextFilePath;
         }
 
         Process p;
@@ -82,17 +81,13 @@ namespace VisualME7Logger.Session
 
             if (this.SessionType == SessionTypes.File)
             {
-                using (StreamReader sr = new StreamReader(this.sessionTextFilePath))
-                {
-                    string line;
-                    while ((line = sr.ReadLine()) != null)
-                    {
-                        if (this.ReadLine(line))
-                            break;
-                    }
-                }
+                this.IdentificationInfo = new IdentificationInfo();
+                this.CommunicationInfo = new CommunicationInfo();
+                this.Variables = new SessionVariables();
+                this.Log.Open(IdentificationInfo, CommunicationInfo, Variables);
+                this.SamplesPerSecond = CommunicationInfo.SamplesPerSecond;
+                this.LogStarted = CommunicationInfo.LogStarted;
                 this.Status = Statuses.Open;
-                this.Log.Open();
             }
             else
             {
@@ -136,6 +131,7 @@ namespace VisualME7Logger.Session
                 {
                     this.Status = Statuses.Open;
                     this.Log.Open();
+                    this.LogStarted = DateTime.Now;
                 }
             }
             else if (this.Status == Statuses.Open)
@@ -251,6 +247,14 @@ namespace VisualME7Logger.Session
         public decimal Offset { get; private set; }
         public string Unit { get; private set; }
 
+        internal SessionVariable(int number, string name, string unit, string alias) 
+        {
+            this.Number = number;
+            this.Name = name;
+            this.Unit = unit;
+            this.Alias = alias;
+        }
+
         internal SessionVariable(string line)
         {
             int indexOfColon = line.IndexOf(':');
@@ -282,9 +286,25 @@ namespace VisualME7Logger.Session
 
         private List<SessionVariable> list = new List<SessionVariable>();
         private Dictionary<int, SessionVariable> byNumber = new Dictionary<int, SessionVariable>();
-        public SessionVariable this[int number] { get { return this.byNumber[number]; } }
+        public SessionVariable this[int number] 
+        { 
+            get 
+            {
+                if(this.byNumber.ContainsKey(number))
+                    return this.byNumber[number];
+                return null;
+            } 
+        }
         private Dictionary<string, SessionVariable> byName = new Dictionary<string, SessionVariable>(StringComparer.InvariantCultureIgnoreCase);
-        public SessionVariable this[string name] { get { return this.byName[name]; } }
+        public SessionVariable this[string name] 
+        { 
+            get
+            {
+                if(this.byName.ContainsKey(name))
+                    return this.byName[name];
+                return null;
+            }
+        }
 
         internal SessionVariables() { }
 
@@ -319,20 +339,48 @@ namespace VisualME7Logger.Session
             return null;
         }
 
+        private List<string> variableLines;
         internal bool Complete { get; private set; }
-        internal void ReadLine(string line)
+        internal void ReadLine(string line, bool fromLog = false)
         {
-            if (line.StartsWith("Really logged are"))
+            if (fromLog)
             {
-                Complete = true;
+                if (line.StartsWith("TimeStamp,"))
+                {
+                    variableLines = new List<string>();
+                    variableLines.Add(line);
+                }
+                else if (variableLines.Count < 3)
+                {
+                    variableLines.Add(line);
+                    if (variableLines.Count == 3)
+                    {
+                        string[] names = variableLines[0].Split(',');
+                        string[] units = variableLines[1].Split(',');
+                        string[] aliases = variableLines[2].Split(',');
+
+                        for (int i = 1; i < names.Length; ++i)
+                        {
+                            this.Add(new SessionVariable(i, names[i].Trim(), units[i].Trim(), aliases[i].Replace("\"", "").Trim()));
+                        }
+                        Complete = true;
+                    }
+                }
             }
-            else if (line[0] == '#' && line[1] != 'n' && line[1] != '-')
+            else
             {
-                this.Add(new SessionVariable(line));
-            }
-            else if (line.StartsWith("Logged data size is"))
-            {
-                LoggedDataSize = short.Parse(line.Replace("Logged data size is ", "").Replace(" bytes.", "").Trim());
+                if (line.StartsWith("Really logged are"))
+                {
+                    Complete = true;
+                }
+                else if (line[0] == '#' && line[1] != 'n' && line[1] != '-')
+                {
+                    this.Add(new SessionVariable(line));
+                }
+                else if (line.StartsWith("Logged data size is"))
+                {
+                    LoggedDataSize = short.Parse(line.Replace("Logged data size is ", "").Replace(" bytes.", "").Trim());
+                }
             }
         }
     }
@@ -346,7 +394,8 @@ namespace VisualME7Logger.Session
             FTDI,
             FTDISerial,
             FTDIDescription,
-            FTDILocation
+            FTDILocation,
+            LogFile
         }
 
         public ConnectionTypes ConnectionType { get; set; }

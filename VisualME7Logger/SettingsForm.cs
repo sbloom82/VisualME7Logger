@@ -16,11 +16,11 @@ namespace VisualME7Logger
         enum GridColumns
         {
             Selected = 0,
-            Name = 1,
-            Alias = 2,
-            Unit = 3,
-            Comment = 4,
-            MeasurementObject = 5
+            Name,
+            Alias,
+            Unit,
+            Comment,
+            MeasurementObject
         }
 
         ECUFile SelectedECUFile { get; set; }
@@ -34,6 +34,7 @@ namespace VisualME7Logger
 
             this.LoggerOptions = new Session.LoggerOptions(Program.ME7LoggerDirectory);
             this.LoadSettings();
+            this.SwitchUI();
         }
 
         void SetupGrid()
@@ -108,6 +109,11 @@ namespace VisualME7Logger
                 btnStartLog.Enabled = false;
         }
 
+        private void SwitchUI()
+        {
+ 
+        }
+
         private void btnAddMeasurement_Click(object sender, EventArgs e)
         {
             List<object> oList = new List<object>();
@@ -155,48 +161,45 @@ namespace VisualME7Logger
 
         private void btnStartLog_Click(object sender, EventArgs e)
         {
-            Measurements ms = new Measurements();
-            foreach (DataGridViewRow r in this.dataGridView1.Rows)
+            if (this.LoggerOptions.ConnectionType != Session.LoggerOptions.ConnectionTypes.LogFile)
             {
-                if ((bool)r.Cells[(int)GridColumns.Selected].Value == true)
-                {
-                    ms.AddMeasurement((Measurement)r.Cells[(int)GridColumns.MeasurementObject].Value);
-                }
-            }
-
-            if (ms.Values.Count() > 0)
-            {
-                if (string.IsNullOrEmpty(this.txtConfigFile.Text))
-                {
-                    SaveFileDialog d = new SaveFileDialog();
-                    d.Title = "Save Config File As...";
-                    d.InitialDirectory = System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs");
-                    if (d.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                    {
-                        return;
-                    }
-                    this.txtConfigFile.Text = d.FileName;
-                }
-
-                this.SaveSettings();
-
-                /*
                 Measurements ms = new Measurements();
-                foreach (Measurement m in lstSelectedMeasurements.Items)
+                foreach (DataGridViewRow r in this.dataGridView1.Rows)
                 {
-                    ms.AddMeasurement(m);
-                }*/
+                    if ((bool)r.Cells[(int)GridColumns.Selected].Value == true)
+                    {
+                        ms.AddMeasurement((Measurement)r.Cells[(int)GridColumns.MeasurementObject].Value);
+                    }
+                }
 
-                ConfigFile configFile = new ConfigFile(this.SelectedECUFile.FileName, ms);
-                configFile.Write(txtConfigFile.Text);
-                              
-                Form1 logForm = new Form1(txtConfigFile.Text, this.LoggerOptions);
-                logForm.ShowDialog(this);
+                if (ms.Values.Count() > 0)
+                {
+                    if (string.IsNullOrEmpty(this.txtConfigFile.Text))
+                    {
+                        SaveFileDialog d = new SaveFileDialog();
+                        d.Title = "Save Config File As...";
+                        d.InitialDirectory = System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs");
+                        if (d.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                        {
+                            return;
+                        }
+                        this.txtConfigFile.Text = d.FileName;
+                    }
+
+                    ConfigFile configFile = new ConfigFile(this.SelectedECUFile.FileName, ms);
+                    configFile.Write(txtConfigFile.Text);                   
+                }
+                else
+                {
+                    MessageBox.Show("No Measurements Selected");
+                    return;
+                }
             }
-            else
-            {
-                MessageBox.Show("No Measurements Selected");
-            }
+
+            this.SaveSettings();
+
+            Form1 logForm = new Form1(txtConfigFile.Text, this.LoggerOptions);
+            logForm.ShowDialog(this);
         }
 
         private void loadConfigFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -347,8 +350,8 @@ namespace VisualME7Logger
 
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new OptionsForm(this.LoggerOptions).ShowDialog();            
-       
+            new OptionsForm(this.LoggerOptions).ShowDialog(this);
+            this.SwitchUI();
         }
 
         private void lstAvailMeasurements_MouseDoubleClick(object sender, MouseEventArgs e)

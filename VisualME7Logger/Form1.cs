@@ -34,9 +34,15 @@ namespace VisualME7Logger
             cmbChartType.DataSource = Enum.GetValues(typeof(SeriesChartType));
             cmbChartType.SelectedItem = SeriesChartType.FastLine;
 
-            session = new ME7LoggerSession(Program.ME7LoggerDirectory, options, configFile);
-            //session = new ME7LoggerSession(@"C:\ME7Logger\out7.out", @"C:\ME7Logger\logs\allroad.log");
-            //session = new ME7LoggerSession(Program.ME7LoggerDirectory, @"-p COM1 -R -o C:\me7logger\logs\allroad.log", @"C:\me7logger\logs\allroad-config.cfg");
+            if (options.ConnectionType == LoggerOptions.ConnectionTypes.LogFile)
+            {
+                session = new ME7LoggerSession(@"C:\ME7Logger\logs\allroad.log");
+            }
+            else
+            {
+                session = new ME7LoggerSession(Program.ME7LoggerDirectory, options, configFile);
+            }
+
             session.StatusChanged += new ME7LoggerSession.LoggerSessionStatusChanged(this.SessionStatusChanged);
             session.Log.LineRead += new ME7LoggerLog.LogLineRead(this.LogLineRead);
             session.Open();

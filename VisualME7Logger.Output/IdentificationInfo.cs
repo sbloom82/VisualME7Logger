@@ -10,12 +10,15 @@ namespace VisualME7Logger.Common
         public string HWNumber { get; private set; }
         public string SWNumber { get; private set; }
         public string PartNumber { get; private set; }
+        public string SWVersion { get; private set; }
         public string EngineId { get; private set; }
+        public string VAGHWNumber { get; private set; }
+        public string ModelId { get; private set; }
 
         internal IdentificationInfo() { }
 
         internal bool Complete { get; private set; }
-        internal void ReadLine(string line)
+        internal void ReadLine(string line, bool fromLog = false)
         {
             string[] parts = line.Split('=');
             if (parts.Length == 2)
@@ -34,9 +37,22 @@ namespace VisualME7Logger.Common
                 {
                     PartNumber = parts[1];
                 }
+                else if(parts[0] == "SWVersion")
+                {
+                    SWVersion = parts[1];
+                }
                 else if (parts[0] == "EngineId")
                 {
                     EngineId = parts[1];
+                    this.Complete = !fromLog;
+                }
+                else if (parts[0] == "VAGHWNumber")
+                {
+                    VAGHWNumber = parts[1];
+                }
+                else if (parts[0] == "ModelId")
+                {
+                    ModelId = parts[1];
                     this.Complete = true;
                 }
                 return;
