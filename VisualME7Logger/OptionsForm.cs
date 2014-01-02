@@ -195,5 +195,10 @@ namespace VisualME7Logger
                 this.txtLogFilePath.Text = ofd.FileName;
             }
         }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+        }
     }
 }

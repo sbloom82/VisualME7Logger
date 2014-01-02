@@ -25,6 +25,7 @@ namespace VisualME7Logger
 
         ECUFile SelectedECUFile { get; set; }
         VisualME7Logger.Session.LoggerOptions LoggerOptions { get; set; }
+        VisualME7Logger.Output.ChecksumInfo ChecksumInfo { get; set; }
 
         public SettingsForm()
         {
@@ -33,6 +34,8 @@ namespace VisualME7Logger
             SetupGrid();
 
             this.LoggerOptions = new Session.LoggerOptions(Program.ME7LoggerDirectory);
+            this.ChecksumInfo = new Output.ChecksumInfo();
+
             this.LoadSettings();
             this.SwitchUI();
         }
@@ -305,7 +308,9 @@ namespace VisualME7Logger
                 XElement root = new XElement("VisualME7LoggerSettings");
                 root.Add(new XAttribute("ECUFile", this.txtECUFile.Text));
                 root.Add(new XAttribute("ConfigFile", this.txtConfigFile.Text));
+               
                 root.Add(this.LoggerOptions.Write());
+                root.Add(this.ChecksumInfo.Write());
                 root.Save(System.IO.Path.Combine(Program.ME7LoggerDirectory, "VisualME7Logger.cfg.xml"));
             }
             catch { }
@@ -342,7 +347,10 @@ namespace VisualME7Logger
                     {
                         case "Options":
                             this.LoggerOptions.Read(ele);
-                            break;
+                            break;                    
+                        case "ChecksumInfo":
+                            this.ChecksumInfo.Read(ele);
+                            break;                        
                     }
                 }
             }
@@ -373,6 +381,21 @@ namespace VisualME7Logger
                     r.Cells[(int)GridColumns.Selected].Value = !(bool)r.Cells[(int)GridColumns.Selected].Value;
                 }
             }
+        }
+
+        private void mE7CheckToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new ChecksumForm(this.ChecksumInfo).ShowDialog(this);
+        }
+
+        private void saveSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.SaveSettings();
+        }
+
+        private void saveConfigFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }        
     }
 }

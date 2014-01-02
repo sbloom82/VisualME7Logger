@@ -1,0 +1,389 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+PolyMonControls
+</name>
+</assembly>
+<members>
+<member name="P:PolyMonControls.BarGauge.BackgroundType.BackColor1">
+	<summary>
+ Defines the Background color of the gauge when <see cref="P:PolyMonControls.BarGauge.BackgroundType.FillStyle"/> is set to <see cref="T:PolyMonControls.BarGauge.BackgroundType.FillStyles">Solid</see>. Otherwise is used as the first color
+ in a color gradient with the end color determined by the <see cref="P:PolyMonControls.BarGauge.BackgroundType.BackColor2"/> property.
+ </summary>
+	<value>The Background color of the gauge or the start gradient color of background.</value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:PolyMonControls.BarGauge.BackgroundType.ResetBackColor1">
+	<summary>
+ Resets the <see>BarGauge.BackColor1</see> property.
+ </summary>
+	<remarks></remarks>
+</member><member name="M:PolyMonControls.BarGauge.BackgroundType.ShouldSerializeBackColor1">
+	<summary>
+ Indicates whether the default value of the property has changed from it's default in design mode and needs to be serialized.
+ </summary>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="F:PolyMonControls.BarGauge.HeatLevel.HeatLevelStyles.None">
+	<summary>
+ No Heat Level Displayed
+ </summary>
+	<remarks></remarks>
+</member><member name="F:PolyMonControls.BarGauge.HeatLevel.HeatLevelStyles.SingleIncreasing">
+	<summary>
+ Single Increasing Heat Level.
+ </summary>
+	<remarks></remarks>
+</member><member name="F:PolyMonControls.BarGauge.HeatLevel.HeatLevelStyles.SingleDecreasing">
+	<summary>
+ Single decreasing Heat Level.
+ </summary>
+	<remarks></remarks>
+</member><member name="F:PolyMonControls.BarGauge.HeatLevel.HeatLevelStyles.DoubleDecreasingToMiddle">
+	<summary>
+ Double Heat Levels that decrease towards middle.
+ </summary>
+	<remarks></remarks>
+</member><member name="F:PolyMonControls.BarGauge.HeatLevel.HeatLevelStyles.DoubleIncreasingToMiddle">
+	<summary>
+ Double Heat Levels that increase towards middle.
+ </summary>
+	<remarks></remarks>
+</member><member name="T:PolyMonControls.BarGauge.HeatLevel.HeatLevelStyles">
+	<summary>
+ Defines the style of Heat Level to use in the Bar Gauge.
+ </summary>
+	<remarks>Use in conjunction with the HeatLevel Start/End Colors and threshold Values/Colors.
+ <br/><b>Note:</b>When using a single Heat Level, only the Left heat level properties will be used to define that heat level.</remarks>
+</member><member name="P:PolyMonControls.RotatedLabelImage.Text">
+	<summary>
+ The Text of the label.
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.RotatedLabelImage.Font">
+	<summary>
+ The Font used by this label.
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.RotatedLabelImage.TextColor">
+	<summary>
+ The text Color for this label.
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.RotatedLabelImage.TextAlignment">
+	<summary>
+ The Text alignment for this label.
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.RotatedLabelImage.RotationAngle">
+	<summary>
+ The rotation angle for this label.
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.RotatedLabelImage.TransparentColor">
+	<summary>
+ The color that is used for transparency.
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.RotatedLabelImage.MinHeight">
+	<summary>
+ The minimum height of this label. 
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.RotatedLabelImage.MinWidth">
+	<summary>
+ The minimum width of this label.
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.RotatedLabelImage.FillStyle">
+	<summary>
+ The FillStyle of this label.
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.RotatedLabelImage.FillGradientStyle">
+	<summary>
+ The fill gradient orientation for this label if the FillStyle has been set to a gradient mode.
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.RotatedLabelImage.FillBackColor0">
+	<summary>
+ Color used for creating background color for this image. Used as the Solid fill background color
+ or as the start color in gradient fills.
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.RotatedLabelImage.FillBackColor1">
+	<summary>
+ Secondary color used when label background is a gradient fill. Ignored if the fill type is set to solid.
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.RotatedLabelImage.Size">
+	<summary>
+ The bounding rectangle Size of the label after rotation.
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.RotatedLabelImage.Bitmap">
+	<summary>
+ Returns a bitmap of the rotated label.
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:PolyMonControls.RotatedLabelImage.SaveToFile(System.String,System.Drawing.Imaging.ImageFormat)">
+	<summary>
+ Saves the rotated label to a file using specified file format.
+ </summary>
+	<param name="FilePath"></param>
+	<param name="FileType"></param>
+	<remarks></remarks>
+</member><member name="T:PolyMonControls.RotatedLabelImage">
+	<summary>
+ Class used to generate bitmaps of rotated text labels. Full support for fonts, background fills, transparency, etc.
+ To use, set all the settings you need and then use the Bitmap property of this class to retrieve a bitmap or call the
+ SaveToFile method to save the bitmap to a file in a format of your choice (bmp, png, etc).
+ </summary>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.LED8Segment.BackgroundType.BackColor1">
+	<summary>
+ Defines the Background color of the gauge when <see cref="P:PolyMonControls.LED8Segment.BackgroundType.FillStyle"/> is set to <see cref="T:PolyMonControls.LED8Segment.BackgroundType.FillStyles">Solid</see>. Otherwise is used as the first color
+ in a color gradient with the end color determined by the <see cref="P:PolyMonControls.LED8Segment.BackgroundType.BackColor2"/> property.
+ </summary>
+	<value>The Background color of the gauge or the start gradient color of background.</value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:PolyMonControls.LED8Segment.BackgroundType.ResetBackColor1">
+	<summary>
+ Resets the <see>BarGauge.BackColor1</see> property.
+ </summary>
+	<remarks></remarks>
+</member><member name="M:PolyMonControls.LED8Segment.BackgroundType.ShouldSerializeBackColor1">
+	<summary>
+ Indicates whether the default value of the property has changed from it's default in design mode and needs to be serialized.
+ </summary>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.My.Resources.Resources.ResourceManager">
+	<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member><member name="P:PolyMonControls.My.Resources.Resources.Culture">
+	<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member><member name="P:PolyMonControls.My.Resources.Resources.String1">
+	<summary>
+  Looks up a localized string similar to .
+</summary>
+</member><member name="T:PolyMonControls.My.Resources.Resources">
+	<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member><member name="M:PolyMonControls.MultiBarGauge.RefreshGauge">
+	<summary>
+ Forces the gauge display to refresh.
+ </summary>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.MultiBarGauge.BackgroundType.BackColor1">
+	<summary>
+ Defines the Background color of the gauge when <see cref="P:PolyMonControls.MultiBarGauge.BackgroundType.FillStyle"/> is set to <see cref="T:PolyMonControls.MultiBarGauge.BackgroundType.FillStyles">Solid</see>. Otherwise is used as the first color
+ in a color gradient with the end color determined by the <see cref="P:PolyMonControls.MultiBarGauge.BackgroundType.BackColor2"/> property.
+ </summary>
+	<value>The Background color of the gauge or the start gradient color of background.</value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:PolyMonControls.MultiBarGauge.BackgroundType.ResetBackColor1">
+	<summary>
+ Resets the <see>BarGauge.BackColor1</see> property.
+ </summary>
+	<remarks></remarks>
+</member><member name="M:PolyMonControls.MultiBarGauge.BackgroundType.ShouldSerializeBackColor1">
+	<summary>
+ Indicates whether the default value of the property has changed from it's default in design mode and needs to be serialized.
+ </summary>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.LEDGauge.BackgroundType.BackColor1">
+	<summary>
+ Defines the Background color of the gauge when <see cref="P:PolyMonControls.LEDGauge.BackgroundType.FillStyle"/> is set to <see cref="T:PolyMonControls.LEDGauge.BackgroundType.FillStyles">Solid</see>. Otherwise is used as the first color
+ in a color gradient with the end color determined by the <see cref="P:PolyMonControls.LEDGauge.BackgroundType.BackColor2"/> property.
+ </summary>
+	<value>The Background color of the gauge or the start gradient color of background.</value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:PolyMonControls.LEDGauge.BackgroundType.ResetBackColor1">
+	<summary>
+ Resets the <see>BarGauge.BackColor1</see> property.
+ </summary>
+	<remarks></remarks>
+</member><member name="M:PolyMonControls.LEDGauge.BackgroundType.ShouldSerializeBackColor1">
+	<summary>
+ Indicates whether the default value of the property has changed from it's default in design mode and needs to be serialized.
+ </summary>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:PolyMonControls.MoveControl.#ctor(System.Windows.Forms.Control)">
+	<summary>
+ Creates a new run-time Moving control. The moving control does not become "active" on the design surface at run-time
+ until it has been bound to the control that needs to be moved. (Using the BoundControl property).
+ </summary>
+	<param name="DesignSurface"></param>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.MoveControl.DesignSurface">
+	<summary>
+ Returns the Design Surface this Moving control has been bound to. All Move operations will be performed within the
+ Design surface context.
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.MoveControl.BoundControl">
+	<summary>
+ Used to set which control should become moveable. Set this value to nothing to "turn off" moving functionality or set to
+ a new control to enable moving functionality for that control.
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.MoveControl.ProximitySnapSize">
+	<summary>
+ Used to set proximity snapping. Set to 0 to turn proximity snapping off.
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.MoveControl.MoveGlyphSize">
+	<summary>
+ Sets the size (in pixels) of the Move glyph that appears at the top left of the control 
+ that has been move-enabled (using the BoundControl property)
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.MoveControl.MoveGlyphOffset">
+	<summary>
+ The Move glyph is positioned to the right of the top left corner of the move-enabled control.
+ This offset determines how far to the right of that top left corner the Move glyph should be positioned.
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="T:PolyMonControls.MoveControl">
+	<summary>
+ This class is used to enable run-time moving of controls. Set the design surface as the parent control on
+ your form that will contain all the controls you want to be allow user to move at run-time.
+ The DesignSurface you set will essentially limit the user to only move control within that design surface.
+ To have a control at runtime become user moveable, simply set the BoundControl of this class to the control
+ you want. 
+ Note that this class supports reparenting of moved controls. To allow other controls on your design surface to capture
+ a control when it is moved there, set those controls' AllowDrop property to True.
+ </summary>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.RotatedLabel.BackgroundType.BackColor1">
+	<summary>
+ Defines the Background color of the gauge when <see cref="P:PolyMonControls.RotatedLabel.BackgroundType.FillStyle"/> is set to <see cref="T:PolyMonControls.RotatedLabel.BackgroundType.FillStyles">Solid</see>. Otherwise is used as the first color
+ in a color gradient with the end color determined by the <see cref="P:PolyMonControls.RotatedLabel.BackgroundType.BackColor2"/> property.
+ </summary>
+	<value>The Background color of the gauge or the start gradient color of background.</value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:PolyMonControls.RotatedLabel.BackgroundType.ResetBackColor1">
+	<summary>
+ Resets the <see>BarGauge.BackColor1</see> property.
+ </summary>
+	<remarks></remarks>
+</member><member name="M:PolyMonControls.RotatedLabel.BackgroundType.ShouldSerializeBackColor1">
+	<summary>
+ Indicates whether the default value of the property has changed from it's default in design mode and needs to be serialized.
+ </summary>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:PolyMonControls.Utilities.LoadSingleInstanceForm(System.Windows.Forms.Form@,System.Windows.Forms.Form@)">
+	<summary>
+ This function can be used to instantiate a single instance form. If form already exists, it is displayed,
+ otherwise it is first instantiated and then displayed.
+ </summary>
+	<param name="frm">A form object to be instantiated.</param>
+	<param name="MDIContainer">If form should be created as a child form of an MDI container, specify the MDI container using this parameter.
+ Set parameter to Nothing if an MDI child form is not required.</param>
+	<remarks>This function does not support passing parameters to the form constructor. 
+ Form must have a default parameter-less constructor available.</remarks>
+</member><member name="T:PolyMonControls.Utilities">
+	<summary>
+ Library of various useful functions.
+ </summary>
+	<remarks></remarks>
+</member><member name="M:PolyMonControls.SizeControl.#ctor(System.Windows.Forms.Control)">
+	<summary>
+ Creates a new run-time sizing control. The sizing control does not become "active" on the design surface at run-time
+ until it has been bound to the control that needs to be sized. (Using the BoundControl property).
+ </summary>
+	<param name="DesignSurface"></param>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.SizeControl.DesignSurface">
+	<summary>
+ Returns the Design Surface this Sizing control has been bound to. All Sizing operations will be performed within the
+ Design surface context (or child container if sized control is parented to an inner control of the Design Surface control).
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.SizeControl.BoundControl">
+	<summary>
+ Used to set which control should become sizeable. Set this value to nothing to "turn off" sizing functionality or set to
+ a new control to enabled sizing functionality for that control.
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.SizeControl.ProximitySnapSize">
+	<summary>
+ Used to set proximity snapping. Set to 0 to turn proximity snapping off.
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="P:PolyMonControls.SizeControl.SizingGlyphsSize">
+	<summary>
+ Used to set the size of the sizing glyphs.
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="T:PolyMonControls.SizeControl">
+	<summary>
+ This class is used to enable run-time sizing of controls. Set the design surface as the parent control on
+ your form that will contain all the controls you want to be allow user to resize at run-time.
+ To have a control at runtime become user resizeable, simply set the BoundControl of this class to the control
+ you want.
+ </summary>
+	<remarks></remarks>
+</member>
+</members>
+</doc>

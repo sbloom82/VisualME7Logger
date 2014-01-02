@@ -36,7 +36,7 @@ namespace VisualME7Logger
 
             if (options.ConnectionType == LoggerOptions.ConnectionTypes.LogFile)
             {
-                session = new ME7LoggerSession(@"C:\ME7Logger\logs\allroad.log");
+                session = new ME7LoggerSession(options.LogFile);
             }
             else
             {
@@ -190,6 +190,9 @@ namespace VisualME7Logger
                 s.Points[0].SetValueY(rpm);
                 s.Points[1].SetValueY(7000 - rpm);
                 chart2.Invalidate();
+
+
+           
             }
         }
 
@@ -242,6 +245,11 @@ namespace VisualME7Logger
                 s.ChartType = type;
             }
             chart1.ResumeLayout();
+        }
+
+        private void rpmLED_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

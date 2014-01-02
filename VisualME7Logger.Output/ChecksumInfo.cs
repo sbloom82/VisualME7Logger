@@ -9,8 +9,8 @@ namespace VisualME7Logger.Output
 {
     public class ChecksumInfo
     {
-        public string ApplicationPath { get; private set; }
-        public string BinPath { get; private set; }
+        public string ApplicationPath { get; set; }
+        public string BinPath { get; set; }
 
         public void Read(XElement element)
         {
@@ -40,8 +40,8 @@ namespace VisualME7Logger.Output
         {
             Process p = new Process();
             p.StartInfo = new ProcessStartInfo(
-                this.ApplicationPath,
-                this.BinPath);
+               this.ApplicationPath, 
+               "\"" + this.BinPath + "\"");
             p.StartInfo.UseShellExecute = false;
             p.StartInfo.CreateNoWindow = true;
             p.StartInfo.RedirectStandardOutput = true;
