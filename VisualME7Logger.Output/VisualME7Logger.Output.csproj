@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChecksumInfo.cs" />
     <Compile Include="CommunicationInfo.cs" />
     <Compile Include="ECUFile.cs" />
     <Compile Include="IdentificationInfo.cs" />

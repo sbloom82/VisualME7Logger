@@ -29,7 +29,7 @@ namespace VisualME7Logger.Log
 
         private int lineNumber;
         private string logFilePath;
-        internal void Open(IdentificationInfo identificationInfo, CommunicationInfo communicationInfo, SessionVariables variables)
+        internal void InitializeSession(IdentificationInfo identificationInfo, CommunicationInfo communicationInfo, SessionVariables variables)
         {
             bool idinfostarted = false,
                 commInfoStarted = false,
@@ -79,7 +79,6 @@ namespace VisualME7Logger.Log
                     }
                 }
             }
-            this.Open();
         }
         internal void Open()
         {

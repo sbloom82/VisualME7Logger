@@ -84,10 +84,11 @@ namespace VisualME7Logger.Session
                 this.IdentificationInfo = new IdentificationInfo();
                 this.CommunicationInfo = new CommunicationInfo();
                 this.Variables = new SessionVariables();
-                this.Log.Open(IdentificationInfo, CommunicationInfo, Variables);
+                this.Log.InitializeSession(IdentificationInfo, CommunicationInfo, Variables);
                 this.SamplesPerSecond = CommunicationInfo.SamplesPerSecond;
                 this.LogStarted = CommunicationInfo.LogStarted;
                 this.Status = Statuses.Open;
+                this.Log.Open();
             }
             else
             {
