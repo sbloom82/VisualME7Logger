@@ -55,10 +55,10 @@ namespace VisualME7Logger
 
         void ckBox_CheckedChanged(object sender, EventArgs e)
         {
-            bool chked = ((CheckBox)sender).Checked;            
+            bool chked = ((CheckBox)sender).Checked;
             foreach (DataGridViewRow r in dataGridView1.Rows)
             {
-                r.Cells[(int)GridColumns.Selected].Value = chked;                
+                r.Cells[(int)GridColumns.Selected].Value = chked;
             }
         }
 
@@ -84,13 +84,14 @@ namespace VisualME7Logger
             if (this.SelectedECUFile != null)
             {
                 this.txtECUFile.Text = this.SelectedECUFile.FilePath;
-                this.loadConfigFileToolStripMenuItem.Enabled = true;
+                this.loadConfigFileToolStripMenuItem.Enabled = 
+                this.saveConfigFileToolStripMenuItem.Enabled = true;
                 this.btnStartLog.Enabled = true;
 
                 foreach (Measurement m in this.SelectedECUFile.Measurements.Values.Where(m => !string.IsNullOrEmpty(m.Alias)).OrderBy(m => m.Alias).ThenBy(m => m.Name))
                 {
                     lstAvailMeasurements.Items.Add(m);
-                    dataGridView1.Rows.Add(false, m.Name, m.Alias, m.Unit, m.Comment,m);
+                    dataGridView1.Rows.Add(false, m.Name, m.Alias, m.Unit, m.Comment, m);
                 }
                 foreach (Measurement m in this.SelectedECUFile.Measurements.Values.Where(m => string.IsNullOrEmpty(m.Alias)).OrderBy(m => m.Alias).ThenBy(m => m.Name))
                 {
@@ -109,12 +110,13 @@ namespace VisualME7Logger
             btnAddMeasurement.Enabled =
                 btnRemoveMeasurement.Enabled =
                 loadConfigFileToolStripMenuItem.Enabled =
+                saveConfigFileToolStripMenuItem.Enabled =
                 btnStartLog.Enabled = false;
         }
 
         private void SwitchUI()
         {
- 
+
         }
 
         private void btnAddMeasurement_Click(object sender, EventArgs e)
@@ -162,39 +164,48 @@ namespace VisualME7Logger
             this.btnRemoveMeasurement.Enabled = lstSelectedMeasurements.SelectedItems.Count > 0;
         }
 
+        private ConfigFile SaveConfigFile()
+        {
+            Measurements ms = new Measurements();
+            foreach (DataGridViewRow r in this.dataGridView1.Rows)
+            {
+                if ((bool)r.Cells[(int)GridColumns.Selected].Value == true)
+                {
+                    ms.AddMeasurement((Measurement)r.Cells[(int)GridColumns.MeasurementObject].Value);
+                }
+            }
+
+            if (ms.Values.Count() > 0)
+            {
+                if (string.IsNullOrEmpty(this.txtConfigFile.Text))
+                {
+                    SaveFileDialog d = new SaveFileDialog();
+                    d.Title = "Save Config File As...";
+                    d.InitialDirectory = System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs");
+                    if (d.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                    {
+                        return null;
+                    }
+                    this.txtConfigFile.Text = d.FileName;
+                }
+
+                ConfigFile configFile = new ConfigFile(this.SelectedECUFile.FileName, ms);
+                configFile.Write(txtConfigFile.Text);
+                return configFile;
+            }
+            else
+            {
+                MessageBox.Show("No Measurements Selected");
+            }
+            return null;
+        }
+
         private void btnStartLog_Click(object sender, EventArgs e)
         {
             if (this.LoggerOptions.ConnectionType != Session.LoggerOptions.ConnectionTypes.LogFile)
             {
-                Measurements ms = new Measurements();
-                foreach (DataGridViewRow r in this.dataGridView1.Rows)
+                if (this.SaveConfigFile() == null)
                 {
-                    if ((bool)r.Cells[(int)GridColumns.Selected].Value == true)
-                    {
-                        ms.AddMeasurement((Measurement)r.Cells[(int)GridColumns.MeasurementObject].Value);
-                    }
-                }
-
-                if (ms.Values.Count() > 0)
-                {
-                    if (string.IsNullOrEmpty(this.txtConfigFile.Text))
-                    {
-                        SaveFileDialog d = new SaveFileDialog();
-                        d.Title = "Save Config File As...";
-                        d.InitialDirectory = System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs");
-                        if (d.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                        {
-                            return;
-                        }
-                        this.txtConfigFile.Text = d.FileName;
-                    }
-
-                    ConfigFile configFile = new ConfigFile(this.SelectedECUFile.FileName, ms);
-                    configFile.Write(txtConfigFile.Text);                   
-                }
-                else
-                {
-                    MessageBox.Show("No Measurements Selected");
                     return;
                 }
             }
@@ -308,7 +319,7 @@ namespace VisualME7Logger
                 XElement root = new XElement("VisualME7LoggerSettings");
                 root.Add(new XAttribute("ECUFile", this.txtECUFile.Text));
                 root.Add(new XAttribute("ConfigFile", this.txtConfigFile.Text));
-               
+
                 root.Add(this.LoggerOptions.Write());
                 root.Add(this.ChecksumInfo.Write());
                 root.Save(System.IO.Path.Combine(Program.ME7LoggerDirectory, "VisualME7Logger.cfg.xml"));
@@ -347,19 +358,13 @@ namespace VisualME7Logger
                     {
                         case "Options":
                             this.LoggerOptions.Read(ele);
-                            break;                    
+                            break;
                         case "ChecksumInfo":
                             this.ChecksumInfo.Read(ele);
-                            break;                        
+                            break;
                     }
                 }
             }
-        }
-
-        private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            new OptionsForm(this.LoggerOptions).ShowDialog(this);
-            this.SwitchUI();
         }
 
         private void lstAvailMeasurements_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -371,7 +376,7 @@ namespace VisualME7Logger
         {
             btnRemoveMeasurement_Click(sender, e);
         }
-               
+
         private void dataGridView1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
@@ -395,7 +400,28 @@ namespace VisualME7Logger
 
         private void saveConfigFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            this.SaveConfigFile();
+        }
 
-        }        
+        private void settingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new OptionsForm(this.LoggerOptions).ShowDialog(this);
+            this.SwitchUI();
+        }
+
+        private void selectedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void allToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void unselectedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
