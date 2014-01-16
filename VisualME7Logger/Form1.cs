@@ -16,20 +16,15 @@ namespace VisualME7Logger
     public partial class Form1 : Form
     {
         public ME7LoggerSession session;
-        Dictionary<string, List<double>> chartVariables = new Dictionary<string, List<double>>()
-        {
-            //"wdkba", //ThrottlePlateAngle
-            {"nmot", new List<double>(){-680, .2}}, //EngineSpeed
-           // {"mshfm_w",new List<double>(){0, 4}},//MassAirFlow
-            {"plsol", new List<double>(){-960, .8}}, //BoostPressDesired
-            {"pvdkds", new List<double>(){-960, .8}}, //BoostPressureActual
-            //{"rl", new List<double>(){0, 5}} ,//EngineLoad,
-            //{"vfzg", new List<double>(){0, 7}}//speed
-        };
 
-        public Form1(string configFile, VisualME7Logger.Session.LoggerOptions options)
+        DisplayOptions DisplayOptions;
+      
+        public Form1(string configFile, VisualME7Logger.Session.LoggerOptions options, DisplayOptions displayOptions)
         {
+
             InitializeComponent();
+
+            this.DisplayOptions = displayOptions;
 
             cmbChartType.DataSource = Enum.GetValues(typeof(SeriesChartType));
             cmbChartType.SelectedItem = SeriesChartType.FastLine;
@@ -67,15 +62,7 @@ namespace VisualME7Logger
             }
 
             if (status == ME7LoggerSession.Statuses.Open)
-            {
-                foreach (string varName in this.chartVariables.Keys.ToList())
-                {
-                    if (session.Variables.GetByName(varName) == null)
-                    {
-                        chartVariables.Remove(varName);
-                    }
-                }
-
+            {               
                 //Initailization logic here  
                 StringBuilder namesBuilder = new StringBuilder();
                 foreach (SessionVariable var in session.Variables.Values)
@@ -109,29 +96,28 @@ namespace VisualME7Logger
             }
         }
 
+        private int vRes = 250;
+        private int hRes = 250;
         void BuildChart()
         {
             chart1.ChartAreas[0].AxisY.Minimum = 0;
-            chart1.ChartAreas[0].AxisY.Maximum = 1000;
-            chart1.ChartAreas[0].Area3DStyle.Enable3D = true;
-            chart1.ChartAreas[0].AxisY.LabelStyle = new LabelStyle() { Enabled = false };
-            chart1.ChartAreas[0].AxisX.LabelStyle = new LabelStyle() { Enabled = false };
-
+            chart1.ChartAreas[0].AxisY.Maximum = vRes;
+            
             chart1.Series.Clear();
 
             SessionVariable var;
             Series s;
-            foreach (string chartVariable in chartVariables.Keys)
+            foreach(GraphVariable graphVariable in this.DisplayOptions.GraphVariables)
             {
-                var = session.Variables[chartVariable];
+                var = session.Variables[graphVariable.Variable];
                 if (var != null)
                 {
-                    s = new Series(var.ToString());
-
+                    s = new Series(graphVariable.Name);
+                    s.Color = graphVariable.Color;
                     s.ChartType = (SeriesChartType)cmbChartType.SelectedItem;
                     chart1.Series.Add(s);
-                    for (int i = 0; i < 250; ++i)
-                        s.Points.Add(0, 0);
+                    for (int i = 0; i < hRes; ++i)
+                        s.Points.Add(-1, 0);
                 }
             }
 
@@ -159,27 +145,20 @@ namespace VisualME7Logger
             int i = 0;
             Variable v;
             Series s;
-            foreach (string chartVariable in chartVariables.Keys)
+            foreach (GraphVariable graphVariable in this.DisplayOptions.GraphVariables)
             {
-                v = line[chartVariable];
-                s = chart1.Series[i++];
-                double parse;
-                if (double.TryParse(v.Value, out parse))
+                if (session.Variables.GetByName(graphVariable.Variable) != null)
                 {
-                    List<double> additiveAndMultiplier = chartVariables[chartVariable];
-
-                    double add = 0;
-                    double multi = 1;
-                    if (additiveAndMultiplier != null)
+                    v = line[graphVariable.Variable];
+                    s = chart1.Series[i++];
+                    decimal parse;
+                    if (decimal.TryParse(v.Value, out parse))
                     {
-                        add = chartVariables[chartVariable][0];
-                        multi = chartVariables[chartVariable][1];
+                        decimal percent = (parse - graphVariable.Min) / (graphVariable.Max - graphVariable.Min) * vRes;
+                        s.Points.Add((double)percent);
                     }
-                    s.Points.Add((parse + add) * multi, (double)line.TimeStamp);
-                   // s.Points.Last().ToolTip = v.Value;
+                    s.Points.RemoveAt(0);
                 }
-
-                s.Points.RemoveAt(0);
             }
 
             v = line["nmot"];
@@ -189,10 +168,7 @@ namespace VisualME7Logger
                 double rpm = double.Parse(v.Value);
                 s.Points[0].SetValueY(rpm);
                 s.Points[1].SetValueY(7000 - rpm);
-                chart2.Invalidate();
-
-
-           
+                chart2.Invalidate();           
             }
         }
 
@@ -245,11 +221,6 @@ namespace VisualME7Logger
                 s.ChartType = type;
             }
             chart1.ResumeLayout();
-        }
-
-        private void rpmLED_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
