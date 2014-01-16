@@ -235,6 +235,8 @@ namespace VisualME7Logger.Configuration
         public decimal Offset { get; private set; }
         public string Comment { get; private set; }
 
+        public bool Selected { get; set; }
+
         internal bool Read(string line)
         {
             string[] parts = line.Split(',');

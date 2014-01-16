@@ -28,22 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.lstAvailMeasurements = new System.Windows.Forms.ListBox();
-            this.btnAddMeasurement = new System.Windows.Forms.Button();
-            this.btnRemoveMeasurement = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.Selected = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Name1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Alais = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Unit = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Comment = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Object = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.label2 = new System.Windows.Forms.Label();
-            this.lstSelectedMeasurements = new System.Windows.Forms.ListBox();
-            this.label1 = new System.Windows.Forms.Label();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tpMeasurements = new System.Windows.Forms.TabPage();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.tbGraphConfig = new System.Windows.Forms.TabPage();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lstGraphVariables = new System.Windows.Forms.ListBox();
+            this.btnEditGraphVariable = new System.Windows.Forms.Button();
+            this.gbGraphVariables = new System.Windows.Forms.GroupBox();
+            this.txtGraphVariableVariable = new System.Windows.Forms.TextBox();
+            this.btnCancelGraphVariable = new System.Windows.Forms.Button();
+            this.btnSaveGraphVariable = new System.Windows.Forms.Button();
+            this.txtGraphVariableName = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.txtGraphVariableColor = new System.Windows.Forms.TextBox();
+            this.nudGraphVariableMax = new System.Windows.Forms.NumericUpDown();
+            this.nudGraphVariableMin = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
+            this.btnDeleteGraphVariable = new System.Windows.Forms.Button();
+            this.btnAddGraphVariable = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -67,67 +75,57 @@
             this.allToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unselectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.filterTextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripFilterTextBox = new System.Windows.Forms.ToolStripTextBox();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mE7CheckToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createECUFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.panel1.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.tpMeasurements.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.tbGraphConfig.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.gbGraphVariables.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudGraphVariableMax)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudGraphVariableMin)).BeginInit();
             this.panel2.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // lstAvailMeasurements
+            // panel1
             // 
-            this.lstAvailMeasurements.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.lstAvailMeasurements.FormattingEnabled = true;
-            this.lstAvailMeasurements.Location = new System.Drawing.Point(9, 32);
-            this.lstAvailMeasurements.Name = "lstAvailMeasurements";
-            this.lstAvailMeasurements.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lstAvailMeasurements.Size = new System.Drawing.Size(300, 277);
-            this.lstAvailMeasurements.TabIndex = 3;
-            this.lstAvailMeasurements.SelectedValueChanged += new System.EventHandler(this.lstAvailMeasurements_SelectedValueChanged);
-            this.lstAvailMeasurements.KeyUp += new System.Windows.Forms.KeyEventHandler(this.lstAvailMeasurements_KeyUp);
-            this.lstAvailMeasurements.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstAvailMeasurements_MouseDoubleClick);
+            this.panel1.Controls.Add(this.tabControl1);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 24);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(733, 318);
+            this.panel1.TabIndex = 8;
             // 
-            // btnAddMeasurement
+            // tabControl1
             // 
-            this.btnAddMeasurement.Location = new System.Drawing.Point(315, 32);
-            this.btnAddMeasurement.Name = "btnAddMeasurement";
-            this.btnAddMeasurement.Size = new System.Drawing.Size(75, 23);
-            this.btnAddMeasurement.TabIndex = 5;
-            this.btnAddMeasurement.Text = ">>";
-            this.btnAddMeasurement.UseVisualStyleBackColor = true;
-            this.btnAddMeasurement.Click += new System.EventHandler(this.btnAddMeasurement_Click);
+            this.tabControl1.Controls.Add(this.tpMeasurements);
+            this.tabControl1.Controls.Add(this.tbGraphConfig);
+            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl1.Location = new System.Drawing.Point(0, 0);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(733, 318);
+            this.tabControl1.TabIndex = 8;
             // 
-            // btnRemoveMeasurement
+            // tpMeasurements
             // 
-            this.btnRemoveMeasurement.Location = new System.Drawing.Point(315, 61);
-            this.btnRemoveMeasurement.Name = "btnRemoveMeasurement";
-            this.btnRemoveMeasurement.Size = new System.Drawing.Size(75, 23);
-            this.btnRemoveMeasurement.TabIndex = 6;
-            this.btnRemoveMeasurement.Text = "<<";
-            this.btnRemoveMeasurement.UseVisualStyleBackColor = true;
-            this.btnRemoveMeasurement.Click += new System.EventHandler(this.btnRemoveMeasurement_Click);
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.dataGridView1);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.lstSelectedMeasurements);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.lstAvailMeasurements);
-            this.groupBox1.Controls.Add(this.btnAddMeasurement);
-            this.groupBox1.Controls.Add(this.btnRemoveMeasurement);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox1.Location = new System.Drawing.Point(0, 0);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(733, 318);
-            this.groupBox1.TabIndex = 7;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Measurements:";
+            this.tpMeasurements.Controls.Add(this.dataGridView1);
+            this.tpMeasurements.Location = new System.Drawing.Point(4, 22);
+            this.tpMeasurements.Name = "tpMeasurements";
+            this.tpMeasurements.Padding = new System.Windows.Forms.Padding(3);
+            this.tpMeasurements.Size = new System.Drawing.Size(725, 292);
+            this.tpMeasurements.TabIndex = 0;
+            this.tpMeasurements.Text = "Measurements";
+            this.tpMeasurements.UseVisualStyleBackColor = true;
             // 
             // dataGridView1
             // 
@@ -135,114 +133,229 @@
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.AllowUserToOrderColumns = true;
             this.dataGridView1.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.ControlDark;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Selected,
-            this.Name1,
-            this.Alais,
-            this.Unit,
-            this.Comment,
-            this.Object});
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(3, 16);
+            this.dataGridView1.Location = new System.Drawing.Point(3, 3);
             this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.ShowEditingIcon = false;
-            this.dataGridView1.Size = new System.Drawing.Size(727, 299);
-            this.dataGridView1.TabIndex = 10;
+            this.dataGridView1.Size = new System.Drawing.Size(719, 286);
+            this.dataGridView1.TabIndex = 11;
+            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView1_KeyDown);
             // 
-            // Selected
+            // tbGraphConfig
             // 
-            this.Selected.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.Selected.Frozen = true;
-            this.Selected.HeaderText = "";
-            this.Selected.Name = "Selected";
-            this.Selected.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Selected.Width = 20;
+            this.tbGraphConfig.BackColor = System.Drawing.Color.Transparent;
+            this.tbGraphConfig.Controls.Add(this.groupBox1);
+            this.tbGraphConfig.Location = new System.Drawing.Point(4, 22);
+            this.tbGraphConfig.Name = "tbGraphConfig";
+            this.tbGraphConfig.Padding = new System.Windows.Forms.Padding(3);
+            this.tbGraphConfig.Size = new System.Drawing.Size(725, 292);
+            this.tbGraphConfig.TabIndex = 1;
+            this.tbGraphConfig.Text = "Graph Data";
             // 
-            // Name1
+            // groupBox1
             // 
-            this.Name1.HeaderText = "Name";
-            this.Name1.Name = "Name1";
-            this.Name1.ReadOnly = true;
+            this.groupBox1.Controls.Add(this.lstGraphVariables);
+            this.groupBox1.Controls.Add(this.btnEditGraphVariable);
+            this.groupBox1.Controls.Add(this.gbGraphVariables);
+            this.groupBox1.Controls.Add(this.btnDeleteGraphVariable);
+            this.groupBox1.Controls.Add(this.btnAddGraphVariable);
+            this.groupBox1.Location = new System.Drawing.Point(8, 6);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(393, 280);
+            this.groupBox1.TabIndex = 5;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Variables";
             // 
-            // Alais
+            // lstGraphVariables
             // 
-            this.Alais.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Alais.HeaderText = "Alias";
-            this.Alais.Name = "Alais";
-            this.Alais.ReadOnly = true;
-            this.Alais.Width = 54;
+            this.lstGraphVariables.FormattingEnabled = true;
+            this.lstGraphVariables.Location = new System.Drawing.Point(6, 19);
+            this.lstGraphVariables.Name = "lstGraphVariables";
+            this.lstGraphVariables.Size = new System.Drawing.Size(300, 95);
+            this.lstGraphVariables.TabIndex = 0;
+            this.lstGraphVariables.SelectedIndexChanged += new System.EventHandler(this.lstGraphVariables_SelectedIndexChanged);
             // 
-            // Unit
+            // btnEditGraphVariable
             // 
-            this.Unit.HeaderText = "Unit";
-            this.Unit.Name = "Unit";
-            this.Unit.ReadOnly = true;
-            this.Unit.Width = 35;
+            this.btnEditGraphVariable.Location = new System.Drawing.Point(312, 42);
+            this.btnEditGraphVariable.Name = "btnEditGraphVariable";
+            this.btnEditGraphVariable.Size = new System.Drawing.Size(75, 23);
+            this.btnEditGraphVariable.TabIndex = 4;
+            this.btnEditGraphVariable.Text = "Edit";
+            this.btnEditGraphVariable.UseVisualStyleBackColor = true;
+            this.btnEditGraphVariable.Click += new System.EventHandler(this.btnEditGraphVariable_Click);
             // 
-            // Comment
+            // gbGraphVariables
             // 
-            this.Comment.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Comment.HeaderText = "Comment";
-            this.Comment.Name = "Comment";
-            this.Comment.ReadOnly = true;
-            this.Comment.Width = 76;
+            this.gbGraphVariables.Controls.Add(this.txtGraphVariableVariable);
+            this.gbGraphVariables.Controls.Add(this.btnCancelGraphVariable);
+            this.gbGraphVariables.Controls.Add(this.btnSaveGraphVariable);
+            this.gbGraphVariables.Controls.Add(this.txtGraphVariableName);
+            this.gbGraphVariables.Controls.Add(this.label7);
+            this.gbGraphVariables.Controls.Add(this.label6);
+            this.gbGraphVariables.Controls.Add(this.label5);
+            this.gbGraphVariables.Controls.Add(this.label2);
+            this.gbGraphVariables.Controls.Add(this.txtGraphVariableColor);
+            this.gbGraphVariables.Controls.Add(this.nudGraphVariableMax);
+            this.gbGraphVariables.Controls.Add(this.nudGraphVariableMin);
+            this.gbGraphVariables.Controls.Add(this.label1);
+            this.gbGraphVariables.Location = new System.Drawing.Point(8, 115);
+            this.gbGraphVariables.Name = "gbGraphVariables";
+            this.gbGraphVariables.Size = new System.Drawing.Size(298, 131);
+            this.gbGraphVariables.TabIndex = 1;
+            this.gbGraphVariables.TabStop = false;
             // 
-            // Object
+            // txtGraphVariableVariable
             // 
-            this.Object.HeaderText = "";
-            this.Object.Name = "Object";
-            this.Object.ReadOnly = true;
-            this.Object.Visible = false;
+            this.txtGraphVariableVariable.Location = new System.Drawing.Point(57, 13);
+            this.txtGraphVariableVariable.Name = "txtGraphVariableVariable";
+            this.txtGraphVariableVariable.Size = new System.Drawing.Size(227, 20);
+            this.txtGraphVariableVariable.TabIndex = 14;
+            // 
+            // btnCancelGraphVariable
+            // 
+            this.btnCancelGraphVariable.Location = new System.Drawing.Point(128, 102);
+            this.btnCancelGraphVariable.Name = "btnCancelGraphVariable";
+            this.btnCancelGraphVariable.Size = new System.Drawing.Size(75, 23);
+            this.btnCancelGraphVariable.TabIndex = 13;
+            this.btnCancelGraphVariable.Text = "Cancel";
+            this.btnCancelGraphVariable.UseVisualStyleBackColor = true;
+            this.btnCancelGraphVariable.Click += new System.EventHandler(this.btnCancelGraphVariable_Click);
+            // 
+            // btnSaveGraphVariable
+            // 
+            this.btnSaveGraphVariable.Location = new System.Drawing.Point(209, 102);
+            this.btnSaveGraphVariable.Name = "btnSaveGraphVariable";
+            this.btnSaveGraphVariable.Size = new System.Drawing.Size(75, 23);
+            this.btnSaveGraphVariable.TabIndex = 12;
+            this.btnSaveGraphVariable.Text = "Save";
+            this.btnSaveGraphVariable.UseVisualStyleBackColor = true;
+            this.btnSaveGraphVariable.Click += new System.EventHandler(this.btnSaveGraphVariable_Click);
+            // 
+            // txtGraphVariableName
+            // 
+            this.txtGraphVariableName.Location = new System.Drawing.Point(57, 37);
+            this.txtGraphVariableName.Name = "txtGraphVariableName";
+            this.txtGraphVariableName.Size = new System.Drawing.Size(227, 20);
+            this.txtGraphVariableName.TabIndex = 10;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(17, 40);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(38, 13);
+            this.label7.TabIndex = 9;
+            this.label7.Text = "Name:";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(21, 86);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(34, 13);
+            this.label6.TabIndex = 8;
+            this.label6.Text = "Color:";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(163, 63);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(30, 13);
+            this.label5.TabIndex = 7;
+            this.label5.Text = "Max:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(399, 16);
+            this.label2.Location = new System.Drawing.Point(28, 63);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(49, 13);
-            this.label2.TabIndex = 9;
-            this.label2.Text = "Selected";
+            this.label2.Size = new System.Drawing.Size(27, 13);
+            this.label2.TabIndex = 6;
+            this.label2.Text = "Min:";
             // 
-            // lstSelectedMeasurements
+            // txtGraphVariableColor
             // 
-            this.lstSelectedMeasurements.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lstSelectedMeasurements.FormattingEnabled = true;
-            this.lstSelectedMeasurements.Location = new System.Drawing.Point(396, 32);
-            this.lstSelectedMeasurements.Name = "lstSelectedMeasurements";
-            this.lstSelectedMeasurements.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lstSelectedMeasurements.Size = new System.Drawing.Size(328, 277);
-            this.lstSelectedMeasurements.TabIndex = 8;
-            this.lstSelectedMeasurements.SelectedValueChanged += new System.EventHandler(this.lstSelectedMeasurements_SelectedValueChanged);
-            this.lstSelectedMeasurements.KeyUp += new System.Windows.Forms.KeyEventHandler(this.lstSelectedMeasurements_KeyUp);
-            this.lstSelectedMeasurements.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstSelectedMeasurements_MouseDoubleClick);
+            this.txtGraphVariableColor.Location = new System.Drawing.Point(57, 83);
+            this.txtGraphVariableColor.Name = "txtGraphVariableColor";
+            this.txtGraphVariableColor.ReadOnly = true;
+            this.txtGraphVariableColor.Size = new System.Drawing.Size(20, 20);
+            this.txtGraphVariableColor.TabIndex = 5;
+            this.txtGraphVariableColor.Click += new System.EventHandler(this.txtGraphVariableColor_Click);
+            // 
+            // nudGraphVariableMax
+            // 
+            this.nudGraphVariableMax.DecimalPlaces = 2;
+            this.nudGraphVariableMax.Location = new System.Drawing.Point(195, 60);
+            this.nudGraphVariableMax.Maximum = new decimal(new int[] {
+            1215752192,
+            23,
+            0,
+            0});
+            this.nudGraphVariableMax.Minimum = new decimal(new int[] {
+            1316134912,
+            2328,
+            0,
+            -2147483648});
+            this.nudGraphVariableMax.Name = "nudGraphVariableMax";
+            this.nudGraphVariableMax.Size = new System.Drawing.Size(89, 20);
+            this.nudGraphVariableMax.TabIndex = 3;
+            // 
+            // nudGraphVariableMin
+            // 
+            this.nudGraphVariableMin.DecimalPlaces = 2;
+            this.nudGraphVariableMin.Location = new System.Drawing.Point(57, 60);
+            this.nudGraphVariableMin.Maximum = new decimal(new int[] {
+            1215752192,
+            23,
+            0,
+            0});
+            this.nudGraphVariableMin.Minimum = new decimal(new int[] {
+            1215752192,
+            23,
+            0,
+            -2147483648});
+            this.nudGraphVariableMin.Name = "nudGraphVariableMin";
+            this.nudGraphVariableMin.Size = new System.Drawing.Size(89, 20);
+            this.nudGraphVariableMin.TabIndex = 2;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 16);
+            this.label1.Location = new System.Drawing.Point(7, 16);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(50, 13);
-            this.label1.TabIndex = 7;
-            this.label1.Text = "Available";
+            this.label1.Size = new System.Drawing.Size(48, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Variable:";
             // 
-            // panel1
+            // btnDeleteGraphVariable
             // 
-            this.panel1.Controls.Add(this.groupBox1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 24);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(733, 318);
-            this.panel1.TabIndex = 8;
+            this.btnDeleteGraphVariable.Location = new System.Drawing.Point(312, 65);
+            this.btnDeleteGraphVariable.Name = "btnDeleteGraphVariable";
+            this.btnDeleteGraphVariable.Size = new System.Drawing.Size(75, 23);
+            this.btnDeleteGraphVariable.TabIndex = 3;
+            this.btnDeleteGraphVariable.Text = "Delete";
+            this.btnDeleteGraphVariable.UseVisualStyleBackColor = true;
+            this.btnDeleteGraphVariable.Click += new System.EventHandler(this.btnDeleteGraphVariable_Click);
+            // 
+            // btnAddGraphVariable
+            // 
+            this.btnAddGraphVariable.Location = new System.Drawing.Point(312, 19);
+            this.btnAddGraphVariable.Name = "btnAddGraphVariable";
+            this.btnAddGraphVariable.Size = new System.Drawing.Size(75, 23);
+            this.btnAddGraphVariable.TabIndex = 2;
+            this.btnAddGraphVariable.Text = "Add";
+            this.btnAddGraphVariable.UseVisualStyleBackColor = true;
+            this.btnAddGraphVariable.Click += new System.EventHandler(this.btnAddGraphVariable_Click);
             // 
             // panel2
             // 
@@ -412,8 +525,10 @@
             this.filterToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.allToolStripMenuItem,
             this.selectedToolStripMenuItem,
-            this.unselectedToolStripMenuItem});
-            this.filterToolStripMenuItem.Enabled = false;
+            this.unselectedToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.filterTextToolStripMenuItem,
+            this.toolStripFilterTextBox});
             this.filterToolStripMenuItem.Name = "filterToolStripMenuItem";
             this.filterToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.filterToolStripMenuItem.Text = "Filter";
@@ -423,23 +538,43 @@
             this.allToolStripMenuItem.Checked = true;
             this.allToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.allToolStripMenuItem.Name = "allToolStripMenuItem";
-            this.allToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.allToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.allToolStripMenuItem.Text = "All";
             this.allToolStripMenuItem.Click += new System.EventHandler(this.allToolStripMenuItem_Click);
             // 
             // selectedToolStripMenuItem
             // 
             this.selectedToolStripMenuItem.Name = "selectedToolStripMenuItem";
-            this.selectedToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.selectedToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.selectedToolStripMenuItem.Text = "Selected";
             this.selectedToolStripMenuItem.Click += new System.EventHandler(this.selectedToolStripMenuItem_Click);
             // 
             // unselectedToolStripMenuItem
             // 
             this.unselectedToolStripMenuItem.Name = "unselectedToolStripMenuItem";
-            this.unselectedToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.unselectedToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.unselectedToolStripMenuItem.Text = "Unselected";
             this.unselectedToolStripMenuItem.Click += new System.EventHandler(this.unselectedToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(157, 6);
+            // 
+            // filterTextToolStripMenuItem
+            // 
+            this.filterTextToolStripMenuItem.Enabled = false;
+            this.filterTextToolStripMenuItem.Name = "filterTextToolStripMenuItem";
+            this.filterTextToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.filterTextToolStripMenuItem.Text = "Filter Text:";
+            // 
+            // toolStripFilterTextBox
+            // 
+            this.toolStripFilterTextBox.BackColor = System.Drawing.SystemColors.Window;
+            this.toolStripFilterTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.toolStripFilterTextBox.Name = "toolStripFilterTextBox";
+            this.toolStripFilterTextBox.Size = new System.Drawing.Size(100, 23);
+            this.toolStripFilterTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.toolStripFilterTextBox_KeyDown);
             // 
             // toolsToolStripMenuItem
             // 
@@ -489,10 +624,16 @@
             this.Name = "SettingsForm";
             this.ShowIcon = false;
             this.Text = "Visual ME7Logger";
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.panel1.ResumeLayout(false);
+            this.tabControl1.ResumeLayout(false);
+            this.tpMeasurements.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.tbGraphConfig.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.gbGraphVariables.ResumeLayout(false);
+            this.gbGraphVariables.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudGraphVariableMax)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudGraphVariableMin)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
@@ -504,29 +645,15 @@
 
         #endregion
 
-        private System.Windows.Forms.ListBox lstAvailMeasurements;
-        private System.Windows.Forms.Button btnAddMeasurement;
-        private System.Windows.Forms.Button btnRemoveMeasurement;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ListBox lstSelectedMeasurements;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnStartLog;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtConfigFile;
         private System.Windows.Forms.TextBox txtECUFile;
         private System.Windows.Forms.Splitter splitter1;
-        private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.DataGridViewTextBoxColumn NameColumn;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn Selected;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Name1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Alais;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Unit;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Comment;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Object;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadECUFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
@@ -547,6 +674,32 @@
         private System.Windows.Forms.ToolStripMenuItem mE7CheckToolStripMenuItem;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem createECUFileToolStripMenuItem;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tpMeasurements;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.TabPage tbGraphConfig;
+        private System.Windows.Forms.GroupBox gbGraphVariables;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ListBox lstGraphVariables;
+        private System.Windows.Forms.Button btnEditGraphVariable;
+        private System.Windows.Forms.Button btnDeleteGraphVariable;
+        private System.Windows.Forms.Button btnAddGraphVariable;
+        private System.Windows.Forms.Button btnCancelGraphVariable;
+        private System.Windows.Forms.Button btnSaveGraphVariable;
+        private System.Windows.Forms.TextBox txtGraphVariableName;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox txtGraphVariableColor;
+        private System.Windows.Forms.NumericUpDown nudGraphVariableMax;
+        private System.Windows.Forms.NumericUpDown nudGraphVariableMin;
+        private System.Windows.Forms.ColorDialog colorDialog1;
+        private System.Windows.Forms.TextBox txtGraphVariableVariable;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem filterTextToolStripMenuItem;
+        private System.Windows.Forms.ToolStripTextBox toolStripFilterTextBox;
+        private System.Windows.Forms.GroupBox groupBox1;
 
 
     }
