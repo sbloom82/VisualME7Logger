@@ -18,16 +18,25 @@ namespace VisualME7Logger
         public ME7LoggerSession session;
 
         DisplayOptions DisplayOptions;
-      
+        DateTime start;
+
+        Queue<LogLine> queue;
+        Timer refreshTimer = new Timer();
+
         public Form1(string configFile, VisualME7Logger.Session.LoggerOptions options, DisplayOptions displayOptions)
         {
-
             InitializeComponent();
 
             this.DisplayOptions = displayOptions;
-
-            cmbChartType.DataSource = Enum.GetValues(typeof(SeriesChartType));
+            foreach (var v in Enum.GetValues(typeof(SeriesChartType)))
+            {
+                cmbChartType.Items.Add(v);
+            }
             cmbChartType.SelectedItem = SeriesChartType.FastLine;
+
+            refreshTimer.Tick += refreshTimer_Tick;
+            refreshTimer.Interval = DisplayOptions.RefreshInterval;
+            txtRefreshRate.Text = DisplayOptions.RefreshInterval.ToString();
 
             if (options.ConnectionType == LoggerOptions.ConnectionTypes.LogFile)
             {
@@ -43,12 +52,25 @@ namespace VisualME7Logger
             session.Open();
         }
 
-        DateTime start;
-        private void button1_Click(object sender, EventArgs e)
+        void refreshTimer_Tick(object sender, EventArgs e)
         {
-            if (session.Status != ME7LoggerSession.Statuses.Open)
+            while (queue.Count() > 0)
             {
-                session.Open();
+                LogLine line = queue.Dequeue();
+
+                if (lblInfo.Tag == null || DateTime.Now.Subtract((DateTime)lblInfo.Tag).TotalSeconds > 3)
+                {
+                    lblInfo.Text = string.Format("Timestamp: {0}", line.TimeStamp.ToString());
+                }
+
+                StringBuilder values = new StringBuilder();
+                foreach (Variable var in line.Variables)
+                {
+                    values.AppendFormat("{0} {1}", var.Value, var.SessionVariable.Unit).AppendLine();
+                }
+                txtValues.Text = values.ToString();
+
+                this.PlotLineOnChart(line);
             }
         }
 
@@ -61,8 +83,11 @@ namespace VisualME7Logger
                 return;
             }
 
+            lblStatus.Text = string.Format("Log Status: {0}", status);
+
             if (status == ME7LoggerSession.Statuses.Open)
-            {               
+            {
+                queue = new Queue<LogLine>();
                 //Initailization logic here  
                 StringBuilder namesBuilder = new StringBuilder();
                 foreach (SessionVariable var in session.Variables.Values)
@@ -71,25 +96,15 @@ namespace VisualME7Logger
                 }
                 txtNames.Text = namesBuilder.ToString();
 
-                txtCommunication.Text = string.Format("Connect={0}, Communicate={1}, LogSpeed={2}",
-                    session.CommunicationInfo.Connect,
-                    session.CommunicationInfo.Communicate,
-                    session.CommunicationInfo.LogSpeed);
-                txtIdentification.Text = string.Format("HW#={0}, SW#={1}, Part#={2}, EngineId={3}",
-                    session.IdentificationInfo.HWNumber,
-                    session.IdentificationInfo.SWNumber,
-                    session.IdentificationInfo.PartNumber,
-                    session.IdentificationInfo.EngineId);
-
                 this.BuildChart();
+
+                start = DateTime.Now;
+                refreshTimer.Start();
             }
             else if (status == ME7LoggerSession.Statuses.Closed)
             {
-                if (session.ExitCode < 1)
-                {
-                    MessageBox.Show("Done");
-                }
-                else
+                refreshTimer.Stop();
+                if (session.ExitCode > 0)
                 {
                     MessageBox.Show(string.Format("Error! Exit Code:{0}{1}{2}", session.ExitCode, Environment.NewLine, session.ErrorText));
                 }
@@ -102,19 +117,21 @@ namespace VisualME7Logger
         {
             chart1.ChartAreas[0].AxisY.Minimum = 0;
             chart1.ChartAreas[0].AxisY.Maximum = vRes;
-            
+
             chart1.Series.Clear();
 
             SessionVariable var;
             Series s;
-            foreach(GraphVariable graphVariable in this.DisplayOptions.GraphVariables)
+            foreach (GraphVariable graphVariable in this.DisplayOptions.GraphVariables.Where(v => v.Active))
             {
                 var = session.Variables[graphVariable.Variable];
                 if (var != null)
                 {
                     s = new Series(graphVariable.Name);
-                    s.Color = graphVariable.Color;
+                    s.Color = graphVariable.LineColor;
                     s.ChartType = (SeriesChartType)cmbChartType.SelectedItem;
+                    s.BorderWidth = graphVariable.LineThickness;
+                    s.BorderDashStyle = graphVariable.LineStyle;
                     chart1.Series.Add(s);
                     for (int i = 0; i < hRes; ++i)
                         s.Points.Add(-1, 0);
@@ -145,7 +162,7 @@ namespace VisualME7Logger
             int i = 0;
             Variable v;
             Series s;
-            foreach (GraphVariable graphVariable in this.DisplayOptions.GraphVariables)
+            foreach (GraphVariable graphVariable in this.DisplayOptions.GraphVariables.Where(gv => gv.Active))
             {
                 if (session.Variables.GetByName(graphVariable.Variable) != null)
                 {
@@ -168,40 +185,13 @@ namespace VisualME7Logger
                 double rpm = double.Parse(v.Value);
                 s.Points[0].SetValueY(rpm);
                 s.Points[1].SetValueY(7000 - rpm);
-                chart2.Invalidate();           
+                chart2.Invalidate();
             }
         }
 
         void LogLineRead(LogLine line)
         {
-            if (this.InvokeRequired)
-            {
-                this.Invoke(new MethodInvoker(
-                    delegate() { LogLineRead(line); }));
-                return;
-            }
-
-            if (line.LineNumber == 1)
-            {
-                start = DateTime.Now;
-            }
-
-            txtRunningTime.Text = DateTime.Now.Subtract(start).TotalSeconds.ToString();
-            txtTimestamp.Text = line.TimeStamp.ToString();
-
-            StringBuilder values = new StringBuilder();
-            foreach (Variable var in line.Variables)
-            {
-                values.AppendFormat("{0} {1}", var.Value, var.SessionVariable.Unit).AppendLine();
-            }
-            txtValues.Text = values.ToString();
-
-            this.PlotLineOnChart(line);
-        }
-
-        private void btnStop_Click(object sender, EventArgs e)
-        {
-            session.Close();
+            queue.Enqueue(line);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -221,6 +211,88 @@ namespace VisualME7Logger
                 s.ChartType = type;
             }
             chart1.ResumeLayout();
+        }
+
+        private void snapImageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string path = System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs",
+                string.Format("graphCapture{0}.jpg", Guid.NewGuid().ToString("D")));
+            try
+            {
+                chart1.SaveImage(path, ChartImageFormat.Jpeg);
+                lblInfo.Text = "Info: Image saved to log directory";
+                lblInfo.Tag = DateTime.Now;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error while saving image.  " + ex.ToString());
+            }
+        }
+
+        private void startToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (session.Status != ME7LoggerSession.Statuses.Open)
+            {
+                session.Open();
+            }
+        }
+
+        private void stopToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            session.Close();
+        }
+
+        private void infoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string s = string.Format("Communication:\r\nConnect={0}\r\nCommunication={1}\r\nLogSpeed={2}",
+                  session.CommunicationInfo.Connect,
+                  session.CommunicationInfo.Communicate,
+                  session.CommunicationInfo.LogSpeed);
+
+            s += string.Format("\r\n\r\nIdentification:\r\nHW#={0}\r\nSW#={1}\r\nPart#={2}\r\nEngineId={3}",
+                session.IdentificationInfo.HWNumber,
+                session.IdentificationInfo.SWNumber,
+                session.IdentificationInfo.PartNumber,
+                session.IdentificationInfo.EngineId);
+
+            MessageBox.Show(this, s);
+        }
+
+        private void txtRefreshRate_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Enter || e.KeyData == Keys.Return)
+            {
+                int value;
+                bool success = false;
+                if (int.TryParse(txtRefreshRate.Text, out value))
+                {
+                    if (value > 0 && value < 5000)
+                    {
+                        success = true;
+                        refreshTimer.Interval = value;
+                    }
+                }
+
+                if (!success)
+                {
+                    txtRefreshRate.Text = refreshTimer.Interval.ToString();
+                }
+            }
+        }
+
+        private void freezeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.freezeToolStripMenuItem.Checked =
+                !this.freezeToolStripMenuItem.Checked;
+
+            if (this.freezeToolStripMenuItem.Checked)
+            {
+                refreshTimer.Stop();
+            }
+            if (!this.freezeToolStripMenuItem.Checked && this.session.Status == ME7LoggerSession.Statuses.Open)
+            {
+                refreshTimer.Start();
+            }
         }
     }
 }

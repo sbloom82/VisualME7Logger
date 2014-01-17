@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panel1 = new System.Windows.Forms.Panel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpMeasurements = new System.Windows.Forms.TabPage();
@@ -38,6 +38,9 @@
             this.lstGraphVariables = new System.Windows.Forms.ListBox();
             this.btnEditGraphVariable = new System.Windows.Forms.Button();
             this.gbGraphVariables = new System.Windows.Forms.GroupBox();
+            this.chkGraphVariableActive = new System.Windows.Forms.CheckBox();
+            this.nudGraphVariableThickness = new System.Windows.Forms.NumericUpDown();
+            this.label8 = new System.Windows.Forms.Label();
             this.txtGraphVariableVariable = new System.Windows.Forms.TextBox();
             this.btnCancelGraphVariable = new System.Windows.Forms.Button();
             this.btnSaveGraphVariable = new System.Windows.Forms.Button();
@@ -83,6 +86,8 @@
             this.createECUFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.cmbGraphVariableStyle = new System.Windows.Forms.ComboBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tpMeasurements.SuspendLayout();
@@ -90,6 +95,7 @@
             this.tbGraphConfig.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.gbGraphVariables.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudGraphVariableThickness)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGraphVariableMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGraphVariableMin)).BeginInit();
             this.panel2.SuspendLayout();
@@ -102,7 +108,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 24);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(733, 318);
+            this.panel1.Size = new System.Drawing.Size(733, 341);
             this.panel1.TabIndex = 8;
             // 
             // tabControl1
@@ -113,7 +119,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(733, 318);
+            this.tabControl1.Size = new System.Drawing.Size(733, 341);
             this.tabControl1.TabIndex = 8;
             // 
             // tpMeasurements
@@ -133,8 +139,8 @@
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.AllowUserToOrderColumns = true;
             this.dataGridView1.AllowUserToResizeRows = false;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.ControlDark;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -156,7 +162,7 @@
             this.tbGraphConfig.Location = new System.Drawing.Point(4, 22);
             this.tbGraphConfig.Name = "tbGraphConfig";
             this.tbGraphConfig.Padding = new System.Windows.Forms.Padding(3);
-            this.tbGraphConfig.Size = new System.Drawing.Size(725, 292);
+            this.tbGraphConfig.Size = new System.Drawing.Size(725, 315);
             this.tbGraphConfig.TabIndex = 1;
             this.tbGraphConfig.Text = "Graph Data";
             // 
@@ -169,7 +175,7 @@
             this.groupBox1.Controls.Add(this.btnAddGraphVariable);
             this.groupBox1.Location = new System.Drawing.Point(8, 6);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(393, 280);
+            this.groupBox1.Size = new System.Drawing.Size(393, 303);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Variables";
@@ -179,7 +185,7 @@
             this.lstGraphVariables.FormattingEnabled = true;
             this.lstGraphVariables.Location = new System.Drawing.Point(6, 19);
             this.lstGraphVariables.Name = "lstGraphVariables";
-            this.lstGraphVariables.Size = new System.Drawing.Size(300, 95);
+            this.lstGraphVariables.Size = new System.Drawing.Size(300, 121);
             this.lstGraphVariables.TabIndex = 0;
             this.lstGraphVariables.SelectedIndexChanged += new System.EventHandler(this.lstGraphVariables_SelectedIndexChanged);
             // 
@@ -195,6 +201,11 @@
             // 
             // gbGraphVariables
             // 
+            this.gbGraphVariables.Controls.Add(this.label9);
+            this.gbGraphVariables.Controls.Add(this.cmbGraphVariableStyle);
+            this.gbGraphVariables.Controls.Add(this.chkGraphVariableActive);
+            this.gbGraphVariables.Controls.Add(this.nudGraphVariableThickness);
+            this.gbGraphVariables.Controls.Add(this.label8);
             this.gbGraphVariables.Controls.Add(this.txtGraphVariableVariable);
             this.gbGraphVariables.Controls.Add(this.btnCancelGraphVariable);
             this.gbGraphVariables.Controls.Add(this.btnSaveGraphVariable);
@@ -207,50 +218,92 @@
             this.gbGraphVariables.Controls.Add(this.nudGraphVariableMax);
             this.gbGraphVariables.Controls.Add(this.nudGraphVariableMin);
             this.gbGraphVariables.Controls.Add(this.label1);
-            this.gbGraphVariables.Location = new System.Drawing.Point(8, 115);
+            this.gbGraphVariables.Location = new System.Drawing.Point(8, 142);
             this.gbGraphVariables.Name = "gbGraphVariables";
-            this.gbGraphVariables.Size = new System.Drawing.Size(298, 131);
+            this.gbGraphVariables.Size = new System.Drawing.Size(298, 155);
             this.gbGraphVariables.TabIndex = 1;
             this.gbGraphVariables.TabStop = false;
             // 
+            // chkGraphVariableActive
+            // 
+            this.chkGraphVariableActive.AutoSize = true;
+            this.chkGraphVariableActive.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkGraphVariableActive.Location = new System.Drawing.Point(6, 10);
+            this.chkGraphVariableActive.Name = "chkGraphVariableActive";
+            this.chkGraphVariableActive.Size = new System.Drawing.Size(59, 17);
+            this.chkGraphVariableActive.TabIndex = 5;
+            this.chkGraphVariableActive.Text = "Active:";
+            this.chkGraphVariableActive.UseVisualStyleBackColor = true;
+            // 
+            // nudGraphVariableThickness
+            // 
+            this.nudGraphVariableThickness.Location = new System.Drawing.Point(254, 99);
+            this.nudGraphVariableThickness.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.nudGraphVariableThickness.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudGraphVariableThickness.Name = "nudGraphVariableThickness";
+            this.nudGraphVariableThickness.Size = new System.Drawing.Size(38, 20);
+            this.nudGraphVariableThickness.TabIndex = 5;
+            this.nudGraphVariableThickness.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(193, 102);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(59, 13);
+            this.label8.TabIndex = 14;
+            this.label8.Text = "Thickness:";
+            // 
             // txtGraphVariableVariable
             // 
-            this.txtGraphVariableVariable.Location = new System.Drawing.Point(57, 13);
+            this.txtGraphVariableVariable.Location = new System.Drawing.Point(51, 29);
             this.txtGraphVariableVariable.Name = "txtGraphVariableVariable";
-            this.txtGraphVariableVariable.Size = new System.Drawing.Size(227, 20);
-            this.txtGraphVariableVariable.TabIndex = 14;
+            this.txtGraphVariableVariable.Size = new System.Drawing.Size(241, 20);
+            this.txtGraphVariableVariable.TabIndex = 0;
             // 
             // btnCancelGraphVariable
             // 
-            this.btnCancelGraphVariable.Location = new System.Drawing.Point(128, 102);
+            this.btnCancelGraphVariable.Location = new System.Drawing.Point(136, 125);
             this.btnCancelGraphVariable.Name = "btnCancelGraphVariable";
             this.btnCancelGraphVariable.Size = new System.Drawing.Size(75, 23);
-            this.btnCancelGraphVariable.TabIndex = 13;
+            this.btnCancelGraphVariable.TabIndex = 10;
             this.btnCancelGraphVariable.Text = "Cancel";
             this.btnCancelGraphVariable.UseVisualStyleBackColor = true;
             this.btnCancelGraphVariable.Click += new System.EventHandler(this.btnCancelGraphVariable_Click);
             // 
             // btnSaveGraphVariable
             // 
-            this.btnSaveGraphVariable.Location = new System.Drawing.Point(209, 102);
+            this.btnSaveGraphVariable.Location = new System.Drawing.Point(217, 125);
             this.btnSaveGraphVariable.Name = "btnSaveGraphVariable";
             this.btnSaveGraphVariable.Size = new System.Drawing.Size(75, 23);
-            this.btnSaveGraphVariable.TabIndex = 12;
+            this.btnSaveGraphVariable.TabIndex = 11;
             this.btnSaveGraphVariable.Text = "Save";
             this.btnSaveGraphVariable.UseVisualStyleBackColor = true;
             this.btnSaveGraphVariable.Click += new System.EventHandler(this.btnSaveGraphVariable_Click);
             // 
             // txtGraphVariableName
             // 
-            this.txtGraphVariableName.Location = new System.Drawing.Point(57, 37);
+            this.txtGraphVariableName.Location = new System.Drawing.Point(51, 53);
             this.txtGraphVariableName.Name = "txtGraphVariableName";
-            this.txtGraphVariableName.Size = new System.Drawing.Size(227, 20);
-            this.txtGraphVariableName.TabIndex = 10;
+            this.txtGraphVariableName.Size = new System.Drawing.Size(241, 20);
+            this.txtGraphVariableName.TabIndex = 1;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(17, 40);
+            this.label7.Location = new System.Drawing.Point(11, 56);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(38, 13);
             this.label7.TabIndex = 9;
@@ -259,7 +312,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(21, 86);
+            this.label6.Location = new System.Drawing.Point(15, 102);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(34, 13);
             this.label6.TabIndex = 8;
@@ -268,7 +321,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(163, 63);
+            this.label5.Location = new System.Drawing.Point(171, 79);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(30, 13);
             this.label5.TabIndex = 7;
@@ -277,7 +330,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(28, 63);
+            this.label2.Location = new System.Drawing.Point(22, 79);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(27, 13);
             this.label2.TabIndex = 6;
@@ -285,17 +338,17 @@
             // 
             // txtGraphVariableColor
             // 
-            this.txtGraphVariableColor.Location = new System.Drawing.Point(57, 83);
+            this.txtGraphVariableColor.Location = new System.Drawing.Point(51, 99);
             this.txtGraphVariableColor.Name = "txtGraphVariableColor";
             this.txtGraphVariableColor.ReadOnly = true;
             this.txtGraphVariableColor.Size = new System.Drawing.Size(20, 20);
-            this.txtGraphVariableColor.TabIndex = 5;
+            this.txtGraphVariableColor.TabIndex = 4;
             this.txtGraphVariableColor.Click += new System.EventHandler(this.txtGraphVariableColor_Click);
             // 
             // nudGraphVariableMax
             // 
             this.nudGraphVariableMax.DecimalPlaces = 2;
-            this.nudGraphVariableMax.Location = new System.Drawing.Point(195, 60);
+            this.nudGraphVariableMax.Location = new System.Drawing.Point(203, 76);
             this.nudGraphVariableMax.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -313,7 +366,7 @@
             // nudGraphVariableMin
             // 
             this.nudGraphVariableMin.DecimalPlaces = 2;
-            this.nudGraphVariableMin.Location = new System.Drawing.Point(57, 60);
+            this.nudGraphVariableMin.Location = new System.Drawing.Point(51, 76);
             this.nudGraphVariableMin.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -331,7 +384,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(7, 16);
+            this.label1.Location = new System.Drawing.Point(1, 32);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(48, 13);
             this.label1.TabIndex = 0;
@@ -365,7 +418,7 @@
             this.panel2.Controls.Add(this.txtECUFile);
             this.panel2.Controls.Add(this.btnStartLog);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 345);
+            this.panel2.Location = new System.Drawing.Point(0, 368);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(733, 89);
             this.panel2.TabIndex = 10;
@@ -423,7 +476,7 @@
             // splitter1
             // 
             this.splitter1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.splitter1.Location = new System.Drawing.Point(0, 342);
+            this.splitter1.Location = new System.Drawing.Point(0, 365);
             this.splitter1.Name = "splitter1";
             this.splitter1.Size = new System.Drawing.Size(733, 3);
             this.splitter1.TabIndex = 11;
@@ -611,11 +664,28 @@
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
+            // cmbGraphVariableStyle
+            // 
+            this.cmbGraphVariableStyle.FormattingEnabled = true;
+            this.cmbGraphVariableStyle.Location = new System.Drawing.Point(111, 99);
+            this.cmbGraphVariableStyle.Name = "cmbGraphVariableStyle";
+            this.cmbGraphVariableStyle.Size = new System.Drawing.Size(80, 21);
+            this.cmbGraphVariableStyle.TabIndex = 15;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(76, 102);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(33, 13);
+            this.label9.TabIndex = 16;
+            this.label9.Text = "Style:";
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(733, 434);
+            this.ClientSize = new System.Drawing.Size(733, 457);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.panel2);
@@ -632,6 +702,7 @@
             this.groupBox1.ResumeLayout(false);
             this.gbGraphVariables.ResumeLayout(false);
             this.gbGraphVariables.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudGraphVariableThickness)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGraphVariableMax)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGraphVariableMin)).EndInit();
             this.panel2.ResumeLayout(false);
@@ -700,6 +771,11 @@
         private System.Windows.Forms.ToolStripMenuItem filterTextToolStripMenuItem;
         private System.Windows.Forms.ToolStripTextBox toolStripFilterTextBox;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.NumericUpDown nudGraphVariableThickness;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.CheckBox chkGraphVariableActive;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ComboBox cmbGraphVariableStyle;
 
 
     }
