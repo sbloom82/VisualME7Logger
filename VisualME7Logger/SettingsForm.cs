@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using VisualME7Logger.Configuration;
 using System.Xml.Linq;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace VisualME7Logger
 {
@@ -42,6 +43,7 @@ namespace VisualME7Logger
             this.SwitchUI();
 
             this.lstGraphVariables.DataSource = this.DisplayOptions.GraphVariables;
+            this.cmbGraphVariableStyle.DataSource = Enum.GetValues(typeof(ChartDashStyle));
         }
 
         void SetupGrid()
@@ -220,7 +222,6 @@ namespace VisualME7Logger
             return null;
         }
 
-        HashSet<string> selectedMeasurements = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
         private void LoadConfigFile(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))
@@ -231,8 +232,7 @@ namespace VisualME7Logger
             ConfigFile configFile = new ConfigFile(this.SelectedECUFile.FileName);
             configFile.Read(filePath);
             this.txtConfigFile.Text = filePath;
-            selectedMeasurements.Clear();
-
+           
             foreach (Measurement m in this.SelectedECUFile.Measurements.Values)
             {
                 if (configFile.Measurements[m.Name] != null)
@@ -469,7 +469,10 @@ namespace VisualME7Logger
             this.SelectedGraphVariable.Name = txtGraphVariableName.Text;
             this.SelectedGraphVariable.Min = nudGraphVariableMin.Value;
             this.SelectedGraphVariable.Max = nudGraphVariableMax.Value;
-            this.SelectedGraphVariable.Color = txtGraphVariableColor.BackColor;
+            this.SelectedGraphVariable.LineColor = txtGraphVariableColor.BackColor;
+            this.SelectedGraphVariable.LineThickness = (int)nudGraphVariableThickness.Value;
+            this.SelectedGraphVariable.Active = chkGraphVariableActive.Checked;
+            this.SelectedGraphVariable.LineStyle = (ChartDashStyle)cmbGraphVariableStyle.SelectedItem;
 
             if (this.GraphVariableEditMode == EditModes.Add)
                 this.DisplayOptions.GraphVariables.Add(this.SelectedGraphVariable);
@@ -494,7 +497,10 @@ namespace VisualME7Logger
                 txtGraphVariableName.Text = SelectedGraphVariable.Name;
                 nudGraphVariableMin.Value = SelectedGraphVariable.Min;
                 nudGraphVariableMax.Value = SelectedGraphVariable.Max;
-                txtGraphVariableColor.BackColor = SelectedGraphVariable.Color;
+                txtGraphVariableColor.BackColor = SelectedGraphVariable.LineColor;
+                nudGraphVariableThickness.Value = SelectedGraphVariable.LineThickness;
+                chkGraphVariableActive.Checked = SelectedGraphVariable.Active;
+                cmbGraphVariableStyle.SelectedItem = SelectedGraphVariable.LineStyle;
             }
         }
 
@@ -530,6 +536,7 @@ namespace VisualME7Logger
 
     public class DisplayOptions
     {
+        public int RefreshInterval = 50;
         public List<GraphVariable> GraphVariables = new List<GraphVariable>();
         public XElement Write()
         {
@@ -567,29 +574,38 @@ namespace VisualME7Logger
 
     public class GraphVariable
     {
-        public Color Color { get; set; }
+        public bool Active { get; set; }       
         public string Variable { get; set; }
         public string Name { get; set; }
         public decimal Min { get; set; }
         public decimal Max { get; set; }
+        public Color LineColor { get; set; }
+        public int LineThickness { get; set; }        
+        public ChartDashStyle LineStyle { get; set; }
 
         public GraphVariable()
         {
-            Color = Color.Red;
+            LineColor = Color.Red;
             Min = 0;
             Max = 100;
             Name = "";
             Variable = "";
+            LineThickness = 1;
+            LineStyle = ChartDashStyle.Solid;
+            Active = true;
         }
 
         public XElement Write()
         {
             XElement retval = new XElement("GraphVariable");
+            retval.Add(new XAttribute("Active", this.Active));
             retval.Add(new XAttribute("Variable", this.Variable));
-            retval.Add(new XAttribute("Color", this.Color.ToArgb()));
             retval.Add(new XAttribute("Name", this.Name));
             retval.Add(new XAttribute("Min", this.Min));
             retval.Add(new XAttribute("Max", this.Max));
+            retval.Add(new XAttribute("LineColor", this.LineColor.ToArgb()));
+            retval.Add(new XAttribute("LineThickness", this.LineThickness));
+            retval.Add(new XAttribute("LineStyle", (int)this.LineStyle));
             return retval;
         }
 
@@ -599,11 +615,11 @@ namespace VisualME7Logger
             {
                 switch (att.Name.LocalName)
                 {
+                    case "Active":
+                        Active = bool.Parse(att.Value);
+                        break;
                     case "Variable":
                         Variable = att.Value;
-                        break;
-                    case "Color":
-                        Color = Color.FromArgb(int.Parse(att.Value));
                         break;
                     case "Name":
                         Name = att.Value;
@@ -614,6 +630,15 @@ namespace VisualME7Logger
                     case "Max":
                         Max = decimal.Parse(att.Value);
                         break;
+                    case "LineColor":
+                        LineColor = Color.FromArgb(int.Parse(att.Value));
+                        break;                    
+                    case "LineThickness":
+                        LineThickness = int.Parse(att.Value);
+                        break;
+                    case "LineStyle":
+                        LineStyle = (ChartDashStyle)int.Parse(att.Value);
+                        break;                   
                 }
             }
         }
