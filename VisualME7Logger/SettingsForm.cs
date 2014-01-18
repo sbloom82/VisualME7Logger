@@ -191,33 +191,36 @@ namespace VisualME7Logger
 
         private ConfigFile SaveConfigFile()
         {
-            Measurements ms = new Measurements();
-            foreach (Measurement m in this.SelectedECUFile.Measurements.Values.Where(m => m.Selected))
+            if (this.SelectedECUFile != null)
             {
-                ms.AddMeasurement(m);
-            }
-
-            if (ms.Values.Count() > 0)
-            {
-                if (string.IsNullOrEmpty(this.txtConfigFile.Text))
+                Measurements ms = new Measurements();
+                foreach (Measurement m in this.SelectedECUFile.Measurements.Values.Where(m => m.Selected))
                 {
-                    SaveFileDialog d = new SaveFileDialog();
-                    d.Title = "Save Config File As...";
-                    d.InitialDirectory = System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs");
-                    if (d.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                    {
-                        return null;
-                    }
-                    this.txtConfigFile.Text = d.FileName;
+                    ms.AddMeasurement(m);
                 }
 
-                ConfigFile configFile = new ConfigFile(this.SelectedECUFile.FileName, ms);
-                configFile.Write(txtConfigFile.Text);
-                return configFile;
-            }
-            else
-            {
-                MessageBox.Show("No Measurements Selected");
+                if (ms.Values.Count() > 0)
+                {
+                    if (string.IsNullOrEmpty(this.txtConfigFile.Text))
+                    {
+                        SaveFileDialog d = new SaveFileDialog();
+                        d.Title = "Save Config File As...";
+                        d.InitialDirectory = System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs");
+                        if (d.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                        {
+                            return null;
+                        }
+                        this.txtConfigFile.Text = d.FileName;
+                    }
+
+                    ConfigFile configFile = new ConfigFile(this.SelectedECUFile.FileName, ms);
+                    configFile.Write(txtConfigFile.Text);
+                    return configFile;
+                }
+                else
+                {
+                    MessageBox.Show("No Measurements Selected");
+                }
             }
             return null;
         }
@@ -255,8 +258,10 @@ namespace VisualME7Logger
 
             this.SaveSettings();
 
+            this.Visible = false;
             Form1 logForm = new Form1(txtConfigFile.Text, this.LoggerOptions, this.DisplayOptions);
             logForm.ShowDialog(this);
+            this.Visible = true;
         }
 
         private void loadConfigFileToolStripMenuItem_Click(object sender, EventArgs e)

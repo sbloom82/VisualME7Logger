@@ -63,13 +63,12 @@ namespace VisualME7Logger
                     lblInfo.Text = string.Format("Timestamp: {0}", line.TimeStamp.ToString());
                 }
 
-                StringBuilder values = new StringBuilder();
-                foreach (Variable var in line.Variables)
+                for (int i = 0; i < line.Variables.Count(); ++i)
                 {
-                    values.AppendFormat("{0} {1}", var.Value, var.SessionVariable.Unit).AppendLine();
+                    Label l = (Label)flpValues.Controls[i];
+                    Variable v = line.Variables.ElementAt(i);
+                    l.Text = string.Format("{0} {1}", v.Value, v.SessionVariable.Unit);
                 }
-                txtValues.Text = values.ToString();
-
                 this.PlotLineOnChart(line);
             }
         }
@@ -88,14 +87,29 @@ namespace VisualME7Logger
             if (status == ME7LoggerSession.Statuses.Open)
             {
                 queue = new Queue<LogLine>();
-                //Initailization logic here  
-                StringBuilder namesBuilder = new StringBuilder();
-                foreach (SessionVariable var in session.Variables.Values)
-                {
-                    namesBuilder.AppendFormat(var.ToString()).AppendLine();
-                }
-                txtNames.Text = namesBuilder.ToString();
 
+                flpNames.Controls.Clear();
+                flpValues.Controls.Clear();
+                foreach (SessionVariable v in session.Variables.Values)
+                {
+                    Label name = new Label();
+                    name.Name = v.Name;
+                    name.Height = 20;
+                    name.Width = flpNames.Width;
+                    name.Text = v.ToString();
+                    name.BorderStyle = BorderStyle.Fixed3D;
+                    name.TextAlign = ContentAlignment.MiddleLeft;
+                    flpNames.Controls.Add(name);
+
+                    Label value = new Label();
+                    value.Name = v.Name;
+                    value.TextAlign = ContentAlignment.MiddleLeft;
+                    value.Height = 20;
+                    value.Width = flpValues.Width;
+                    value.BorderStyle = BorderStyle.Fixed3D;
+                    flpValues.Controls.Add(value);
+                }
+                
                 this.BuildChart();
 
                 start = DateTime.Now;
@@ -136,6 +150,7 @@ namespace VisualME7Logger
                 }
             }
 
+            /*
             chart2.Series.Clear();
             var = session.Variables["nmot"];
             if (var != null)
@@ -152,7 +167,7 @@ namespace VisualME7Logger
                 s.Points.Add(new DataPoint() { });
                 s.Points.Add(new DataPoint(0, 7000) { });
                 s.Points.Add(new DataPoint(0, 3000) { });
-            }
+            }*/
         }
 
         void PlotLineOnChart(LogLine line)
@@ -176,6 +191,7 @@ namespace VisualME7Logger
                 }
             }
 
+            /*
             v = line["nmot"];
             if (v != null)
             {
@@ -184,7 +200,7 @@ namespace VisualME7Logger
                 s.Points[0].SetValueY(rpm);
                 s.Points[1].SetValueY(7000 - rpm);
                 chart2.Invalidate();
-            }
+            }*/
         }
 
         void LogLineRead(LogLine line)
@@ -290,6 +306,14 @@ namespace VisualME7Logger
             if (!this.freezeToolStripMenuItem.Checked && this.session.Status == ME7LoggerSession.Statuses.Open)
             {
                 refreshTimer.Start();
+            }
+        }
+
+        private void flpNames_SizeChanged(object sender, EventArgs e)
+        {
+            foreach (Control c in flpNames.Controls)
+            {
+                c.Width = flpNames.Width;
             }
         }
     }

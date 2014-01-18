@@ -30,13 +30,8 @@
         {
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
-            this.txtNames = new System.Windows.Forms.TextBox();
-            this.txtValues = new System.Windows.Forms.TextBox();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.chart2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -57,40 +52,20 @@
             this.freezeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.snapImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.flpNames = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpValues = new System.Windows.Forms.FlowLayoutPanel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.splitter1 = new System.Windows.Forms.Splitter();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // txtNames
-            // 
-            this.txtNames.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtNames.Location = new System.Drawing.Point(0, 313);
-            this.txtNames.Multiline = true;
-            this.txtNames.Name = "txtNames";
-            this.txtNames.ReadOnly = true;
-            this.txtNames.Size = new System.Drawing.Size(197, 224);
-            this.txtNames.TabIndex = 23;
-            this.txtNames.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // txtValues
-            // 
-            this.txtValues.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtValues.Location = new System.Drawing.Point(203, 313);
-            this.txtValues.Multiline = true;
-            this.txtValues.Name = "txtValues";
-            this.txtValues.ReadOnly = true;
-            this.txtValues.Size = new System.Drawing.Size(92, 224);
-            this.txtValues.TabIndex = 24;
             // 
             // chart1
             // 
-            this.chart1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.chart1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.chart1.BorderlineWidth = 0;
             chartArea1.AxisX.LabelStyle.Enabled = false;
@@ -124,32 +99,17 @@
             chartArea1.CursorX.LineColor = System.Drawing.Color.RoyalBlue;
             chartArea1.Name = "ChartArea1";
             this.chart1.ChartAreas.Add(chartArea1);
+            this.chart1.Dock = System.Windows.Forms.DockStyle.Fill;
             legend1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
             legend1.ForeColor = System.Drawing.Color.White;
             legend1.Name = "Legend1";
             this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(301, 27);
+            this.chart1.Location = new System.Drawing.Point(0, 0);
             this.chart1.Name = "chart1";
-            this.chart1.Size = new System.Drawing.Size(486, 510);
+            this.chart1.Size = new System.Drawing.Size(486, 516);
             this.chart1.TabIndex = 26;
             this.chart1.Text = "chart";
-            // 
-            // chart2
-            // 
-            chartArea2.Name = "ChartArea1";
-            this.chart2.ChartAreas.Add(chartArea2);
-            this.chart2.Location = new System.Drawing.Point(0, 27);
-            this.chart2.Name = "chart2";
-            series1.ChartArea = "ChartArea1";
-            series1.Name = "Series1";
-            this.chart2.Series.Add(series1);
-            this.chart2.Size = new System.Drawing.Size(295, 280);
-            this.chart2.TabIndex = 27;
-            this.chart2.Text = "chart2";
-            title1.Name = "Title1";
-            title1.Text = "RPM";
-            this.chart2.Titles.Add(title1);
             // 
             // statusStrip1
             // 
@@ -301,30 +261,77 @@
             this.menuStrip1.TabIndex = 35;
             this.menuStrip1.Text = "menuStrip1";
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.flpNames);
+            this.panel1.Controls.Add(this.flpValues);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panel1.Location = new System.Drawing.Point(0, 24);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(301, 516);
+            this.panel1.TabIndex = 36;
+            // 
+            // flpNames
+            // 
+            this.flpNames.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpNames.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpNames.Location = new System.Drawing.Point(0, 0);
+            this.flpNames.Name = "flpNames";
+            this.flpNames.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.flpNames.Size = new System.Drawing.Size(207, 516);
+            this.flpNames.TabIndex = 3;
+            this.flpNames.WrapContents = false;
+            this.flpNames.SizeChanged += new System.EventHandler(this.flpNames_SizeChanged);
+            // 
+            // flpValues
+            // 
+            this.flpValues.Dock = System.Windows.Forms.DockStyle.Right;
+            this.flpValues.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpValues.Location = new System.Drawing.Point(207, 0);
+            this.flpValues.Name = "flpValues";
+            this.flpValues.Size = new System.Drawing.Size(94, 516);
+            this.flpValues.TabIndex = 2;
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.chart1);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(301, 24);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(486, 516);
+            this.panel2.TabIndex = 37;
+            // 
+            // splitter1
+            // 
+            this.splitter1.Location = new System.Drawing.Point(301, 24);
+            this.splitter1.Name = "splitter1";
+            this.splitter1.Size = new System.Drawing.Size(3, 516);
+            this.splitter1.TabIndex = 38;
+            this.splitter1.TabStop = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(787, 562);
+            this.Controls.Add(this.splitter1);
+            this.Controls.Add(this.panel2);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
-            this.Controls.Add(this.chart2);
-            this.Controls.Add(this.chart1);
-            this.Controls.Add(this.txtValues);
-            this.Controls.Add(this.txtNames);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
-            this.ShowIcon = false;
-            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Visual ME7Logger";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chart2)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -332,10 +339,7 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox txtNames;
-        private System.Windows.Forms.TextBox txtValues;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart2;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel lblStatus;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
@@ -356,6 +360,11 @@
         private System.Windows.Forms.ToolStripTextBox txtRefreshRate;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem freezeToolStripMenuItem;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Splitter splitter1;
+        private System.Windows.Forms.FlowLayoutPanel flpNames;
+        private System.Windows.Forms.FlowLayoutPanel flpValues;
     }
 }
 

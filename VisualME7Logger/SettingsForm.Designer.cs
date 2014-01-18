@@ -29,11 +29,19 @@
         private void InitializeComponent()
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             this.panel1 = new System.Windows.Forms.Panel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpMeasurements = new System.Windows.Forms.TabPage();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.tbGraphConfig = new System.Windows.Forms.TabPage();
+            this.nudResfreshRate = new System.Windows.Forms.NumericUpDown();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.nudGraphResV = new System.Windows.Forms.NumericUpDown();
+            this.nudGraphResH = new System.Windows.Forms.NumericUpDown();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.lstGraphVariables = new System.Windows.Forms.ListBox();
             this.btnEditGraphVariable = new System.Windows.Forms.Button();
@@ -88,18 +96,15 @@
             this.createECUFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.label10 = new System.Windows.Forms.Label();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.nudGraphResH = new System.Windows.Forms.NumericUpDown();
-            this.nudGraphResV = new System.Windows.Forms.NumericUpDown();
-            this.nudResfreshRate = new System.Windows.Forms.NumericUpDown();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tpMeasurements.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.tbGraphConfig.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudResfreshRate)).BeginInit();
+            this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudGraphResV)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudGraphResH)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.gbGraphVariables.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudGraphVariableThickness)).BeginInit();
@@ -107,10 +112,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudGraphVariableMin)).BeginInit();
             this.panel2.SuspendLayout();
             this.menuStrip1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudGraphResH)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudGraphResV)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudResfreshRate)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -179,6 +180,112 @@
             this.tbGraphConfig.Size = new System.Drawing.Size(725, 315);
             this.tbGraphConfig.TabIndex = 1;
             this.tbGraphConfig.Text = "Graph Data";
+            // 
+            // nudResfreshRate
+            // 
+            this.nudResfreshRate.Location = new System.Drawing.Point(505, 77);
+            this.nudResfreshRate.Maximum = new decimal(new int[] {
+            5000,
+            0,
+            0,
+            0});
+            this.nudResfreshRate.Minimum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.nudResfreshRate.Name = "nudResfreshRate";
+            this.nudResfreshRate.Size = new System.Drawing.Size(94, 20);
+            this.nudResfreshRate.TabIndex = 11;
+            this.nudResfreshRate.Value = new decimal(new int[] {
+            25,
+            0,
+            0,
+            0});
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.nudGraphResV);
+            this.groupBox2.Controls.Add(this.nudGraphResH);
+            this.groupBox2.Controls.Add(this.label12);
+            this.groupBox2.Controls.Add(this.label11);
+            this.groupBox2.Location = new System.Drawing.Point(407, 6);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(209, 65);
+            this.groupBox2.TabIndex = 7;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Graph Resolution (points)";
+            // 
+            // nudGraphResV
+            // 
+            this.nudGraphResV.Location = new System.Drawing.Point(98, 41);
+            this.nudGraphResV.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.nudGraphResV.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudGraphResV.Name = "nudGraphResV";
+            this.nudGraphResV.Size = new System.Drawing.Size(94, 20);
+            this.nudGraphResV.TabIndex = 10;
+            this.nudGraphResV.Value = new decimal(new int[] {
+            250,
+            0,
+            0,
+            0});
+            // 
+            // nudGraphResH
+            // 
+            this.nudGraphResH.Location = new System.Drawing.Point(98, 18);
+            this.nudGraphResH.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.nudGraphResH.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudGraphResH.Name = "nudGraphResH";
+            this.nudGraphResH.Size = new System.Drawing.Size(94, 20);
+            this.nudGraphResH.TabIndex = 9;
+            this.nudGraphResH.Value = new decimal(new int[] {
+            500,
+            0,
+            0,
+            0});
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(51, 44);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(45, 13);
+            this.label12.TabIndex = 8;
+            this.label12.Text = "Vertical:";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(39, 21);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(57, 13);
+            this.label11.TabIndex = 7;
+            this.label11.Text = "Horizontal:";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(408, 80);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(95, 13);
+            this.label10.TabIndex = 6;
+            this.label10.Text = "Refresh Rate (ms):";
             // 
             // groupBox1
             // 
@@ -269,11 +376,6 @@
             // nudGraphVariableThickness
             // 
             this.nudGraphVariableThickness.Location = new System.Drawing.Point(254, 99);
-            this.nudGraphVariableThickness.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
             this.nudGraphVariableThickness.Minimum = new decimal(new int[] {
             1,
             0,
@@ -695,112 +797,6 @@
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(408, 80);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(95, 13);
-            this.label10.TabIndex = 6;
-            this.label10.Text = "Refresh Rate (ms):";
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.nudGraphResV);
-            this.groupBox2.Controls.Add(this.nudGraphResH);
-            this.groupBox2.Controls.Add(this.label12);
-            this.groupBox2.Controls.Add(this.label11);
-            this.groupBox2.Location = new System.Drawing.Point(407, 6);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(209, 65);
-            this.groupBox2.TabIndex = 7;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Graph Resolution (points)";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(39, 21);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(57, 13);
-            this.label11.TabIndex = 7;
-            this.label11.Text = "Horizontal:";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(51, 44);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(45, 13);
-            this.label12.TabIndex = 8;
-            this.label12.Text = "Vertical:";
-            // 
-            // nudGraphResH
-            // 
-            this.nudGraphResH.Location = new System.Drawing.Point(98, 18);
-            this.nudGraphResH.Maximum = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-            this.nudGraphResH.Minimum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudGraphResH.Name = "nudGraphResH";
-            this.nudGraphResH.Size = new System.Drawing.Size(94, 20);
-            this.nudGraphResH.TabIndex = 9;
-            this.nudGraphResH.Value = new decimal(new int[] {
-            500,
-            0,
-            0,
-            0});
-            // 
-            // nudGraphResV
-            // 
-            this.nudGraphResV.Location = new System.Drawing.Point(98, 41);
-            this.nudGraphResV.Maximum = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-            this.nudGraphResV.Minimum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudGraphResV.Name = "nudGraphResV";
-            this.nudGraphResV.Size = new System.Drawing.Size(94, 20);
-            this.nudGraphResV.TabIndex = 10;
-            this.nudGraphResV.Value = new decimal(new int[] {
-            250,
-            0,
-            0,
-            0});
-            // 
-            // nudResfreshRate
-            // 
-            this.nudResfreshRate.Location = new System.Drawing.Point(505, 77);
-            this.nudResfreshRate.Maximum = new decimal(new int[] {
-            5000,
-            0,
-            0,
-            0});
-            this.nudResfreshRate.Minimum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.nudResfreshRate.Name = "nudResfreshRate";
-            this.nudResfreshRate.Size = new System.Drawing.Size(94, 20);
-            this.nudResfreshRate.TabIndex = 11;
-            this.nudResfreshRate.Value = new decimal(new int[] {
-            25,
-            0,
-            0,
-            0});
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -810,9 +806,9 @@
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "SettingsForm";
-            this.ShowIcon = false;
             this.Text = "Visual ME7Logger";
             this.panel1.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
@@ -820,6 +816,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.tbGraphConfig.ResumeLayout(false);
             this.tbGraphConfig.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudResfreshRate)).EndInit();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudGraphResV)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudGraphResH)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.gbGraphVariables.ResumeLayout(false);
             this.gbGraphVariables.PerformLayout();
@@ -830,11 +831,6 @@
             this.panel2.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudGraphResH)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudGraphResV)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudResfreshRate)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
