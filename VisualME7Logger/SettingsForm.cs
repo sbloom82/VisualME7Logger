@@ -311,6 +311,10 @@ namespace VisualME7Logger
 
         void SaveSettings()
         {
+            this.DisplayOptions.RefreshInterval = (int)this.nudResfreshRate.Value;
+            this.DisplayOptions.GraphHRes = (int)this.nudGraphResH.Value;
+            this.DisplayOptions.GraphVRes = (int)this.nudGraphResV.Value;
+
             try
             {
                 XElement root = new XElement("VisualME7LoggerSettings");
@@ -366,6 +370,10 @@ namespace VisualME7Logger
                     }
                 }
             }
+
+            this.nudResfreshRate.Value = this.DisplayOptions.RefreshInterval;
+            this.nudGraphResH.Value = this.DisplayOptions.GraphHRes;
+            this.nudGraphResV.Value = this.DisplayOptions.GraphVRes;
         }
 
         private void dataGridView1_KeyDown(object sender, KeyEventArgs e)
@@ -536,11 +544,16 @@ namespace VisualME7Logger
 
     public class DisplayOptions
     {
-        public int RefreshInterval = 50;
+        public int RefreshInterval = 35;
+        public int GraphVRes = 500;
+        public int GraphHRes = 1000;       
         public List<GraphVariable> GraphVariables = new List<GraphVariable>();
         public XElement Write()
         {
             XElement retval = new XElement("DisplayOptions");
+            retval.Add(new XAttribute("RefreshInterval", this.RefreshInterval));
+            retval.Add(new XAttribute("GraphVRes", this.GraphVRes));
+            retval.Add(new XAttribute("GraphHRes", this.GraphHRes));
             XElement graphVarsEle = new XElement("GraphVariables");
             foreach (GraphVariable gv in this.GraphVariables)
             {
@@ -551,6 +564,22 @@ namespace VisualME7Logger
         }
         public void Read(XElement ele)
         {
+            foreach (XAttribute att in ele.Attributes())
+            {
+                switch (att.Name.LocalName) 
+                {
+                    case "RefreshInterval":
+                        this.RefreshInterval = int.Parse(att.Value);
+                        break;
+                    case"GraphVRes":
+                        this.GraphVRes = int.Parse(att.Value);
+                        break;
+                    case "GraphHRes":
+                        this.GraphHRes = int.Parse(att.Value);
+                        break;
+                }
+            }
+
             foreach (XElement child in ele.Elements())
             {
                 switch (child.Name.LocalName)
