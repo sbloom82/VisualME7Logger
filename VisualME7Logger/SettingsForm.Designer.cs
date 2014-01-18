@@ -38,6 +38,8 @@
             this.lstGraphVariables = new System.Windows.Forms.ListBox();
             this.btnEditGraphVariable = new System.Windows.Forms.Button();
             this.gbGraphVariables = new System.Windows.Forms.GroupBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.cmbGraphVariableStyle = new System.Windows.Forms.ComboBox();
             this.chkGraphVariableActive = new System.Windows.Forms.CheckBox();
             this.nudGraphVariableThickness = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
@@ -86,8 +88,13 @@
             this.createECUFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.cmbGraphVariableStyle = new System.Windows.Forms.ComboBox();
-            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.nudGraphResH = new System.Windows.Forms.NumericUpDown();
+            this.nudGraphResV = new System.Windows.Forms.NumericUpDown();
+            this.nudResfreshRate = new System.Windows.Forms.NumericUpDown();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tpMeasurements.SuspendLayout();
@@ -100,6 +107,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudGraphVariableMin)).BeginInit();
             this.panel2.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudGraphResH)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudGraphResV)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudResfreshRate)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -128,7 +139,7 @@
             this.tpMeasurements.Location = new System.Drawing.Point(4, 22);
             this.tpMeasurements.Name = "tpMeasurements";
             this.tpMeasurements.Padding = new System.Windows.Forms.Padding(3);
-            this.tpMeasurements.Size = new System.Drawing.Size(725, 292);
+            this.tpMeasurements.Size = new System.Drawing.Size(725, 315);
             this.tpMeasurements.TabIndex = 0;
             this.tpMeasurements.Text = "Measurements";
             this.tpMeasurements.UseVisualStyleBackColor = true;
@@ -150,7 +161,7 @@
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.ShowEditingIcon = false;
-            this.dataGridView1.Size = new System.Drawing.Size(719, 286);
+            this.dataGridView1.Size = new System.Drawing.Size(719, 309);
             this.dataGridView1.TabIndex = 11;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView1_KeyDown);
@@ -158,6 +169,9 @@
             // tbGraphConfig
             // 
             this.tbGraphConfig.BackColor = System.Drawing.Color.Transparent;
+            this.tbGraphConfig.Controls.Add(this.nudResfreshRate);
+            this.tbGraphConfig.Controls.Add(this.groupBox2);
+            this.tbGraphConfig.Controls.Add(this.label10);
             this.tbGraphConfig.Controls.Add(this.groupBox1);
             this.tbGraphConfig.Location = new System.Drawing.Point(4, 22);
             this.tbGraphConfig.Name = "tbGraphConfig";
@@ -223,6 +237,23 @@
             this.gbGraphVariables.Size = new System.Drawing.Size(298, 155);
             this.gbGraphVariables.TabIndex = 1;
             this.gbGraphVariables.TabStop = false;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(76, 102);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(33, 13);
+            this.label9.TabIndex = 16;
+            this.label9.Text = "Style:";
+            // 
+            // cmbGraphVariableStyle
+            // 
+            this.cmbGraphVariableStyle.FormattingEnabled = true;
+            this.cmbGraphVariableStyle.Location = new System.Drawing.Point(111, 99);
+            this.cmbGraphVariableStyle.Name = "cmbGraphVariableStyle";
+            this.cmbGraphVariableStyle.Size = new System.Drawing.Size(80, 21);
+            this.cmbGraphVariableStyle.TabIndex = 15;
             // 
             // chkGraphVariableActive
             // 
@@ -664,22 +695,111 @@
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // cmbGraphVariableStyle
+            // label10
             // 
-            this.cmbGraphVariableStyle.FormattingEnabled = true;
-            this.cmbGraphVariableStyle.Location = new System.Drawing.Point(111, 99);
-            this.cmbGraphVariableStyle.Name = "cmbGraphVariableStyle";
-            this.cmbGraphVariableStyle.Size = new System.Drawing.Size(80, 21);
-            this.cmbGraphVariableStyle.TabIndex = 15;
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(408, 80);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(95, 13);
+            this.label10.TabIndex = 6;
+            this.label10.Text = "Refresh Rate (ms):";
             // 
-            // label9
+            // groupBox2
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(76, 102);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(33, 13);
-            this.label9.TabIndex = 16;
-            this.label9.Text = "Style:";
+            this.groupBox2.Controls.Add(this.nudGraphResV);
+            this.groupBox2.Controls.Add(this.nudGraphResH);
+            this.groupBox2.Controls.Add(this.label12);
+            this.groupBox2.Controls.Add(this.label11);
+            this.groupBox2.Location = new System.Drawing.Point(407, 6);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(209, 65);
+            this.groupBox2.TabIndex = 7;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Graph Resolution (points)";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(39, 21);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(57, 13);
+            this.label11.TabIndex = 7;
+            this.label11.Text = "Horizontal:";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(51, 44);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(45, 13);
+            this.label12.TabIndex = 8;
+            this.label12.Text = "Vertical:";
+            // 
+            // nudGraphResH
+            // 
+            this.nudGraphResH.Location = new System.Drawing.Point(98, 18);
+            this.nudGraphResH.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.nudGraphResH.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudGraphResH.Name = "nudGraphResH";
+            this.nudGraphResH.Size = new System.Drawing.Size(94, 20);
+            this.nudGraphResH.TabIndex = 9;
+            this.nudGraphResH.Value = new decimal(new int[] {
+            500,
+            0,
+            0,
+            0});
+            // 
+            // nudGraphResV
+            // 
+            this.nudGraphResV.Location = new System.Drawing.Point(98, 41);
+            this.nudGraphResV.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.nudGraphResV.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudGraphResV.Name = "nudGraphResV";
+            this.nudGraphResV.Size = new System.Drawing.Size(94, 20);
+            this.nudGraphResV.TabIndex = 10;
+            this.nudGraphResV.Value = new decimal(new int[] {
+            250,
+            0,
+            0,
+            0});
+            // 
+            // nudResfreshRate
+            // 
+            this.nudResfreshRate.Location = new System.Drawing.Point(505, 77);
+            this.nudResfreshRate.Maximum = new decimal(new int[] {
+            5000,
+            0,
+            0,
+            0});
+            this.nudResfreshRate.Minimum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.nudResfreshRate.Name = "nudResfreshRate";
+            this.nudResfreshRate.Size = new System.Drawing.Size(94, 20);
+            this.nudResfreshRate.TabIndex = 11;
+            this.nudResfreshRate.Value = new decimal(new int[] {
+            25,
+            0,
+            0,
+            0});
             // 
             // SettingsForm
             // 
@@ -699,6 +819,7 @@
             this.tpMeasurements.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.tbGraphConfig.ResumeLayout(false);
+            this.tbGraphConfig.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.gbGraphVariables.ResumeLayout(false);
             this.gbGraphVariables.PerformLayout();
@@ -709,6 +830,11 @@
             this.panel2.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudGraphResH)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudGraphResV)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudResfreshRate)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -776,6 +902,13 @@
         private System.Windows.Forms.CheckBox chkGraphVariableActive;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.ComboBox cmbGraphVariableStyle;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.NumericUpDown nudGraphResV;
+        private System.Windows.Forms.NumericUpDown nudGraphResH;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.NumericUpDown nudResfreshRate;
 
 
     }

@@ -54,9 +54,9 @@
             this.chartTypeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cmbChartType = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.freezeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.snapImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.freezeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
             this.statusStrip1.SuspendLayout();
@@ -92,20 +92,33 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chart1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.chart1.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
+            this.chart1.BorderlineWidth = 0;
             chartArea1.AxisX.LabelStyle.Enabled = false;
             chartArea1.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
             chartArea1.AxisX.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisX.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
             chartArea1.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisX.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
+            chartArea1.AxisX.MajorTickMark.Enabled = false;
             chartArea1.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
             chartArea1.AxisX.TitleForeColor = System.Drawing.Color.White;
+            chartArea1.AxisX2.MajorGrid.Enabled = false;
             chartArea1.AxisX2.MajorGrid.LineColor = System.Drawing.Color.BlanchedAlmond;
+            chartArea1.AxisX2.MajorTickMark.Enabled = false;
             chartArea1.AxisY.LabelStyle.Enabled = false;
             chartArea1.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
             chartArea1.AxisY.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisY.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
+            chartArea1.AxisY.LineWidth = 0;
             chartArea1.AxisY.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisY.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
+            chartArea1.AxisY.MajorTickMark.Enabled = false;
+            chartArea1.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
             chartArea1.AxisY.MinorGrid.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisY.MinorTickMark.TickMarkStyle = System.Windows.Forms.DataVisualization.Charting.TickMarkStyle.InsideArea;
             chartArea1.AxisY.TitleForeColor = System.Drawing.Color.White;
+            chartArea1.AxisY2.MajorGrid.Enabled = false;
+            chartArea1.AxisY2.MajorTickMark.Enabled = false;
             chartArea1.BackColor = System.Drawing.Color.Transparent;
             chartArea1.BorderColor = System.Drawing.Color.White;
             chartArea1.CursorX.LineColor = System.Drawing.Color.RoyalBlue;
@@ -263,6 +276,13 @@
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(184, 6);
             // 
+            // freezeToolStripMenuItem
+            // 
+            this.freezeToolStripMenuItem.Name = "freezeToolStripMenuItem";
+            this.freezeToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.freezeToolStripMenuItem.Text = "Freeze";
+            this.freezeToolStripMenuItem.Click += new System.EventHandler(this.freezeToolStripMenuItem_Click);
+            // 
             // snapImageToolStripMenuItem
             // 
             this.snapImageToolStripMenuItem.Name = "snapImageToolStripMenuItem";
@@ -280,13 +300,6 @@
             this.menuStrip1.Size = new System.Drawing.Size(787, 24);
             this.menuStrip1.TabIndex = 35;
             this.menuStrip1.Text = "menuStrip1";
-            // 
-            // freezeToolStripMenuItem
-            // 
-            this.freezeToolStripMenuItem.Name = "freezeToolStripMenuItem";
-            this.freezeToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-            this.freezeToolStripMenuItem.Text = "Freeze";
-            this.freezeToolStripMenuItem.Click += new System.EventHandler(this.freezeToolStripMenuItem_Click);
             // 
             // Form1
             // 

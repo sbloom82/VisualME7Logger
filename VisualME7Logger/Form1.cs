@@ -111,12 +111,10 @@ namespace VisualME7Logger
             }
         }
 
-        private int vRes = 250;
-        private int hRes = 250;
         void BuildChart()
         {
             chart1.ChartAreas[0].AxisY.Minimum = 0;
-            chart1.ChartAreas[0].AxisY.Maximum = vRes;
+            chart1.ChartAreas[0].AxisY.Maximum = this.DisplayOptions.GraphVRes;
 
             chart1.Series.Clear();
 
@@ -127,13 +125,13 @@ namespace VisualME7Logger
                 var = session.Variables[graphVariable.Variable];
                 if (var != null)
                 {
-                    s = new Series(graphVariable.Name);
+                    s = new Series(string.Format("{0} {1}{2}-{3}{2}", graphVariable.Name, graphVariable.Min.ToString("0.##"), var.Unit, graphVariable.Max.ToString("0.##")));
                     s.Color = graphVariable.LineColor;
                     s.ChartType = (SeriesChartType)cmbChartType.SelectedItem;
                     s.BorderWidth = graphVariable.LineThickness;
                     s.BorderDashStyle = graphVariable.LineStyle;
                     chart1.Series.Add(s);
-                    for (int i = 0; i < hRes; ++i)
+                    for (int i = 0; i < this.DisplayOptions.GraphHRes; ++i)
                         s.Points.Add(-1, 0);
                 }
             }
@@ -171,7 +169,7 @@ namespace VisualME7Logger
                     decimal parse;
                     if (decimal.TryParse(v.Value, out parse))
                     {
-                        decimal percent = (parse - graphVariable.Min) / (graphVariable.Max - graphVariable.Min) * vRes;
+                        decimal percent = (parse - graphVariable.Min) / (graphVariable.Max - graphVariable.Min) * this.DisplayOptions.GraphVRes;
                         s.Points.Add((double)percent);
                     }
                     s.Points.RemoveAt(0);
