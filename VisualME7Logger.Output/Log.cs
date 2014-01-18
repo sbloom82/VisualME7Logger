@@ -105,25 +105,29 @@ namespace VisualME7Logger.Log
             using (StreamReader sr = new StreamReader(logFilePath))
             {
                 bool ready = false;
-                System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
                 string line;
+                DateTime time = DateTime.Now;
                 while ((line = sr.ReadLine()) != null && !stop)
                 {
-                    sw.Reset();
-                    sw.Start();
                     if (!ready && line.StartsWith("\"TIME"))
                     {
                         ready = true;
                     }
                     else if (ready)
                     {
+                        if (string.IsNullOrEmpty(line))
+                        {
+                            //handles multiple logs in the same file
+                            ready = false;
+                            continue;
+                        }
                         this.ReadLine(line);
-                        int waitTime = wait - (int)sw.ElapsedMilliseconds;
+                        int waitTime = wait - (int)DateTime.Now.Subtract(time).TotalMilliseconds;
                         if (waitTime > 0)
                             System.Threading.Thread.Sleep(waitTime);
                     }
+                    time = DateTime.Now;
                 }
-                sw.Stop();
             }
         }
 
