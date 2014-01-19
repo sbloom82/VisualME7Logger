@@ -27,7 +27,7 @@ namespace VisualME7Logger.Configuration
         {
             try
             {
-                using (StreamReader sr = new StreamReader(this.FilePath))
+                using (StreamReader sr = new StreamReader(this.FilePath, Encoding.UTF7))
                 {
                     string line;
                     while ((line = sr.ReadLine()) != null)
@@ -146,7 +146,7 @@ namespace VisualME7Logger.Configuration
 
         public void Read(string filePath)
         {
-            using (StreamReader reader = new StreamReader(filePath))
+            using (StreamReader reader = new StreamReader(filePath, Encoding.UTF7))
             {
                 this.Measurements = null;
                 string line;

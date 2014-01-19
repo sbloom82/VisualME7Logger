@@ -146,7 +146,7 @@ namespace VisualME7Logger
                 var = session.Variables[graphVariable.Variable];
                 if (var != null)
                 {
-                    s = new Series(string.Format("{0} {1}{2}-{3}{2}", graphVariable.Name, graphVariable.Min.ToString("0.##"), var.Unit, graphVariable.Max.ToString("0.##")));
+                    s = new Series(string.Format("{0} {1}-{2} {3}", graphVariable.Name, graphVariable.Min.ToString("0.##"), graphVariable.Max.ToString("0.##"), var.Unit));
                     s.Color = graphVariable.LineColor;
                     s.ChartType = (SeriesChartType)cmbChartType.SelectedItem;
                     s.BorderWidth = graphVariable.LineThickness;
@@ -157,25 +157,6 @@ namespace VisualME7Logger
                         s.Points.Add(-1, -1);
                 }
             }
-
-            /*
-            chart2.Series.Clear();
-            var = session.Variables["nmot"];
-            if (var != null)
-            {
-                s = new Series(var.ToString());
-                chart2.Series.Add(s);
-                s.ChartType = SeriesChartType.Doughnut;
-                s["PieStartAngle"] = "145";
-
-                chart2.ChartAreas[0].Area3DStyle.Enable3D = true;
-                chart2.ChartAreas[0].AxisY.Minimum = 0;
-                chart2.ChartAreas[0].AxisY.Maximum = 10000;
-
-                s.Points.Add(new DataPoint() { });
-                s.Points.Add(new DataPoint(0, 7000) { });
-                s.Points.Add(new DataPoint(0, 3000) { });
-            }*/
         }
 
         void PlotLineOnChart(LogLine line)
@@ -194,22 +175,11 @@ namespace VisualME7Logger
                     {
                         decimal percent = (parse - graphVariable.Min) / (graphVariable.Max - graphVariable.Min) * this.DisplayOptions.GraphVRes;
                         DataPoint p = s.Points.Add((double)percent);
-                        p.ToolTip = string.Format("{0} - {1}", v.SessionVariable.ToString(), v.Value);
+                        p.ToolTip = string.Format("{0} {1} {2}", graphVariable.Name, v.Value, v.SessionVariable.Unit);
                     }
                     s.Points.RemoveAt(0);
                 }
             }
-
-            /*
-            v = line["nmot"];
-            if (v != null)
-            {
-                s = chart2.Series[0];
-                double rpm = double.Parse(v.Value);
-                s.Points[0].SetValueY(rpm);
-                s.Points[1].SetValueY(7000 - rpm);
-                chart2.Invalidate();
-            }*/
         }
 
         void LogLineRead(LogLine line)
@@ -327,3 +297,4 @@ namespace VisualME7Logger
         }
     }
 }
+
