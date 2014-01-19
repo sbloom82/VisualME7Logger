@@ -90,15 +90,21 @@ namespace VisualME7Logger
 
                 flpNames.Controls.Clear();
                 flpValues.Controls.Clear();
+                Font f = null;
                 foreach (SessionVariable v in session.Variables.Values)
                 {
                     Label name = new Label();
+                    if (f == null)
+                    {
+                        f = new Font(name.Font.FontFamily, name.Font.Size + 1);
+                    }
                     name.Name = v.Name;
                     name.Height = 20;
                     name.Width = flpNames.Width;
                     name.Text = v.ToString();
                     name.BorderStyle = BorderStyle.Fixed3D;
                     name.TextAlign = ContentAlignment.MiddleLeft;
+                    name.Font = f;
                     flpNames.Controls.Add(name);
 
                     Label value = new Label();
@@ -107,9 +113,10 @@ namespace VisualME7Logger
                     value.Height = 20;
                     value.Width = flpValues.Width;
                     value.BorderStyle = BorderStyle.Fixed3D;
+                    value.Font = f;
                     flpValues.Controls.Add(value);
                 }
-                
+
                 this.BuildChart();
 
                 start = DateTime.Now;
@@ -144,9 +151,10 @@ namespace VisualME7Logger
                     s.ChartType = (SeriesChartType)cmbChartType.SelectedItem;
                     s.BorderWidth = graphVariable.LineThickness;
                     s.BorderDashStyle = graphVariable.LineStyle;
+                    s.ToolTip = "so tool tips show up";
                     chart1.Series.Add(s);
                     for (int i = 0; i < this.DisplayOptions.GraphHRes; ++i)
-                        s.Points.Add(-1, 0);
+                        s.Points.Add(-1, -1);
                 }
             }
 
@@ -185,7 +193,8 @@ namespace VisualME7Logger
                     if (decimal.TryParse(v.Value, out parse))
                     {
                         decimal percent = (parse - graphVariable.Min) / (graphVariable.Max - graphVariable.Min) * this.DisplayOptions.GraphVRes;
-                        s.Points.Add((double)percent);
+                        DataPoint p = s.Points.Add((double)percent);
+                        p.ToolTip = string.Format("{0} - {1}", v.SessionVariable.ToString(), v.Value);
                     }
                     s.Points.RemoveAt(0);
                 }

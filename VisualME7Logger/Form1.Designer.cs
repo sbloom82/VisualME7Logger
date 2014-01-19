@@ -107,7 +107,7 @@
             this.chart1.Legends.Add(legend1);
             this.chart1.Location = new System.Drawing.Point(0, 0);
             this.chart1.Name = "chart1";
-            this.chart1.Size = new System.Drawing.Size(486, 516);
+            this.chart1.Size = new System.Drawing.Size(683, 665);
             this.chart1.TabIndex = 26;
             this.chart1.Text = "chart";
             // 
@@ -118,9 +118,9 @@
             this.toolStripStatusLabel1,
             this.lblInfo,
             this.toolStripStatusLabel2});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 540);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 689);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(787, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(984, 22);
             this.statusStrip1.TabIndex = 34;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -257,7 +257,7 @@
             this.graphToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(787, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(984, 24);
             this.menuStrip1.TabIndex = 35;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -268,7 +268,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 24);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(301, 516);
+            this.panel1.Size = new System.Drawing.Size(301, 665);
             this.panel1.TabIndex = 36;
             // 
             // flpNames
@@ -278,7 +278,7 @@
             this.flpNames.Location = new System.Drawing.Point(0, 0);
             this.flpNames.Name = "flpNames";
             this.flpNames.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.flpNames.Size = new System.Drawing.Size(207, 516);
+            this.flpNames.Size = new System.Drawing.Size(207, 665);
             this.flpNames.TabIndex = 3;
             this.flpNames.WrapContents = false;
             this.flpNames.SizeChanged += new System.EventHandler(this.flpNames_SizeChanged);
@@ -289,7 +289,7 @@
             this.flpValues.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpValues.Location = new System.Drawing.Point(207, 0);
             this.flpValues.Name = "flpValues";
-            this.flpValues.Size = new System.Drawing.Size(94, 516);
+            this.flpValues.Size = new System.Drawing.Size(94, 665);
             this.flpValues.TabIndex = 2;
             // 
             // panel2
@@ -298,14 +298,14 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(301, 24);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(486, 516);
+            this.panel2.Size = new System.Drawing.Size(683, 665);
             this.panel2.TabIndex = 37;
             // 
             // splitter1
             // 
             this.splitter1.Location = new System.Drawing.Point(301, 24);
             this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(3, 516);
+            this.splitter1.Size = new System.Drawing.Size(3, 665);
             this.splitter1.TabIndex = 38;
             this.splitter1.TabStop = false;
             // 
@@ -313,7 +313,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(787, 562);
+            this.ClientSize = new System.Drawing.Size(984, 711);
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
@@ -324,6 +324,7 @@
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Visual ME7Logger";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.statusStrip1.ResumeLayout(false);

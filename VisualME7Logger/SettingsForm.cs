@@ -550,8 +550,8 @@ namespace VisualME7Logger
     public class DisplayOptions
     {
         public int RefreshInterval = 35;
-        public int GraphVRes = 500;
-        public int GraphHRes = 1000;       
+        public int GraphVRes = 1000;
+        public int GraphHRes = 1200;       
         public List<GraphVariable> GraphVariables = new List<GraphVariable>();
         public XElement Write()
         {
