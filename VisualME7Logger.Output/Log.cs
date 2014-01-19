@@ -34,7 +34,7 @@ namespace VisualME7Logger.Log
             bool idinfostarted = false,
                 commInfoStarted = false,
                 variablesStarted = false;
-            using (StreamReader sr = new StreamReader(logFilePath))
+            using (StreamReader sr = new StreamReader(logFilePath, Encoding.UTF7))
             {
                 string line = null;
                 while((line = sr.ReadLine()) != null)
@@ -102,7 +102,7 @@ namespace VisualME7Logger.Log
         {
             string logFilePath = (string)parameter;
             int wait = (int)((1 / (double)Session.SamplesPerSecond) * 1000);
-            using (StreamReader sr = new StreamReader(logFilePath))
+            using (StreamReader sr = new StreamReader(logFilePath, Encoding.UTF7))
             {
                 bool ready = false;
                 string line;
