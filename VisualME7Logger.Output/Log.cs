@@ -37,7 +37,7 @@ namespace VisualME7Logger.Log
             using (StreamReader sr = new StreamReader(logFilePath, Encoding.UTF7))
             {
                 string line = null;
-                while((line = sr.ReadLine()) != null)
+                while ((line = sr.ReadLine()) != null)
                 {
                     if (!identificationInfo.Complete)
                     {
@@ -115,7 +115,7 @@ namespace VisualME7Logger.Log
                     }
                     else if (ready)
                     {
-                        if (string.IsNullOrEmpty(line))
+                        if (string.IsNullOrWhiteSpace(line) || line[0] == '#')
                         {
                             //handles multiple logs in the same file
                             ready = false;
@@ -164,14 +164,19 @@ namespace VisualME7Logger.Log
         {
             string[] values = line.Split(LogLine.COLUMN_SEP);
             TimeStamp = decimal.Parse(values[0]);
-            for (int i = 1; i < values.Length; ++i)
+            for (int i = 1; i < Log.Session.Variables.Count + 1; ++i)
             {
-                Variable v = new Variable(Log.Session.Variables[i], values[i].Trim());
+                string value = string.Empty;
+                if (values.Length > i)
+                {
+                    value = values[i].Trim();
+                }
+                Variable v = new Variable(Log.Session.Variables.GetByNumber(i), value);
                 variablesByNumber.Add(i, v);
                 variablesByName.Add(v.SessionVariable.Name, v);
             }
         }
-    
+
         public Variable GetVariableByNumber(int number)
         {
             return variablesByNumber[number];

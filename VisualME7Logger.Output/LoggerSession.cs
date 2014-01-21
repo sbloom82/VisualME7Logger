@@ -326,6 +326,11 @@ namespace VisualME7Logger.Session
             get { return this.list; }
         }
 
+        public int Count
+        {
+            get { return this.list.Count; }
+        }
+
         public SessionVariable GetByNumber(int number)
         {
             if (byNumber.ContainsKey(number))
