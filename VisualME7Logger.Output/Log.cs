@@ -43,7 +43,7 @@ namespace VisualME7Logger.Log
                     {
                         if (!idinfostarted)
                         {
-                            idinfostarted = line == "ECU identified with following data:";
+                            idinfostarted = line.StartsWith("ECU identified with following data:");
                         }
                         else
                         {
@@ -148,7 +148,7 @@ namespace VisualME7Logger.Log
         public int LineNumber { get; private set; }
         private Dictionary<int, Variable> variablesByNumber = new Dictionary<int, Variable>();
         public Variable this[int number] { get { return variablesByNumber[number]; } }
-        private Dictionary<string, Variable> variablesByName = new Dictionary<string, Variable>();
+        private Dictionary<string, Variable> variablesByName = new Dictionary<string, Variable>(StringComparer.InvariantCultureIgnoreCase);
         public Variable this[string name] { get { return variablesByName[name]; } }
         public IEnumerable<Variable> Variables { get { return this.variablesByNumber.Values; } }
 
