@@ -26,7 +26,7 @@ namespace VisualME7Logger
         public Form1(string configFile, VisualME7Logger.Session.LoggerOptions options, DisplayOptions displayOptions)
         {
             InitializeComponent();
-
+           
             this.DisplayOptions = displayOptions;
             foreach (var v in Enum.GetValues(typeof(SeriesChartType)))
             {
@@ -45,11 +45,13 @@ namespace VisualME7Logger
             else
             {
                 session = new ME7LoggerSession(Program.ME7LoggerDirectory, options, configFile);
-            }
-
+            }           
+           
             session.StatusChanged += new ME7LoggerSession.LoggerSessionStatusChanged(this.SessionStatusChanged);
             session.Log.LineRead += new ME7LoggerLog.LogLineRead(this.LogLineRead);
             session.Open();
+
+            pauseToolStripMenuItem.Enabled = session.CanPause;
         }
 
         void refreshTimer_Tick(object sender, EventArgs e)
@@ -65,7 +67,7 @@ namespace VisualME7Logger
 
                 for (int i = 0; i < line.Variables.Count(); ++i)
                 {
-                    Label l = (Label)flpValues.Controls[i];
+                    Label l = (Label)flpVariables.Controls[i].Controls[0];                 
                     Variable v = line.Variables.ElementAt(i);
                     l.Text = string.Format("{0} {1}", v.Value, v.SessionVariable.Unit);
                 }
@@ -84,15 +86,21 @@ namespace VisualME7Logger
 
             lblStatus.Text = string.Format("Log Status: {0}", status);
 
-            if (status == ME7LoggerSession.Statuses.Open)
+            if (status == ME7LoggerSession.Statuses.Initialized)
             {
                 queue = new Queue<LogLine>();
 
-                flpNames.Controls.Clear();
-                flpValues.Controls.Clear();
+                flpVariables.Controls.Clear();
                 Font f = null;
                 foreach (SessionVariable v in session.Variables.Values)
                 {
+                    FlowLayoutPanel flp = new FlowLayoutPanel();
+                    flp.Name = v.Name;
+                    flp.FlowDirection = FlowDirection.LeftToRight;
+                    flp.WrapContents = false;
+                    flp.AutoSize = true;
+                    flp.Margin = new Padding(2, 0, 2, 2);
+
                     Label name = new Label();
                     if (f == null)
                     {
@@ -100,21 +108,26 @@ namespace VisualME7Logger
                     }
                     name.Name = v.Name;
                     name.Height = 20;
-                    name.Width = flpNames.Width;
+                    name.Width = 175;
                     name.Text = v.ToString();
                     name.BorderStyle = BorderStyle.Fixed3D;
                     name.TextAlign = ContentAlignment.MiddleLeft;
                     name.Font = f;
-                    flpNames.Controls.Add(name);
-
+                    name.RightToLeft = System.Windows.Forms.RightToLeft.No;
+               
                     Label value = new Label();
                     value.Name = v.Name;
                     value.TextAlign = ContentAlignment.MiddleLeft;
                     value.Height = 20;
-                    value.Width = flpValues.Width;
+                    value.Width = 75;
                     value.BorderStyle = BorderStyle.Fixed3D;
                     value.Font = f;
-                    flpValues.Controls.Add(value);
+                    value.RightToLeft = System.Windows.Forms.RightToLeft.No;
+
+
+                    flp.Controls.Add(value);
+                    flp.Controls.Add(name);
+                    flpVariables.Controls.Add(flp);
                 }
 
                 this.BuildChart();
@@ -208,6 +221,11 @@ namespace VisualME7Logger
 
         private void snapImageToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            CaptureGraphImage();
+        }
+
+        void CaptureGraphImage()
+        {
             string path = System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs",
                 string.Format("graphCapture{0}.jpg", Guid.NewGuid().ToString("D")));
             try
@@ -248,12 +266,12 @@ namespace VisualME7Logger
                 session.IdentificationInfo.PartNumber,
                 session.IdentificationInfo.EngineId);
 
-            MessageBox.Show(this, s);
+            MessageBox.Show(this, s); 
         }
 
         private void txtRefreshRate_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.KeyData == Keys.Enter || e.KeyData == Keys.Return)
+            if (e.KeyData == Keys.Enter)
             {
                 int value;
                 bool success = false;
@@ -275,8 +293,13 @@ namespace VisualME7Logger
 
         private void freezeToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            DoFreeze();           
+        }
+
+        void DoFreeze()
+        {
             this.freezeToolStripMenuItem.Checked =
-                !this.freezeToolStripMenuItem.Checked;
+                   !this.freezeToolStripMenuItem.Checked;
 
             if (this.freezeToolStripMenuItem.Checked)
             {
@@ -288,13 +311,18 @@ namespace VisualME7Logger
             }
         }
 
-        private void flpNames_SizeChanged(object sender, EventArgs e)
+        private void pauseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            foreach (Control c in flpNames.Controls)
+            this.pauseToolStripMenuItem.Checked = false;
+            if (this.session.Status == ME7LoggerSession.Statuses.Open)
             {
-                c.Width = flpNames.Width;
+                this.session.Pause();
+                this.pauseToolStripMenuItem.Checked = true;
+            }
+            else if (this.session.Status == ME7LoggerSession.Statuses.Paused)
+            {
+                this.session.Resume();
             }
         }
     }
 }
-

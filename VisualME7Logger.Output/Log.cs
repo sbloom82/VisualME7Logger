@@ -98,6 +98,16 @@ namespace VisualME7Logger.Log
         private bool stop = false;
         public void Close() { stop = true; }
 
+        private bool paused = false;
+        public void Pause()
+        {
+            paused = true;
+        }
+        public void Resume()
+        {
+            paused = false;
+        }
+
         private void OpenFromLogFile(object parameter)
         {
             string logFilePath = (string)parameter;
@@ -125,6 +135,11 @@ namespace VisualME7Logger.Log
                         int waitTime = wait - (int)DateTime.Now.Subtract(time).TotalMilliseconds;
                         if (waitTime > 0)
                             System.Threading.Thread.Sleep(waitTime);
+                    }                    
+                    
+                    while (paused)
+                    {
+                        System.Threading.Thread.Sleep(25);
                     }
                     time = DateTime.Now;
                 }

@@ -31,7 +31,6 @@
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -52,17 +51,180 @@
             this.freezeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.snapImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.flpNames = new System.Windows.Forms.FlowLayoutPanel();
-            this.flpValues = new System.Windows.Forms.FlowLayoutPanel();
-            this.panel2 = new System.Windows.Forms.Panel();
             this.splitter1 = new System.Windows.Forms.Splitter();
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
+            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.flpVariables = new System.Windows.Forms.FlowLayoutPanel();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.pauseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lblStatus,
+            this.toolStripStatusLabel1,
+            this.lblInfo,
+            this.toolStripStatusLabel2});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 689);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(984, 22);
+            this.statusStrip1.TabIndex = 34;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(42, 17);
+            this.lblStatus.Text = "Status:";
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(10, 17);
+            this.toolStripStatusLabel1.Text = "|";
+            // 
+            // lblInfo
+            // 
+            this.lblInfo.Name = "lblInfo";
+            this.lblInfo.Size = new System.Drawing.Size(31, 17);
+            this.lblInfo.Text = "Info:";
+            // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(0, 17);
+            // 
+            // startToolStripMenuItem
+            // 
+            this.startToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.startToolStripMenuItem1,
+            this.stopToolStripMenuItem1,
+            this.pauseToolStripMenuItem,
+            this.toolStripMenuItem2,
+            this.infoToolStripMenuItem});
+            this.startToolStripMenuItem.Name = "startToolStripMenuItem";
+            this.startToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+            this.startToolStripMenuItem.Text = "&Log";
+            // 
+            // startToolStripMenuItem1
+            // 
+            this.startToolStripMenuItem1.Name = "startToolStripMenuItem1";
+            this.startToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.startToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.startToolStripMenuItem1.Text = "&Open";
+            this.startToolStripMenuItem1.Click += new System.EventHandler(this.startToolStripMenuItem1_Click);
+            // 
+            // stopToolStripMenuItem1
+            // 
+            this.stopToolStripMenuItem1.Name = "stopToolStripMenuItem1";
+            this.stopToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+            this.stopToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.stopToolStripMenuItem1.Text = "&Close";
+            this.stopToolStripMenuItem1.Click += new System.EventHandler(this.stopToolStripMenuItem1_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(149, 6);
+            // 
+            // infoToolStripMenuItem
+            // 
+            this.infoToolStripMenuItem.Name = "infoToolStripMenuItem";
+            this.infoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
+            this.infoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.infoToolStripMenuItem.Text = "&Info";
+            this.infoToolStripMenuItem.Click += new System.EventHandler(this.infoToolStripMenuItem_Click);
+            // 
+            // graphToolStripMenuItem
+            // 
+            this.graphToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.refreshRateToolStripMenuItem,
+            this.txtRefreshRate,
+            this.toolStripMenuItem3,
+            this.chartTypeToolStripMenuItem,
+            this.cmbChartType,
+            this.toolStripMenuItem1,
+            this.freezeToolStripMenuItem,
+            this.snapImageToolStripMenuItem});
+            this.graphToolStripMenuItem.Name = "graphToolStripMenuItem";
+            this.graphToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.graphToolStripMenuItem.Text = "&Options";
+            // 
+            // refreshRateToolStripMenuItem
+            // 
+            this.refreshRateToolStripMenuItem.Enabled = false;
+            this.refreshRateToolStripMenuItem.Name = "refreshRateToolStripMenuItem";
+            this.refreshRateToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.refreshRateToolStripMenuItem.Text = "Refresh Rate (ms)";
+            // 
+            // txtRefreshRate
+            // 
+            this.txtRefreshRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtRefreshRate.Name = "txtRefreshRate";
+            this.txtRefreshRate.Size = new System.Drawing.Size(100, 23);
+            this.txtRefreshRate.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtRefreshRate_KeyUp);
+            // 
+            // toolStripMenuItem3
+            // 
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(224, 6);
+            // 
+            // chartTypeToolStripMenuItem
+            // 
+            this.chartTypeToolStripMenuItem.Enabled = false;
+            this.chartTypeToolStripMenuItem.Name = "chartTypeToolStripMenuItem";
+            this.chartTypeToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.chartTypeToolStripMenuItem.Text = "Chart Type";
+            // 
+            // cmbChartType
+            // 
+            this.cmbChartType.Name = "cmbChartType";
+            this.cmbChartType.Size = new System.Drawing.Size(121, 23);
+            this.cmbChartType.SelectedIndexChanged += new System.EventHandler(this.cmbChartType_SelectedIndexChanged);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(224, 6);
+            // 
+            // freezeToolStripMenuItem
+            // 
+            this.freezeToolStripMenuItem.Name = "freezeToolStripMenuItem";
+            this.freezeToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
+            this.freezeToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.freezeToolStripMenuItem.Text = "&Freeze";
+            this.freezeToolStripMenuItem.Click += new System.EventHandler(this.freezeToolStripMenuItem_Click);
+            // 
+            // snapImageToolStripMenuItem
+            // 
+            this.snapImageToolStripMenuItem.Name = "snapImageToolStripMenuItem";
+            this.snapImageToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.snapImageToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.snapImageToolStripMenuItem.Text = "&Capture Graph Image";
+            this.snapImageToolStripMenuItem.Click += new System.EventHandler(this.snapImageToolStripMenuItem_Click);
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.startToolStripMenuItem,
+            this.graphToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(984, 24);
+            this.menuStrip1.TabIndex = 35;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // splitter1
+            // 
+            this.splitter1.Location = new System.Drawing.Point(286, 24);
+            this.splitter1.Name = "splitter1";
+            this.splitter1.Size = new System.Drawing.Size(3, 665);
+            this.splitter1.TabIndex = 38;
+            this.splitter1.TabStop = false;
             // 
             // chart1
             // 
@@ -107,232 +269,64 @@
             this.chart1.Legends.Add(legend1);
             this.chart1.Location = new System.Drawing.Point(0, 0);
             this.chart1.Name = "chart1";
-            this.chart1.Size = new System.Drawing.Size(683, 665);
+            this.chart1.Size = new System.Drawing.Size(695, 665);
             this.chart1.TabIndex = 26;
             this.chart1.Text = "chart";
             // 
-            // statusStrip1
+            // flpVariables
             // 
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.lblStatus,
-            this.toolStripStatusLabel1,
-            this.lblInfo,
-            this.toolStripStatusLabel2});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 689);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(984, 22);
-            this.statusStrip1.TabIndex = 34;
-            this.statusStrip1.Text = "statusStrip1";
-            // 
-            // lblStatus
-            // 
-            this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(42, 17);
-            this.lblStatus.Text = "Status:";
-            // 
-            // toolStripStatusLabel1
-            // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(10, 17);
-            this.toolStripStatusLabel1.Text = "|";
-            // 
-            // lblInfo
-            // 
-            this.lblInfo.Name = "lblInfo";
-            this.lblInfo.Size = new System.Drawing.Size(31, 17);
-            this.lblInfo.Text = "Info:";
-            // 
-            // toolStripStatusLabel2
-            // 
-            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(0, 17);
-            // 
-            // startToolStripMenuItem
-            // 
-            this.startToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.startToolStripMenuItem1,
-            this.stopToolStripMenuItem1,
-            this.toolStripMenuItem2,
-            this.infoToolStripMenuItem});
-            this.startToolStripMenuItem.Name = "startToolStripMenuItem";
-            this.startToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
-            this.startToolStripMenuItem.Text = "Log";
-            // 
-            // startToolStripMenuItem1
-            // 
-            this.startToolStripMenuItem1.Name = "startToolStripMenuItem1";
-            this.startToolStripMenuItem1.Size = new System.Drawing.Size(98, 22);
-            this.startToolStripMenuItem1.Text = "Start";
-            this.startToolStripMenuItem1.Click += new System.EventHandler(this.startToolStripMenuItem1_Click);
-            // 
-            // stopToolStripMenuItem1
-            // 
-            this.stopToolStripMenuItem1.Name = "stopToolStripMenuItem1";
-            this.stopToolStripMenuItem1.Size = new System.Drawing.Size(98, 22);
-            this.stopToolStripMenuItem1.Text = "Stop";
-            this.stopToolStripMenuItem1.Click += new System.EventHandler(this.stopToolStripMenuItem1_Click);
-            // 
-            // toolStripMenuItem2
-            // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(95, 6);
-            // 
-            // infoToolStripMenuItem
-            // 
-            this.infoToolStripMenuItem.Name = "infoToolStripMenuItem";
-            this.infoToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
-            this.infoToolStripMenuItem.Text = "Info";
-            this.infoToolStripMenuItem.Click += new System.EventHandler(this.infoToolStripMenuItem_Click);
-            // 
-            // graphToolStripMenuItem
-            // 
-            this.graphToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.refreshRateToolStripMenuItem,
-            this.txtRefreshRate,
-            this.toolStripMenuItem3,
-            this.chartTypeToolStripMenuItem,
-            this.cmbChartType,
-            this.toolStripMenuItem1,
-            this.freezeToolStripMenuItem,
-            this.snapImageToolStripMenuItem});
-            this.graphToolStripMenuItem.Name = "graphToolStripMenuItem";
-            this.graphToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-            this.graphToolStripMenuItem.Text = "Options";
-            // 
-            // refreshRateToolStripMenuItem
-            // 
-            this.refreshRateToolStripMenuItem.Enabled = false;
-            this.refreshRateToolStripMenuItem.Name = "refreshRateToolStripMenuItem";
-            this.refreshRateToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-            this.refreshRateToolStripMenuItem.Text = "Refresh Rate (ms)";
-            // 
-            // txtRefreshRate
-            // 
-            this.txtRefreshRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtRefreshRate.Name = "txtRefreshRate";
-            this.txtRefreshRate.Size = new System.Drawing.Size(100, 23);
-            this.txtRefreshRate.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtRefreshRate_KeyUp);
-            // 
-            // toolStripMenuItem3
-            // 
-            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(184, 6);
-            // 
-            // chartTypeToolStripMenuItem
-            // 
-            this.chartTypeToolStripMenuItem.Enabled = false;
-            this.chartTypeToolStripMenuItem.Name = "chartTypeToolStripMenuItem";
-            this.chartTypeToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-            this.chartTypeToolStripMenuItem.Text = "Chart Type";
-            // 
-            // cmbChartType
-            // 
-            this.cmbChartType.Name = "cmbChartType";
-            this.cmbChartType.Size = new System.Drawing.Size(121, 23);
-            this.cmbChartType.SelectedIndexChanged += new System.EventHandler(this.cmbChartType_SelectedIndexChanged);
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(184, 6);
-            // 
-            // freezeToolStripMenuItem
-            // 
-            this.freezeToolStripMenuItem.Name = "freezeToolStripMenuItem";
-            this.freezeToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-            this.freezeToolStripMenuItem.Text = "Freeze";
-            this.freezeToolStripMenuItem.Click += new System.EventHandler(this.freezeToolStripMenuItem_Click);
-            // 
-            // snapImageToolStripMenuItem
-            // 
-            this.snapImageToolStripMenuItem.Name = "snapImageToolStripMenuItem";
-            this.snapImageToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-            this.snapImageToolStripMenuItem.Text = "Capture Graph Image";
-            this.snapImageToolStripMenuItem.Click += new System.EventHandler(this.snapImageToolStripMenuItem_Click);
-            // 
-            // menuStrip1
-            // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.startToolStripMenuItem,
-            this.graphToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(984, 24);
-            this.menuStrip1.TabIndex = 35;
-            this.menuStrip1.Text = "menuStrip1";
+            this.flpVariables.AutoScroll = true;
+            this.flpVariables.Dock = System.Windows.Forms.DockStyle.Left;
+            this.flpVariables.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpVariables.Location = new System.Drawing.Point(0, 24);
+            this.flpVariables.Margin = new System.Windows.Forms.Padding(0);
+            this.flpVariables.Name = "flpVariables";
+            this.flpVariables.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.flpVariables.Size = new System.Drawing.Size(286, 665);
+            this.flpVariables.TabIndex = 39;
+            this.flpVariables.WrapContents = false;
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.flpNames);
-            this.panel1.Controls.Add(this.flpValues);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel1.Location = new System.Drawing.Point(0, 24);
+            this.panel1.Controls.Add(this.chart1);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(289, 24);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(301, 665);
-            this.panel1.TabIndex = 36;
+            this.panel1.Size = new System.Drawing.Size(695, 665);
+            this.panel1.TabIndex = 40;
             // 
-            // flpNames
+            // pauseToolStripMenuItem
             // 
-            this.flpNames.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpNames.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpNames.Location = new System.Drawing.Point(0, 0);
-            this.flpNames.Name = "flpNames";
-            this.flpNames.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.flpNames.Size = new System.Drawing.Size(207, 665);
-            this.flpNames.TabIndex = 3;
-            this.flpNames.WrapContents = false;
-            this.flpNames.SizeChanged += new System.EventHandler(this.flpNames_SizeChanged);
-            // 
-            // flpValues
-            // 
-            this.flpValues.Dock = System.Windows.Forms.DockStyle.Right;
-            this.flpValues.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpValues.Location = new System.Drawing.Point(207, 0);
-            this.flpValues.Name = "flpValues";
-            this.flpValues.Size = new System.Drawing.Size(94, 665);
-            this.flpValues.TabIndex = 2;
-            // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.chart1);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(301, 24);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(683, 665);
-            this.panel2.TabIndex = 37;
-            // 
-            // splitter1
-            // 
-            this.splitter1.Location = new System.Drawing.Point(301, 24);
-            this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(3, 665);
-            this.splitter1.TabIndex = 38;
-            this.splitter1.TabStop = false;
+            this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
+            this.pauseToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+            this.pauseToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.pauseToolStripMenuItem.Text = "&Pause";
+            this.pauseToolStripMenuItem.Click += new System.EventHandler(this.pauseToolStripMenuItem_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(984, 711);
-            this.Controls.Add(this.splitter1);
-            this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
+            this.Controls.Add(this.splitter1);
+            this.Controls.Add(this.flpVariables);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Visual ME7Logger";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.panel1.ResumeLayout(false);
-            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -340,7 +334,6 @@
 
         #endregion
 
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel lblStatus;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
@@ -361,11 +354,11 @@
         private System.Windows.Forms.ToolStripTextBox txtRefreshRate;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem freezeToolStripMenuItem;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Splitter splitter1;
-        private System.Windows.Forms.FlowLayoutPanel flpNames;
-        private System.Windows.Forms.FlowLayoutPanel flpValues;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private System.Windows.Forms.FlowLayoutPanel flpVariables;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.ToolStripMenuItem pauseToolStripMenuItem;
     }
 }
 
