@@ -16,9 +16,11 @@ namespace VisualME7Logger.Session
         {
             New,
             Opening,
+            Initialized,
             Open,
             Closing,
-            Closed
+            Closed,
+            Paused
         }
 
         public enum SessionTypes
@@ -52,6 +54,8 @@ namespace VisualME7Logger.Session
         public SessionVariables Variables { get; private set; }
         public ME7LoggerLog Log { get; private set; }
 
+        public bool CanPause { get { return this.SessionType == SessionTypes.File; } }
+        
         private LoggerOptions options;
         private string configFilePath;
         private string ME7LoggerDirectory;
@@ -86,6 +90,7 @@ namespace VisualME7Logger.Session
                 this.Variables = new SessionVariables();
                 this.Log.InitializeSession(IdentificationInfo, CommunicationInfo, Variables);
                 this.SamplesPerSecond = CommunicationInfo.SamplesPerSecond;
+                this.Status = Statuses.Initialized; 
                 this.LogStarted = CommunicationInfo.LogStarted;
                 this.Status = Statuses.Open;
                 this.Log.Open();
@@ -109,6 +114,31 @@ namespace VisualME7Logger.Session
                 p.Start();
                 p.BeginOutputReadLine();
                 p.BeginErrorReadLine();
+            }
+        }
+
+        public void Pause()
+        {
+            if (this.Status == Statuses.Open)
+            {
+                if (this.SessionType == SessionTypes.File)
+                {
+                    this.Log.Pause();
+                    this.Status = Statuses.Paused;
+                }
+                else
+                {
+                    throw new NotSupportedException();
+                }
+            }
+        }
+
+        public void Resume()
+        {
+            if (this.Status == Statuses.Paused)
+            {
+                this.Log.Resume();
+                this.Status = Statuses.Open;
             }
         }
 
