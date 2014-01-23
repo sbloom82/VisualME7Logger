@@ -160,6 +160,7 @@ namespace VisualME7Logger.Session
             {
                 if (this.ReadLine(e.Data))
                 {
+                    this.Status = Statuses.Initialized;
                     this.Status = Statuses.Open;
                     this.Log.Open();
                     this.LogStarted = DateTime.Now;
