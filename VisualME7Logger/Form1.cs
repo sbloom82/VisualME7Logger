@@ -49,7 +49,8 @@ namespace VisualME7Logger
            
             session.StatusChanged += new ME7LoggerSession.LoggerSessionStatusChanged(this.SessionStatusChanged);
             session.Log.LineRead += new ME7LoggerLog.LogLineRead(this.LogLineRead);
-            session.Open();
+            
+            this.OpenSession();
 
             pauseToolStripMenuItem.Enabled = session.CanPause;
         }
@@ -240,12 +241,29 @@ namespace VisualME7Logger
             }
         }
 
-        private void startToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void OpenSession()
         {
             if (session.Status != ME7LoggerSession.Statuses.Open)
             {
-                session.Open();
+                try
+                {
+                    session.Open();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.ToString());
+                    session.Close();
+                }
             }
+            else
+            {
+                MessageBox.Show("A session is already open");
+            } 
+        }
+
+        private void startToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            OpenSession();
         }
 
         private void stopToolStripMenuItem1_Click(object sender, EventArgs e)

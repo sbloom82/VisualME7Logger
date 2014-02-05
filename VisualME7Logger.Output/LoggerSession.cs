@@ -76,12 +76,16 @@ namespace VisualME7Logger.Session
             this.Log = new ME7LoggerLog(this, logFilePath);
         }
 
-        Process p;
+        Process p;        
+        StreamWriter outputWriter = null;
+        public bool logReady = false;
         public int ExitCode { get; private set; }
-        public string ErrorText { get; private set; }
+        StringBuilder errorTextBuilder;
+        public string ErrorText { get { return errorTextBuilder != null ? errorTextBuilder.ToString() : string.Empty; } }
         public void Open()
         {
             this.Status = Statuses.Opening;
+            this.errorTextBuilder = new StringBuilder();
 
             if (this.SessionType == SessionTypes.File)
             {
@@ -98,6 +102,13 @@ namespace VisualME7Logger.Session
             else
             {
                 logReady = false;
+
+                if (options.WriteOutputFile)
+                {
+                    outputWriter = new StreamWriter(Path.Combine(ME7LoggerDirectory, "VisualME7LoggerOutput.txt"), false);
+                    outputWriter.AutoFlush = true;
+                }
+
                 p = new Process();
                 p.StartInfo = new ProcessStartInfo(
                     Path.Combine(ME7LoggerDirectory, "bin", "ME7Logger.exe"),
@@ -107,6 +118,7 @@ namespace VisualME7Logger.Session
                 p.StartInfo.RedirectStandardOutput = true;
                 p.StartInfo.RedirectStandardError = true;
                 p.StartInfo.RedirectStandardInput = true;
+                
                 p.EnableRaisingEvents = true;
                 p.Exited += p_Exited;
                 p.OutputDataReceived += p_OutputDataReceived;
@@ -150,31 +162,52 @@ namespace VisualME7Logger.Session
 
         void p_ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
-            ErrorText += string.Format("{0}{1}", string.IsNullOrEmpty(ErrorText) ? string.Empty : Environment.NewLine, e.Data);
+            lock (this)
+            {
+                if (options.WriteOutputFile && outputWriter != null)
+                {
+                    outputWriter.WriteLine("**error**{0}", e.Data);
+                }
+                errorTextBuilder.AppendFormat("{0}{1}", string.IsNullOrEmpty(ErrorText) ? string.Empty : Environment.NewLine, e.Data);
+            }
         }
 
-        public bool logReady = false;
         void p_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
-            if (this.Status == Statuses.Opening)
+            lock (this)
             {
-                if (this.ReadLine(e.Data))
+                if (options.WriteOutputFile && outputWriter != null)
                 {
-                    this.Status = Statuses.Initialized;
-                    this.Status = Statuses.Open;
-                    this.Log.Open();
-                    this.LogStarted = DateTime.Now;
+                    outputWriter.WriteLine(e.Data);
                 }
-            }
-            else if (this.Status == Statuses.Open)
-            {
-                if (!logReady && e.Data == "Press ^C to stop logging")
+
+                try
                 {
-                    logReady = true;
+                    if (this.Status == Statuses.Opening)
+                    {
+                        if (this.ReadLine(e.Data))
+                        {
+                            this.Status = Statuses.Initialized;
+                            this.Status = Statuses.Open;
+                            this.Log.Open();
+                            this.LogStarted = DateTime.Now;
+                        }
+                    }
+                    else if (this.Status == Statuses.Open)
+                    {
+                        if (!logReady && e.Data == "Press ^C to stop logging")
+                        {
+                            logReady = true;
+                        }
+                        else if (logReady)
+                        {
+                            this.Log.ReadLine(e.Data);
+                        }
+                    }
                 }
-                else if (logReady)
+                catch (Exception ex)
                 {
-                    this.Log.ReadLine(e.Data);
+                    errorTextBuilder.AppendFormat("Error when reading line {0}\r\n{1}", e.Data, ex);
                 }
             }
         }
@@ -202,6 +235,14 @@ namespace VisualME7Logger.Session
                     }
 
                     this.Log.Close();
+
+                    if (this.outputWriter != null)
+                    {
+                        outputWriter.Close();
+                        outputWriter.Dispose();
+                        outputWriter = null;
+                    }
+                    
                     Status = Statuses.Closed;
                 }
             }
@@ -410,7 +451,7 @@ namespace VisualME7Logger.Session
                 {
                     Complete = true;
                 }
-                else if (line[0] == '#' && line[1] != 'n' && line[1] != '-')
+                else if (line.Length > 1 && line[0] == '#' && line[1] != 'n' && line[1] != '-')
                 {
                     this.Add(new SessionVariable(line));
                 }
@@ -454,6 +495,7 @@ namespace VisualME7Logger.Session
 
         public bool WriteLogToFile { get; set; }
         public string LogFile { get; set; }
+        public bool WriteOutputFile { get; set; }
 
         public LoggerOptions(string ME7LoggerDirectory)
         {
@@ -486,6 +528,9 @@ namespace VisualME7Logger.Session
                             break;
                         case "ReadSingleMeasurement":
                             this.ReadSingleMeasurement = bool.Parse(att.Value);
+                            break;
+                        case "WriteOutputFile":
+                            this.WriteOutputFile = bool.Parse(att.Value);
                             break;
                     }
                 }
@@ -558,7 +603,8 @@ namespace VisualME7Logger.Session
             root.Add(new XAttribute("TimeSync", TimeSync));
             root.Add(new XAttribute("WriteAbsoluteTimestamp", WriteAbsoluteTimestamp));
             root.Add(new XAttribute("ReadSingleMeasurement", ReadSingleMeasurement));
-
+            root.Add(new XAttribute("WriteOutputFile", WriteOutputFile));
+            
             return root;
         }
 
