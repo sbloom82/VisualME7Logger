@@ -47,6 +47,8 @@ namespace VisualME7Logger
 
             chkWriteToLog.Checked = Options.WriteLogToFile;
             txtLogFilePath.Text = Options.LogFile;
+
+            chkWriteOutputToFile.Checked = Options.WriteOutputFile;
         }
 
         private void SaveOptions()
@@ -95,7 +97,9 @@ namespace VisualME7Logger
             Options.ReadSingleMeasurement = chkReadSingleMeasurement.Checked;
 
             Options.WriteLogToFile = chkWriteToLog.Checked;
-            Options.LogFile = txtLogFilePath.Text;           
+            Options.LogFile = txtLogFilePath.Text;
+
+            Options.WriteOutputFile = chkWriteOutputToFile.Checked;
         }
 
         private void SwitchUI()

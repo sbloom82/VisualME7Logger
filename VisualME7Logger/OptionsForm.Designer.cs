@@ -54,6 +54,7 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.btnChooseLogPath = new System.Windows.Forms.Button();
+            this.chkWriteOutputToFile = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.gpOther.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudSampleRate)).BeginInit();
@@ -204,6 +205,7 @@
             // 
             // gpOther
             // 
+            this.gpOther.Controls.Add(this.chkWriteOutputToFile);
             this.gpOther.Controls.Add(this.chkReadSingleMeasurement);
             this.gpOther.Controls.Add(this.chkWriteAbsoluteTimeStamp);
             this.gpOther.Controls.Add(this.nudSampleRate);
@@ -212,7 +214,7 @@
             this.gpOther.Controls.Add(this.chkOverrideSampleRate);
             this.gpOther.Location = new System.Drawing.Point(3, 220);
             this.gpOther.Name = "gpOther";
-            this.gpOther.Size = new System.Drawing.Size(424, 132);
+            this.gpOther.Size = new System.Drawing.Size(424, 154);
             this.gpOther.TabIndex = 2;
             this.gpOther.TabStop = false;
             this.gpOther.Text = "Other";
@@ -313,7 +315,7 @@
             // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(352, 355);
+            this.btnOk.Location = new System.Drawing.Point(352, 376);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 4;
@@ -324,7 +326,7 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(271, 355);
+            this.btnCancel.Location = new System.Drawing.Point(271, 376);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 3;
@@ -354,13 +356,23 @@
             this.btnChooseLogPath.UseVisualStyleBackColor = true;
             this.btnChooseLogPath.Click += new System.EventHandler(this.btnChooseLogPath_Click);
             // 
+            // chkWriteOutputToFile
+            // 
+            this.chkWriteOutputToFile.AutoSize = true;
+            this.chkWriteOutputToFile.Location = new System.Drawing.Point(6, 134);
+            this.chkWriteOutputToFile.Name = "chkWriteOutputToFile";
+            this.chkWriteOutputToFile.Size = new System.Drawing.Size(170, 17);
+            this.chkWriteOutputToFile.TabIndex = 6;
+            this.chkWriteOutputToFile.Text = "Write ME7Logger output to file";
+            this.chkWriteOutputToFile.UseVisualStyleBackColor = true;
+            // 
             // OptionsForm
             // 
             this.AcceptButton = this.btnOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(431, 381);
+            this.ClientSize = new System.Drawing.Size(431, 401);
             this.ControlBox = false;
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.btnCancel);
@@ -411,5 +423,6 @@
         private System.Windows.Forms.RadioButton radLogFile;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Button btnChooseLogPath;
+        private System.Windows.Forms.CheckBox chkWriteOutputToFile;
     }
 }
