@@ -83,7 +83,7 @@ namespace VisualME7Logger.Log
         internal void Open()
         {
             lineNumber = 0;
-            if (this.Session.SessionType == ME7LoggerSession.SessionTypes.File)
+            if (this.Session.SessionType == ME7LoggerSession.SessionTypes.LogFile)
             {
                 stop = false;
 
@@ -131,10 +131,14 @@ namespace VisualME7Logger.Log
                             ready = false;
                             continue;
                         }
-                        this.ReadLine(line);
-                        int waitTime = wait - (int)DateTime.Now.Subtract(time).TotalMilliseconds;
-                        if (waitTime > 0)
-                            System.Threading.Thread.Sleep(waitTime);
+                        try
+                        {
+                            this.ReadLine(line);
+                            int waitTime = wait - (int)DateTime.Now.Subtract(time).TotalMilliseconds;
+                            if (waitTime > 0)
+                                System.Threading.Thread.Sleep(waitTime);
+                        }
+                        catch { }
                     }                    
                     
                     while (paused)

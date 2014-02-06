@@ -9,8 +9,8 @@ namespace VisualME7Logger.Output
 {
     public class ChecksumInfo
     {
-        public string ApplicationPath { get; set; }
-        public string BinPath { get; set; }
+        public string ApplicationPath = string.Empty;
+        public string BinPath = string.Empty;        
 
         public void Read(XElement element)
         {

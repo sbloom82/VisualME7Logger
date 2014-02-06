@@ -77,7 +77,7 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.loadConfigFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveConfigFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.clearConfigFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveConfigFileAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.saveSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
@@ -622,7 +622,7 @@
             this.toolStripMenuItem1,
             this.loadConfigFileToolStripMenuItem,
             this.saveConfigFileToolStripMenuItem,
-            this.clearConfigFileToolStripMenuItem,
+            this.saveConfigFileAsToolStripMenuItem,
             this.toolStripMenuItem3,
             this.saveSettingsToolStripMenuItem,
             this.toolStripMenuItem5,
@@ -634,20 +634,20 @@
             // loadECUFileToolStripMenuItem
             // 
             this.loadECUFileToolStripMenuItem.Name = "loadECUFileToolStripMenuItem";
-            this.loadECUFileToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.loadECUFileToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
             this.loadECUFileToolStripMenuItem.Text = "Load ECU File";
             this.loadECUFileToolStripMenuItem.Click += new System.EventHandler(this.loadECUFileToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(158, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(180, 6);
             // 
             // loadConfigFileToolStripMenuItem
             // 
             this.loadConfigFileToolStripMenuItem.Enabled = false;
             this.loadConfigFileToolStripMenuItem.Name = "loadConfigFileToolStripMenuItem";
-            this.loadConfigFileToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.loadConfigFileToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
             this.loadConfigFileToolStripMenuItem.Text = "Load Config File";
             this.loadConfigFileToolStripMenuItem.Click += new System.EventHandler(this.loadConfigFileToolStripMenuItem_Click);
             // 
@@ -655,38 +655,38 @@
             // 
             this.saveConfigFileToolStripMenuItem.Enabled = false;
             this.saveConfigFileToolStripMenuItem.Name = "saveConfigFileToolStripMenuItem";
-            this.saveConfigFileToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.saveConfigFileToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
             this.saveConfigFileToolStripMenuItem.Text = "Save Config File";
             this.saveConfigFileToolStripMenuItem.Click += new System.EventHandler(this.saveConfigFileToolStripMenuItem_Click);
             // 
-            // clearConfigFileToolStripMenuItem
+            // saveConfigFileAsToolStripMenuItem
             // 
-            this.clearConfigFileToolStripMenuItem.Name = "clearConfigFileToolStripMenuItem";
-            this.clearConfigFileToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
-            this.clearConfigFileToolStripMenuItem.Text = "Clear Config File";
-            this.clearConfigFileToolStripMenuItem.Click += new System.EventHandler(this.clearConfigFileToolStripMenuItem_Click);
+            this.saveConfigFileAsToolStripMenuItem.Name = "saveConfigFileAsToolStripMenuItem";
+            this.saveConfigFileAsToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.saveConfigFileAsToolStripMenuItem.Text = "Save Config File As...";
+            this.saveConfigFileAsToolStripMenuItem.Click += new System.EventHandler(this.saveConfigFileAsToolStripMenuItem_Click);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(158, 6);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(180, 6);
             // 
             // saveSettingsToolStripMenuItem
             // 
             this.saveSettingsToolStripMenuItem.Name = "saveSettingsToolStripMenuItem";
-            this.saveSettingsToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.saveSettingsToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
             this.saveSettingsToolStripMenuItem.Text = "Save Settings";
             this.saveSettingsToolStripMenuItem.Click += new System.EventHandler(this.saveSettingsToolStripMenuItem_Click);
             // 
             // toolStripMenuItem5
             // 
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(158, 6);
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(180, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -846,13 +846,11 @@
         private System.Windows.Forms.TextBox txtConfigFile;
         private System.Windows.Forms.TextBox txtECUFile;
         private System.Windows.Forms.Splitter splitter1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn NameColumn;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadECUFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem loadConfigFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveConfigFileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem clearConfigFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem saveSettingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
@@ -905,6 +903,7 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.NumericUpDown nudResfreshRate;
+        private System.Windows.Forms.ToolStripMenuItem saveConfigFileAsToolStripMenuItem;
 
 
     }

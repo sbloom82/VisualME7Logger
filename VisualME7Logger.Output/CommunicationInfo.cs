@@ -12,7 +12,14 @@ namespace VisualME7Logger.Common
         public string LogSpeed { get; private set; }
         public short SamplesPerSecond { get; private set; }
         public DateTime LogStarted { get; private set; }
-        internal CommunicationInfo() { }
+        internal CommunicationInfo() 
+        {
+            Connect = string.Empty;
+            Communicate = string.Empty;
+            LogSpeed = string.Empty;
+            SamplesPerSecond = 0;
+            LogStarted = DateTime.MinValue;
+        }
 
         internal bool Complete { get; private set; }
         internal void ReadLine(string line, bool fromLog = false)
