@@ -26,7 +26,8 @@ namespace VisualME7Logger.Session
         public enum SessionTypes
         {
             RealTime,
-            File
+            LogFile,
+            SessionOutput
         }
 
         public delegate void LoggerSessionStatusChanged(Statuses status);
@@ -54,7 +55,7 @@ namespace VisualME7Logger.Session
         public SessionVariables Variables { get; private set; }
         public ME7LoggerLog Log { get; private set; }
 
-        public bool CanPause { get { return this.SessionType == SessionTypes.File; } }
+        public bool CanPause { get { return this.SessionType != SessionTypes.RealTime; } }
         
         private LoggerOptions options;
         private string configFilePath;
@@ -69,13 +70,27 @@ namespace VisualME7Logger.Session
             this.configFilePath = configFilePath;
         }
 
-        public ME7LoggerSession(string logFilePath)
+        private string filePath;
+        public ME7LoggerSession(string filePath, SessionTypes sessionType = SessionTypes.LogFile)
         {
             this.Status = Statuses.New;
-            this.SessionType = SessionTypes.File;
-            this.Log = new ME7LoggerLog(this, logFilePath);
+            this.SessionType = sessionType;
+            this.filePath = filePath;
+            if (this.SessionType == SessionTypes.LogFile)
+            {
+                this.Log = new ME7LoggerLog(this, this.filePath);
+            }
+            else if (this.SessionType == SessionTypes.SessionOutput)
+            {
+                this.Log = new ME7LoggerLog(this);
+                this.options = new LoggerOptions("");
+            }
+            else 
+            {
+                throw new ArgumentOutOfRangeException("sessionType");
+            }
         }
-
+               
         Process p;        
         StreamWriter outputWriter = null;
         public bool logReady = false;
@@ -87,7 +102,7 @@ namespace VisualME7Logger.Session
             this.Status = Statuses.Opening;
             this.errorTextBuilder = new StringBuilder();
 
-            if (this.SessionType == SessionTypes.File)
+            if (this.SessionType == SessionTypes.LogFile)
             {
                 this.IdentificationInfo = new IdentificationInfo();
                 this.CommunicationInfo = new CommunicationInfo();
@@ -99,7 +114,7 @@ namespace VisualME7Logger.Session
                 this.Status = Statuses.Open;
                 this.Log.Open();
             }
-            else
+            else if (this.SessionType == SessionTypes.RealTime)
             {
                 logReady = false;
 
@@ -118,7 +133,7 @@ namespace VisualME7Logger.Session
                 p.StartInfo.RedirectStandardOutput = true;
                 p.StartInfo.RedirectStandardError = true;
                 p.StartInfo.RedirectStandardInput = true;
-                
+
                 p.EnableRaisingEvents = true;
                 p.Exited += p_Exited;
                 p.OutputDataReceived += p_OutputDataReceived;
@@ -127,13 +142,31 @@ namespace VisualME7Logger.Session
                 p.BeginOutputReadLine();
                 p.BeginErrorReadLine();
             }
+            else
+            {
+                new System.Threading.Thread(new System.Threading.ThreadStart(OpenFromSessionOutput)).Start();
+            }
+        }
+
+        private void OpenFromSessionOutput()
+        {
+            using (StreamReader sr = new StreamReader(filePath, Encoding.UTF7))
+            {
+                string line = null;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    this.ReadData(line);
+                    System.Threading.Thread.Sleep(this.Status == Statuses.Open ? 50 : 1);
+                }
+            }
+            this.Close();
         }
 
         public void Pause()
         {
             if (this.Status == Statuses.Open)
             {
-                if (this.SessionType == SessionTypes.File)
+                if (this.SessionType == SessionTypes.LogFile)
                 {
                     this.Log.Pause();
                     this.Status = Statuses.Paused;
@@ -174,18 +207,23 @@ namespace VisualME7Logger.Session
 
         void p_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
+            this.ReadData(e.Data);   
+        }
+
+        private void ReadData(string data)
+        {
             lock (this)
             {
                 if (options.WriteOutputFile && outputWriter != null)
                 {
-                    outputWriter.WriteLine(e.Data);
+                    outputWriter.WriteLine(data);
                 }
 
                 try
                 {
                     if (this.Status == Statuses.Opening)
                     {
-                        if (this.ReadLine(e.Data))
+                        if (this.ReadLine(data))
                         {
                             this.Status = Statuses.Initialized;
                             this.Status = Statuses.Open;
@@ -195,19 +233,19 @@ namespace VisualME7Logger.Session
                     }
                     else if (this.Status == Statuses.Open)
                     {
-                        if (!logReady && e.Data == "Press ^C to stop logging")
+                        if (!logReady && data == "Press ^C to stop logging")
                         {
                             logReady = true;
                         }
                         else if (logReady)
                         {
-                            this.Log.ReadLine(e.Data);
+                            this.Log.ReadLine(data);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    errorTextBuilder.AppendFormat("Error when reading line {0}\r\n{1}", e.Data, ex);
+                    errorTextBuilder.AppendFormat("Error when reading line {0}\r\n{1}", data, ex);
                 }
             }
         }
@@ -669,7 +707,7 @@ namespace VisualME7Logger.Session
             }
             if (WriteLogToFile)
             {
-                sb.AppendFormat(" -o {0}", LogFile);
+                sb.AppendFormat(" -o \"{0}\"", LogFile);
             }
             return sb.ToString();
         }

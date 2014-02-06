@@ -15,7 +15,16 @@ namespace VisualME7Logger.Common
         public string VAGHWNumber { get; private set; }
         public string ModelId { get; private set; }
 
-        internal IdentificationInfo() { }
+        internal IdentificationInfo() 
+        {
+            HWNumber =
+                SWNumber =
+                PartNumber =
+                SWVersion =
+                EngineId =
+                VAGHWNumber =
+                ModelId = string.Empty;
+        }
 
         internal bool Complete { get; private set; }
         internal void ReadLine(string line, bool fromLog = false)

@@ -122,24 +122,15 @@ namespace VisualME7Logger
 
         private void LoadECUFile()
         {
-            this.Clear();
             if (this.SelectedECUFile != null)
             {
                 this.txtECUFile.Text = this.SelectedECUFile.FilePath;
                 this.loadConfigFileToolStripMenuItem.Enabled =
-                this.saveConfigFileToolStripMenuItem.Enabled = true;
+                this.saveConfigFileToolStripMenuItem.Enabled = 
+                this.saveConfigFileAsToolStripMenuItem.Enabled = true;
                 this.btnStartLog.Enabled = true;
-                ApplyFilter();//loads grid
+                LoadConfigFile(txtConfigFile.Text);
             }
-        }
-
-        private void Clear()
-        {
-            dataGridView1.Rows.Clear();
-            txtConfigFile.Text = string.Empty;
-            loadConfigFileToolStripMenuItem.Enabled =
-             saveConfigFileToolStripMenuItem.Enabled =
-                btnStartLog.Enabled = false;
         }
 
         private void SwitchUI()
@@ -189,7 +180,7 @@ namespace VisualME7Logger
             }
         }
 
-        private ConfigFile SaveConfigFile()
+        private ConfigFile SaveConfigFile(bool saveNew = false)
         {
             if (this.SelectedECUFile != null)
             {
@@ -201,11 +192,15 @@ namespace VisualME7Logger
 
                 if (ms.Values.Count() > 0)
                 {
-                    if (string.IsNullOrEmpty(this.txtConfigFile.Text))
+                    if (saveNew || string.IsNullOrEmpty(this.txtConfigFile.Text))
                     {
                         SaveFileDialog d = new SaveFileDialog();
                         d.Title = "Save Config File As...";
-                        d.InitialDirectory = System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs");
+                        d.InitialDirectory = 
+                            string.IsNullOrWhiteSpace(this.txtConfigFile.Text) ?
+                            System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs") :
+                            System.IO.Path.GetDirectoryName(this.txtConfigFile.Text);
+                        d.FileName = System.IO.Path.GetFileName(this.txtConfigFile.Text);
                         if (d.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                         {
                             return null;
@@ -283,11 +278,6 @@ namespace VisualME7Logger
             }
         }
 
-        private void clearConfigFileToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.txtConfigFile.Text = string.Empty;
-        }
-
         private void createECUFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
@@ -331,7 +321,10 @@ namespace VisualME7Logger
                 root.Add(this.DisplayOptions.Write());
                 root.Save(System.IO.Path.Combine(Program.ME7LoggerDirectory, "VisualME7Logger.cfg.xml"));
             }
-            catch { }
+            catch(Exception e)
+            {
+                MessageBox.Show(string.Format("An error occurred while saving settings file\r\n{0}", e.ToString()));
+            }
         }
 
         void LoadSettings()
@@ -406,6 +399,10 @@ namespace VisualME7Logger
         private void saveConfigFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.SaveConfigFile();
+        }
+        private void saveConfigFileAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.SaveConfigFile(true);
         }
 
         private void settingToolStripMenuItem_Click(object sender, EventArgs e)
@@ -545,6 +542,8 @@ namespace VisualME7Logger
                 ApplyFilter();
             }
         }
+
+       
     }
 
     public class DisplayOptions

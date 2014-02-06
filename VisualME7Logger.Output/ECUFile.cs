@@ -67,7 +67,7 @@ namespace VisualME7Logger.Configuration
                     }
                 }
             }
-            catch (Exception e)
+            catch
             {
                 return false;
             }
@@ -263,7 +263,6 @@ namespace VisualME7Logger.Configuration
                     this.Name = Name.Substring(0, Name.IndexOf(" "));
                 return true;
             }
-            return false;
         }
 
         public override string ToString()
