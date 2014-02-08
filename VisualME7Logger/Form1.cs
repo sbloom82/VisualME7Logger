@@ -40,7 +40,10 @@ namespace VisualME7Logger
 
             if (options.ConnectionType == LoggerOptions.ConnectionTypes.LogFile)
             {
-                session = new ME7LoggerSession(options.LogFile);
+                session = new ME7LoggerSession(options.LogFile,
+                    Program.DebugOutput ?
+                        ME7LoggerSession.SessionTypes.SessionOutput :
+                        ME7LoggerSession.SessionTypes.LogFile);
             }
             else
             {
