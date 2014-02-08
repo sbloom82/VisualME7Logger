@@ -34,6 +34,12 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpMeasurements = new System.Windows.Forms.TabPage();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.radFilterUnselected = new System.Windows.Forms.RadioButton();
+            this.radFilterSelected = new System.Windows.Forms.RadioButton();
+            this.radFilterAll = new System.Windows.Forms.RadioButton();
+            this.txtFilter = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
             this.tbGraphConfig = new System.Windows.Forms.TabPage();
             this.nudResfreshRate = new System.Windows.Forms.NumericUpDown();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -51,7 +57,6 @@
             this.chkGraphVariableActive = new System.Windows.Forms.CheckBox();
             this.nudGraphVariableThickness = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
-            this.txtGraphVariableVariable = new System.Windows.Forms.TextBox();
             this.btnCancelGraphVariable = new System.Windows.Forms.Button();
             this.btnSaveGraphVariable = new System.Windows.Forms.Button();
             this.txtGraphVariableName = new System.Windows.Forms.TextBox();
@@ -84,22 +89,17 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.filterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.allToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.selectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.unselectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.filterTextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripFilterTextBox = new System.Windows.Forms.ToolStripTextBox();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mE7CheckToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createECUFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.cmbGraphVariableVariable = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tpMeasurements.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.panel3.SuspendLayout();
             this.tbGraphConfig.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudResfreshRate)).BeginInit();
             this.groupBox2.SuspendLayout();
@@ -136,14 +136,15 @@
             // 
             // tpMeasurements
             // 
+            this.tpMeasurements.BackColor = System.Drawing.SystemColors.Control;
             this.tpMeasurements.Controls.Add(this.dataGridView1);
+            this.tpMeasurements.Controls.Add(this.panel3);
             this.tpMeasurements.Location = new System.Drawing.Point(4, 22);
             this.tpMeasurements.Name = "tpMeasurements";
             this.tpMeasurements.Padding = new System.Windows.Forms.Padding(3);
             this.tpMeasurements.Size = new System.Drawing.Size(725, 315);
             this.tpMeasurements.TabIndex = 0;
             this.tpMeasurements.Text = "Measurements";
-            this.tpMeasurements.UseVisualStyleBackColor = true;
             // 
             // dataGridView1
             // 
@@ -156,16 +157,83 @@
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.ControlDark;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(3, 3);
+            this.dataGridView1.Location = new System.Drawing.Point(3, 29);
             this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.ShowEditingIcon = false;
-            this.dataGridView1.Size = new System.Drawing.Size(719, 309);
+            this.dataGridView1.Size = new System.Drawing.Size(719, 283);
             this.dataGridView1.TabIndex = 11;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView1_KeyDown);
+            // 
+            // panel3
+            // 
+            this.panel3.BackColor = System.Drawing.SystemColors.Control;
+            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3.Controls.Add(this.radFilterUnselected);
+            this.panel3.Controls.Add(this.radFilterSelected);
+            this.panel3.Controls.Add(this.radFilterAll);
+            this.panel3.Controls.Add(this.txtFilter);
+            this.panel3.Controls.Add(this.label13);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel3.Location = new System.Drawing.Point(3, 3);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(719, 26);
+            this.panel3.TabIndex = 12;
+            // 
+            // radFilterUnselected
+            // 
+            this.radFilterUnselected.AutoSize = true;
+            this.radFilterUnselected.Location = new System.Drawing.Point(382, 4);
+            this.radFilterUnselected.Name = "radFilterUnselected";
+            this.radFilterUnselected.Size = new System.Drawing.Size(109, 17);
+            this.radFilterUnselected.TabIndex = 4;
+            this.radFilterUnselected.Text = "Show &Unselected";
+            this.radFilterUnselected.UseVisualStyleBackColor = true;
+            this.radFilterUnselected.CheckedChanged += new System.EventHandler(this.radFilterUnselected_CheckedChanged);
+            // 
+            // radFilterSelected
+            // 
+            this.radFilterSelected.AutoSize = true;
+            this.radFilterSelected.Location = new System.Drawing.Point(279, 4);
+            this.radFilterSelected.Name = "radFilterSelected";
+            this.radFilterSelected.Size = new System.Drawing.Size(97, 17);
+            this.radFilterSelected.TabIndex = 3;
+            this.radFilterSelected.Text = "Show &Selected";
+            this.radFilterSelected.UseVisualStyleBackColor = true;
+            this.radFilterSelected.CheckedChanged += new System.EventHandler(this.radFilterSelected_CheckedChanged);
+            // 
+            // radFilterAll
+            // 
+            this.radFilterAll.AutoSize = true;
+            this.radFilterAll.Checked = true;
+            this.radFilterAll.Location = new System.Drawing.Point(207, 4);
+            this.radFilterAll.Name = "radFilterAll";
+            this.radFilterAll.Size = new System.Drawing.Size(66, 17);
+            this.radFilterAll.TabIndex = 2;
+            this.radFilterAll.TabStop = true;
+            this.radFilterAll.Text = "Show &All";
+            this.radFilterAll.UseVisualStyleBackColor = true;
+            this.radFilterAll.CheckedChanged += new System.EventHandler(this.radFilterAll_CheckedChanged);
+            // 
+            // txtFilter
+            // 
+            this.txtFilter.Location = new System.Drawing.Point(62, 2);
+            this.txtFilter.Name = "txtFilter";
+            this.txtFilter.Size = new System.Drawing.Size(139, 20);
+            this.txtFilter.TabIndex = 1;
+            this.txtFilter.TextChanged += new System.EventHandler(this.txtFilter_TextChanged);
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(28, 6);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(32, 13);
+            this.label13.TabIndex = 0;
+            this.label13.Text = "Filter:";
             // 
             // tbGraphConfig
             // 
@@ -289,6 +357,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox1.Controls.Add(this.lstGraphVariables);
             this.groupBox1.Controls.Add(this.btnEditGraphVariable);
             this.groupBox1.Controls.Add(this.gbGraphVariables);
@@ -303,6 +373,9 @@
             // 
             // lstGraphVariables
             // 
+            this.lstGraphVariables.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstGraphVariables.FormattingEnabled = true;
             this.lstGraphVariables.Location = new System.Drawing.Point(6, 19);
             this.lstGraphVariables.Name = "lstGraphVariables";
@@ -312,6 +385,7 @@
             // 
             // btnEditGraphVariable
             // 
+            this.btnEditGraphVariable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnEditGraphVariable.Location = new System.Drawing.Point(312, 42);
             this.btnEditGraphVariable.Name = "btnEditGraphVariable";
             this.btnEditGraphVariable.Size = new System.Drawing.Size(75, 23);
@@ -322,12 +396,13 @@
             // 
             // gbGraphVariables
             // 
+            this.gbGraphVariables.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.gbGraphVariables.Controls.Add(this.cmbGraphVariableVariable);
             this.gbGraphVariables.Controls.Add(this.label9);
             this.gbGraphVariables.Controls.Add(this.cmbGraphVariableStyle);
             this.gbGraphVariables.Controls.Add(this.chkGraphVariableActive);
             this.gbGraphVariables.Controls.Add(this.nudGraphVariableThickness);
             this.gbGraphVariables.Controls.Add(this.label8);
-            this.gbGraphVariables.Controls.Add(this.txtGraphVariableVariable);
             this.gbGraphVariables.Controls.Add(this.btnCancelGraphVariable);
             this.gbGraphVariables.Controls.Add(this.btnSaveGraphVariable);
             this.gbGraphVariables.Controls.Add(this.txtGraphVariableName);
@@ -360,7 +435,7 @@
             this.cmbGraphVariableStyle.Location = new System.Drawing.Point(111, 99);
             this.cmbGraphVariableStyle.Name = "cmbGraphVariableStyle";
             this.cmbGraphVariableStyle.Size = new System.Drawing.Size(80, 21);
-            this.cmbGraphVariableStyle.TabIndex = 15;
+            this.cmbGraphVariableStyle.TabIndex = 6;
             // 
             // chkGraphVariableActive
             // 
@@ -369,7 +444,7 @@
             this.chkGraphVariableActive.Location = new System.Drawing.Point(6, 10);
             this.chkGraphVariableActive.Name = "chkGraphVariableActive";
             this.chkGraphVariableActive.Size = new System.Drawing.Size(59, 17);
-            this.chkGraphVariableActive.TabIndex = 5;
+            this.chkGraphVariableActive.TabIndex = 0;
             this.chkGraphVariableActive.Text = "Active:";
             this.chkGraphVariableActive.UseVisualStyleBackColor = true;
             // 
@@ -383,7 +458,7 @@
             0});
             this.nudGraphVariableThickness.Name = "nudGraphVariableThickness";
             this.nudGraphVariableThickness.Size = new System.Drawing.Size(38, 20);
-            this.nudGraphVariableThickness.TabIndex = 5;
+            this.nudGraphVariableThickness.TabIndex = 7;
             this.nudGraphVariableThickness.Value = new decimal(new int[] {
             1,
             0,
@@ -398,13 +473,6 @@
             this.label8.Size = new System.Drawing.Size(59, 13);
             this.label8.TabIndex = 14;
             this.label8.Text = "Thickness:";
-            // 
-            // txtGraphVariableVariable
-            // 
-            this.txtGraphVariableVariable.Location = new System.Drawing.Point(51, 29);
-            this.txtGraphVariableVariable.Name = "txtGraphVariableVariable";
-            this.txtGraphVariableVariable.Size = new System.Drawing.Size(241, 20);
-            this.txtGraphVariableVariable.TabIndex = 0;
             // 
             // btnCancelGraphVariable
             // 
@@ -431,7 +499,7 @@
             this.txtGraphVariableName.Location = new System.Drawing.Point(51, 53);
             this.txtGraphVariableName.Name = "txtGraphVariableName";
             this.txtGraphVariableName.Size = new System.Drawing.Size(241, 20);
-            this.txtGraphVariableName.TabIndex = 1;
+            this.txtGraphVariableName.TabIndex = 2;
             // 
             // label7
             // 
@@ -475,7 +543,7 @@
             this.txtGraphVariableColor.Name = "txtGraphVariableColor";
             this.txtGraphVariableColor.ReadOnly = true;
             this.txtGraphVariableColor.Size = new System.Drawing.Size(20, 20);
-            this.txtGraphVariableColor.TabIndex = 4;
+            this.txtGraphVariableColor.TabIndex = 5;
             this.txtGraphVariableColor.Click += new System.EventHandler(this.txtGraphVariableColor_Click);
             // 
             // nudGraphVariableMax
@@ -494,7 +562,7 @@
             -2147483648});
             this.nudGraphVariableMax.Name = "nudGraphVariableMax";
             this.nudGraphVariableMax.Size = new System.Drawing.Size(89, 20);
-            this.nudGraphVariableMax.TabIndex = 3;
+            this.nudGraphVariableMax.TabIndex = 4;
             // 
             // nudGraphVariableMin
             // 
@@ -512,7 +580,7 @@
             -2147483648});
             this.nudGraphVariableMin.Name = "nudGraphVariableMin";
             this.nudGraphVariableMin.Size = new System.Drawing.Size(89, 20);
-            this.nudGraphVariableMin.TabIndex = 2;
+            this.nudGraphVariableMin.TabIndex = 3;
             // 
             // label1
             // 
@@ -525,6 +593,7 @@
             // 
             // btnDeleteGraphVariable
             // 
+            this.btnDeleteGraphVariable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDeleteGraphVariable.Location = new System.Drawing.Point(312, 65);
             this.btnDeleteGraphVariable.Name = "btnDeleteGraphVariable";
             this.btnDeleteGraphVariable.Size = new System.Drawing.Size(75, 23);
@@ -535,6 +604,7 @@
             // 
             // btnAddGraphVariable
             // 
+            this.btnAddGraphVariable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnAddGraphVariable.Location = new System.Drawing.Point(312, 19);
             this.btnAddGraphVariable.Name = "btnAddGraphVariable";
             this.btnAddGraphVariable.Size = new System.Drawing.Size(75, 23);
@@ -693,8 +763,7 @@
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.settingToolStripMenuItem,
-            this.filterToolStripMenuItem});
+            this.settingToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "Options";
@@ -705,62 +774,6 @@
             this.settingToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.settingToolStripMenuItem.Text = "Settings";
             this.settingToolStripMenuItem.Click += new System.EventHandler(this.settingToolStripMenuItem_Click);
-            // 
-            // filterToolStripMenuItem
-            // 
-            this.filterToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.allToolStripMenuItem,
-            this.selectedToolStripMenuItem,
-            this.unselectedToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.filterTextToolStripMenuItem,
-            this.toolStripFilterTextBox});
-            this.filterToolStripMenuItem.Name = "filterToolStripMenuItem";
-            this.filterToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
-            this.filterToolStripMenuItem.Text = "Filter";
-            // 
-            // allToolStripMenuItem
-            // 
-            this.allToolStripMenuItem.Checked = true;
-            this.allToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.allToolStripMenuItem.Name = "allToolStripMenuItem";
-            this.allToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.allToolStripMenuItem.Text = "All";
-            this.allToolStripMenuItem.Click += new System.EventHandler(this.allToolStripMenuItem_Click);
-            // 
-            // selectedToolStripMenuItem
-            // 
-            this.selectedToolStripMenuItem.Name = "selectedToolStripMenuItem";
-            this.selectedToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.selectedToolStripMenuItem.Text = "Selected";
-            this.selectedToolStripMenuItem.Click += new System.EventHandler(this.selectedToolStripMenuItem_Click);
-            // 
-            // unselectedToolStripMenuItem
-            // 
-            this.unselectedToolStripMenuItem.Name = "unselectedToolStripMenuItem";
-            this.unselectedToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.unselectedToolStripMenuItem.Text = "Unselected";
-            this.unselectedToolStripMenuItem.Click += new System.EventHandler(this.unselectedToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(157, 6);
-            // 
-            // filterTextToolStripMenuItem
-            // 
-            this.filterTextToolStripMenuItem.Enabled = false;
-            this.filterTextToolStripMenuItem.Name = "filterTextToolStripMenuItem";
-            this.filterTextToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.filterTextToolStripMenuItem.Text = "Filter Text:";
-            // 
-            // toolStripFilterTextBox
-            // 
-            this.toolStripFilterTextBox.BackColor = System.Drawing.SystemColors.Window;
-            this.toolStripFilterTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.toolStripFilterTextBox.Name = "toolStripFilterTextBox";
-            this.toolStripFilterTextBox.Size = new System.Drawing.Size(100, 23);
-            this.toolStripFilterTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.toolStripFilterTextBox_KeyDown);
             // 
             // toolsToolStripMenuItem
             // 
@@ -797,6 +810,16 @@
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
+            // cmbGraphVariableVariable
+            // 
+            this.cmbGraphVariableVariable.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cmbGraphVariableVariable.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cmbGraphVariableVariable.FormattingEnabled = true;
+            this.cmbGraphVariableVariable.Location = new System.Drawing.Point(51, 29);
+            this.cmbGraphVariableVariable.Name = "cmbGraphVariableVariable";
+            this.cmbGraphVariableVariable.Size = new System.Drawing.Size(241, 21);
+            this.cmbGraphVariableVariable.TabIndex = 1;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -814,6 +837,8 @@
             this.tabControl1.ResumeLayout(false);
             this.tpMeasurements.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.tbGraphConfig.ResumeLayout(false);
             this.tbGraphConfig.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudResfreshRate)).EndInit();
@@ -857,10 +882,6 @@
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem filterToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem allToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem selectedToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem unselectedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mE7CheckToolStripMenuItem;
         private System.Windows.Forms.MenuStrip menuStrip1;
@@ -886,10 +907,6 @@
         private System.Windows.Forms.NumericUpDown nudGraphVariableMax;
         private System.Windows.Forms.NumericUpDown nudGraphVariableMin;
         private System.Windows.Forms.ColorDialog colorDialog1;
-        private System.Windows.Forms.TextBox txtGraphVariableVariable;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem filterTextToolStripMenuItem;
-        private System.Windows.Forms.ToolStripTextBox toolStripFilterTextBox;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.NumericUpDown nudGraphVariableThickness;
         private System.Windows.Forms.Label label8;
@@ -904,6 +921,13 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.NumericUpDown nudResfreshRate;
         private System.Windows.Forms.ToolStripMenuItem saveConfigFileAsToolStripMenuItem;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.RadioButton radFilterUnselected;
+        private System.Windows.Forms.RadioButton radFilterSelected;
+        private System.Windows.Forms.RadioButton radFilterAll;
+        private System.Windows.Forms.TextBox txtFilter;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.ComboBox cmbGraphVariableVariable;
 
 
     }
