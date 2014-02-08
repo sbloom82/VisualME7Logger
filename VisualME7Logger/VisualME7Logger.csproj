@@ -190,6 +190,9 @@
     <Content Include="Icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if "$(ConfigurationName)" == "Release" ("C:\Program Files (x86)\Microsoft\ILMerge\ILMerge.exe" /out:"$(TargetDir)\Merged\VisualME7Logger.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)$(TargetName).Output.dll" /targetplatform:v4)</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
