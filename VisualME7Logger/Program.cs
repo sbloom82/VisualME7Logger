@@ -10,6 +10,7 @@ namespace VisualME7Logger
     static class Program
     {
         public static string ME7LoggerDirectory;
+        public static bool DebugOutput;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -19,7 +20,17 @@ namespace VisualME7Logger
             ME7LoggerDirectory = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
             if (args.Length > 0)
             {
-                ME7LoggerDirectory = args[0];
+                foreach (string arg in args)
+                {
+                    if (arg == "-DebugOutput")
+                    {
+                        DebugOutput = true;
+                    }
+                    else
+                    {
+                        ME7LoggerDirectory = arg;
+                    }
+                }
             }
 
             Application.EnableVisualStyles();
