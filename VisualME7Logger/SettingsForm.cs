@@ -115,7 +115,9 @@ namespace VisualME7Logger
                 this.SelectedECUFile = null;
                 ECUFile file = new ECUFile(ofd.FileName);
                 if (file.Open())
+                {
                     this.SelectedECUFile = file;
+                }
                 this.LoadECUFile();
             }
         }
@@ -129,6 +131,10 @@ namespace VisualME7Logger
                 this.saveConfigFileToolStripMenuItem.Enabled = 
                 this.saveConfigFileAsToolStripMenuItem.Enabled = true;
                 this.btnStartLog.Enabled = true;
+
+                this.cmbGraphVariableVariable.DataSource =
+                    this.SelectedECUFile.Measurements.Values.Select(m => m.Name).ToList();
+
                 LoadConfigFile(txtConfigFile.Text);
             }
         }
@@ -156,20 +162,20 @@ namespace VisualME7Logger
                     this.SelectedECUFile.Measurements.Values.Where(m => !string.IsNullOrEmpty(m.Alias)).OrderBy(m => m.Alias).ThenBy(m => m.Name).Union(
                     this.SelectedECUFile.Measurements.Values.Where(m => string.IsNullOrEmpty(m.Alias)).OrderBy(m => m.Alias).ThenBy(m => m.Name));
 
-                if (!string.IsNullOrEmpty(this.toolStripFilterTextBox.Text))
+                if (!string.IsNullOrEmpty(this.txtFilter.Text))
                 {
-                    string lookup = this.toolStripFilterTextBox.Text;
+                    string lookup = this.txtFilter.Text;
                     measurements = measurements.Where(m =>
                         m.Name.IndexOf(lookup, StringComparison.InvariantCultureIgnoreCase) > -1 ||
                         m.Alias.IndexOf(lookup, StringComparison.InvariantCultureIgnoreCase) > -1 ||
                         m.Comment.IndexOf(lookup, StringComparison.InvariantCultureIgnoreCase) > -1);
                 }
-
-                if (selectedToolStripMenuItem.Checked)
+                
+                if (radFilterSelected.Checked)
                 {
                     dataGridView1.DataSource = measurements.Where(m => m.Selected).ToList();
                 }
-                else if (unselectedToolStripMenuItem.Checked)
+                else if (radFilterUnselected.Checked)
                 {
                     dataGridView1.DataSource = measurements.Where(m => !m.Selected).ToList();
                 }
@@ -411,33 +417,6 @@ namespace VisualME7Logger
             this.SwitchUI();
         }
 
-        private void selectedToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            selectedToolStripMenuItem.Checked = true;
-            allToolStripMenuItem.Checked = false;
-            unselectedToolStripMenuItem.Checked = false;
-
-            ApplyFilter();
-        }
-
-        private void allToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            selectedToolStripMenuItem.Checked = false;
-            allToolStripMenuItem.Checked = true;
-            unselectedToolStripMenuItem.Checked = false;
-
-            ApplyFilter();
-        }
-
-        private void unselectedToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            selectedToolStripMenuItem.Checked = false;
-            allToolStripMenuItem.Checked = false;
-            unselectedToolStripMenuItem.Checked = true;
-
-            ApplyFilter();
-        }
-
         private void btnAddGraphVariable_Click(object sender, EventArgs e)
         {
             this.GraphVariableEditMode = EditModes.Add;
@@ -470,12 +449,13 @@ namespace VisualME7Logger
             if (lstGraphVariables.Items.Count > 0)
                 lstGraphVariables.SelectedIndex = 0;
             this.GraphVariableEditMode = EditModes.View;
+            this.LoadSelectedGraphVariable();
             this.SwitchUI();
         }
 
         private void btnSaveGraphVariable_Click(object sender, EventArgs e)
         {
-            this.SelectedGraphVariable.Variable = txtGraphVariableVariable.Text;
+            this.SelectedGraphVariable.Variable = cmbGraphVariableVariable.Text;
             this.SelectedGraphVariable.Name = txtGraphVariableName.Text;
             this.SelectedGraphVariable.Min = nudGraphVariableMin.Value;
             this.SelectedGraphVariable.Max = nudGraphVariableMax.Value;
@@ -503,7 +483,7 @@ namespace VisualME7Logger
         {
             if (this.SelectedGraphVariable != null)
             {
-                txtGraphVariableVariable.Text = SelectedGraphVariable.Variable;
+                cmbGraphVariableVariable.Text = SelectedGraphVariable.Variable;
                 txtGraphVariableName.Text = SelectedGraphVariable.Name;
                 nudGraphVariableMin.Value = SelectedGraphVariable.Min;
                 nudGraphVariableMax.Value = SelectedGraphVariable.Max;
@@ -528,22 +508,32 @@ namespace VisualME7Logger
             {
                 Measurement m = (Measurement)dataGridView1.Rows[e.RowIndex].DataBoundItem;
                 m.Selected = !m.Selected;
-                if (unselectedToolStripMenuItem.Checked || selectedToolStripMenuItem.Checked)
+                if (radFilterSelected.Checked || radFilterUnselected.Checked)
                 {
                     ApplyFilter();
                 }
             }
         }
 
-        private void toolStripFilterTextBox_KeyDown(object sender, KeyEventArgs e)
+        private void radFilterAll_CheckedChanged(object sender, EventArgs e)
         {
-            if (e.KeyData == Keys.Enter || e.KeyData == Keys.Return)
-            {
-                ApplyFilter();
-            }
+            ApplyFilter();
         }
 
-       
+        private void radFilterSelected_CheckedChanged(object sender, EventArgs e)
+        {
+            ApplyFilter();
+        }
+
+        private void radFilterUnselected_CheckedChanged(object sender, EventArgs e)
+        {
+            ApplyFilter();
+        }
+
+        private void txtFilter_TextChanged(object sender, EventArgs e)
+        {
+            ApplyFilter();
+        }       
     }
 
     public class DisplayOptions
