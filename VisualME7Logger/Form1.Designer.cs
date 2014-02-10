@@ -39,6 +39,7 @@
             this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.stopToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.pauseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.infoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.graphToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -51,15 +52,17 @@
             this.freezeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.snapImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.splitter1 = new System.Windows.Forms.Splitter();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.flpVariables = new System.Windows.Forms.FlowLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.pauseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.splitter1 = new System.Windows.Forms.Splitter();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.btnOpenCloseSession = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip1
@@ -114,7 +117,7 @@
             // 
             this.startToolStripMenuItem1.Name = "startToolStripMenuItem1";
             this.startToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.startToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.startToolStripMenuItem1.Size = new System.Drawing.Size(146, 22);
             this.startToolStripMenuItem1.Text = "&Open";
             this.startToolStripMenuItem1.Click += new System.EventHandler(this.startToolStripMenuItem1_Click);
             // 
@@ -122,20 +125,28 @@
             // 
             this.stopToolStripMenuItem1.Name = "stopToolStripMenuItem1";
             this.stopToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.stopToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.stopToolStripMenuItem1.Size = new System.Drawing.Size(146, 22);
             this.stopToolStripMenuItem1.Text = "&Close";
             this.stopToolStripMenuItem1.Click += new System.EventHandler(this.stopToolStripMenuItem1_Click);
+            // 
+            // pauseToolStripMenuItem
+            // 
+            this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
+            this.pauseToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+            this.pauseToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.pauseToolStripMenuItem.Text = "&Pause";
+            this.pauseToolStripMenuItem.Click += new System.EventHandler(this.pauseToolStripMenuItem_Click);
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(149, 6);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(143, 6);
             // 
             // infoToolStripMenuItem
             // 
             this.infoToolStripMenuItem.Name = "infoToolStripMenuItem";
             this.infoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
-            this.infoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.infoToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.infoToolStripMenuItem.Text = "&Info";
             this.infoToolStripMenuItem.Click += new System.EventHandler(this.infoToolStripMenuItem_Click);
             // 
@@ -218,14 +229,6 @@
             this.menuStrip1.TabIndex = 35;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // splitter1
-            // 
-            this.splitter1.Location = new System.Drawing.Point(286, 24);
-            this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(3, 665);
-            this.splitter1.TabIndex = 38;
-            this.splitter1.TabStop = false;
-            // 
             // chart1
             // 
             this.chart1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
@@ -267,41 +270,66 @@
             legend1.ForeColor = System.Drawing.Color.White;
             legend1.Name = "Legend1";
             this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(0, 0);
+            this.chart1.Location = new System.Drawing.Point(287, 0);
             this.chart1.Name = "chart1";
-            this.chart1.Size = new System.Drawing.Size(695, 665);
+            this.chart1.Size = new System.Drawing.Size(697, 665);
             this.chart1.TabIndex = 26;
             this.chart1.Text = "chart";
             // 
             // flpVariables
             // 
             this.flpVariables.AutoScroll = true;
-            this.flpVariables.Dock = System.Windows.Forms.DockStyle.Left;
+            this.flpVariables.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpVariables.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpVariables.Location = new System.Drawing.Point(0, 24);
+            this.flpVariables.Location = new System.Drawing.Point(0, 37);
             this.flpVariables.Margin = new System.Windows.Forms.Padding(0);
             this.flpVariables.Name = "flpVariables";
             this.flpVariables.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.flpVariables.Size = new System.Drawing.Size(286, 665);
+            this.flpVariables.Size = new System.Drawing.Size(284, 628);
             this.flpVariables.TabIndex = 39;
             this.flpVariables.WrapContents = false;
+            this.flpVariables.Resize += new System.EventHandler(this.flpVariables_Resize);
             // 
             // panel1
             // 
             this.panel1.Controls.Add(this.chart1);
+            this.panel1.Controls.Add(this.splitter1);
+            this.panel1.Controls.Add(this.panel2);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(289, 24);
+            this.panel1.Location = new System.Drawing.Point(0, 24);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(695, 665);
+            this.panel1.Size = new System.Drawing.Size(984, 665);
             this.panel1.TabIndex = 40;
             // 
-            // pauseToolStripMenuItem
+            // splitter1
             // 
-            this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
-            this.pauseToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.pauseToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.pauseToolStripMenuItem.Text = "&Pause";
-            this.pauseToolStripMenuItem.Click += new System.EventHandler(this.pauseToolStripMenuItem_Click);
+            this.splitter1.Location = new System.Drawing.Point(284, 0);
+            this.splitter1.Name = "splitter1";
+            this.splitter1.Size = new System.Drawing.Size(3, 665);
+            this.splitter1.TabIndex = 42;
+            this.splitter1.TabStop = false;
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.flpVariables);
+            this.panel2.Controls.Add(this.btnOpenCloseSession);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(284, 665);
+            this.panel2.TabIndex = 41;
+            // 
+            // btnOpenCloseSession
+            // 
+            this.btnOpenCloseSession.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnOpenCloseSession.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnOpenCloseSession.Location = new System.Drawing.Point(0, 0);
+            this.btnOpenCloseSession.Name = "btnOpenCloseSession";
+            this.btnOpenCloseSession.Size = new System.Drawing.Size(284, 37);
+            this.btnOpenCloseSession.TabIndex = 40;
+            this.btnOpenCloseSession.Text = "Open Session";
+            this.btnOpenCloseSession.UseVisualStyleBackColor = true;
+            this.btnOpenCloseSession.Click += new System.EventHandler(this.btnOpenCloseSession_Click);
             // 
             // Form1
             // 
@@ -309,8 +337,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(984, 711);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.splitter1);
-            this.Controls.Add(this.flpVariables);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -321,12 +347,14 @@
             this.Text = "Visual ME7Logger";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.panel1.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -354,11 +382,13 @@
         private System.Windows.Forms.ToolStripTextBox txtRefreshRate;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem freezeToolStripMenuItem;
-        private System.Windows.Forms.Splitter splitter1;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.FlowLayoutPanel flpVariables;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ToolStripMenuItem pauseToolStripMenuItem;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Button btnOpenCloseSession;
+        private System.Windows.Forms.Splitter splitter1;
     }
 }
 

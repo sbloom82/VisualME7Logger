@@ -88,6 +88,8 @@ namespace VisualME7Logger
                 return;
             }
 
+            this.btnOpenCloseSession.Enabled = false;
+
             lblStatus.Text = string.Format("Log Status: {0}", status);
 
             if (status == ME7LoggerSession.Statuses.Initialized)
@@ -103,7 +105,7 @@ namespace VisualME7Logger
                     flp.FlowDirection = FlowDirection.LeftToRight;
                     flp.WrapContents = false;
                     flp.AutoSize = true;
-                    flp.Margin = new Padding(2, 0, 2, 2);
+                    flp.Margin = new Padding(0, 1, 0, 1);
 
                     Label name = new Label();
                     if (f == null)
@@ -111,24 +113,21 @@ namespace VisualME7Logger
                         f = new Font(name.Font.FontFamily, name.Font.Size + 1);
                     }
                     name.Name = v.Name;
-                    name.Height = 20;
-                    name.Width = 175;
+                    name.Height = 20;                    
                     name.Text = v.ToString();
                     name.BorderStyle = BorderStyle.Fixed3D;
                     name.TextAlign = ContentAlignment.MiddleLeft;
                     name.Font = f;
                     name.RightToLeft = System.Windows.Forms.RightToLeft.No;
-               
+
                     Label value = new Label();
                     value.Name = v.Name;
                     value.TextAlign = ContentAlignment.MiddleLeft;
                     value.Height = 20;
-                    value.Width = 75;
                     value.BorderStyle = BorderStyle.Fixed3D;
                     value.Font = f;
                     value.RightToLeft = System.Windows.Forms.RightToLeft.No;
-
-
+                    
                     flp.Controls.Add(value);
                     flp.Controls.Add(name);
                     flpVariables.Controls.Add(flp);
@@ -139,6 +138,12 @@ namespace VisualME7Logger
                 start = DateTime.Now;
                 refreshTimer.Start();
             }
+            else if (status == ME7LoggerSession.Statuses.Open)
+            {
+                flpVariables_Resize(null, null);
+                this.btnOpenCloseSession.Enabled = true;
+                this.btnOpenCloseSession.Text = "Close Session";
+            }
             else if (status == ME7LoggerSession.Statuses.Closed)
             {
                 refreshTimer.Stop();
@@ -146,6 +151,8 @@ namespace VisualME7Logger
                 {
                     MessageBox.Show(string.Format("Error! Exit Code:{0}{1}{2}", session.ExitCode, Environment.NewLine, session.ErrorText));
                 }
+                this.btnOpenCloseSession.Enabled = true;
+                this.btnOpenCloseSession.Text = "Open Session";
             }
         }
 
@@ -298,7 +305,7 @@ namespace VisualME7Logger
                 bool success = false;
                 if (int.TryParse(txtRefreshRate.Text, out value))
                 {
-                    if (value > 0 && value < 5000)
+                    if (value > 0 && value <= 5000)
                     {
                         success = true;
                         refreshTimer.Interval = value;
@@ -309,6 +316,7 @@ namespace VisualME7Logger
                 {
                     txtRefreshRate.Text = refreshTimer.Interval.ToString();
                 }
+                e.Handled = true;
             }
         }
 
@@ -343,6 +351,42 @@ namespace VisualME7Logger
             else if (this.session.Status == ME7LoggerSession.Statuses.Paused)
             {
                 this.session.Resume();
+            }
+        }
+
+        private void btnOpenCloseSession_Click(object sender, EventArgs e)
+        {
+            if (this.session.Status == ME7LoggerSession.Statuses.Open)
+            {
+                this.session.Close();
+            }
+            else
+            {
+                this.OpenSession();
+            }
+        }
+
+        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Enter)
+            {
+                if (this.session.Status == ME7LoggerSession.Statuses.Open)
+                {
+                    this.session.Close();
+                }
+                else
+                {
+                    this.OpenSession();
+                }
+            }
+        }
+
+        private void flpVariables_Resize(object sender, EventArgs e)
+        {
+            foreach (Control c in flpVariables.Controls)
+            {
+                c.Controls[1].Width = (int)((double)flpVariables.Width * .65);
+                c.Controls[0].Width = (int)((double)flpVariables.Width * .35) - (this.flpVariables.VerticalScroll.Visible ? 30 : 12);
             }
         }
     }
