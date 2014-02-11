@@ -26,7 +26,7 @@ namespace VisualME7Logger
         public Form1(string configFile, VisualME7Logger.Session.LoggerOptions options, DisplayOptions displayOptions)
         {
             InitializeComponent();
-           
+
             this.DisplayOptions = displayOptions;
             foreach (var v in Enum.GetValues(typeof(SeriesChartType)))
             {
@@ -48,11 +48,11 @@ namespace VisualME7Logger
             else
             {
                 session = new ME7LoggerSession(Program.ME7LoggerDirectory, options, configFile);
-            }           
-           
+            }
+
             session.StatusChanged += new ME7LoggerSession.LoggerSessionStatusChanged(this.SessionStatusChanged);
             session.Log.LineRead += new ME7LoggerLog.LogLineRead(this.LogLineRead);
-            
+
             this.OpenSession();
 
             pauseToolStripMenuItem.Enabled = session.CanPause;
@@ -71,7 +71,7 @@ namespace VisualME7Logger
 
                 for (int i = 0; i < line.Variables.Count(); ++i)
                 {
-                    Label l = (Label)flpVariables.Controls[i].Controls[0];                 
+                    Label l = (Label)flpVariables.Controls[i].Controls[0];
                     Variable v = line.Variables.ElementAt(i);
                     l.Text = string.Format("{0} {1}", v.Value, v.SessionVariable.Unit);
                 }
@@ -113,7 +113,7 @@ namespace VisualME7Logger
                         f = new Font(name.Font.FontFamily, name.Font.Size + 1);
                     }
                     name.Name = v.Name;
-                    name.Height = 20;                    
+                    name.Height = 20;
                     name.Text = v.ToString();
                     name.BorderStyle = BorderStyle.Fixed3D;
                     name.TextAlign = ContentAlignment.MiddleLeft;
@@ -127,7 +127,7 @@ namespace VisualME7Logger
                     value.BorderStyle = BorderStyle.Fixed3D;
                     value.Font = f;
                     value.RightToLeft = System.Windows.Forms.RightToLeft.No;
-                    
+
                     flp.Controls.Add(value);
                     flp.Controls.Add(name);
                     flpVariables.Controls.Add(flp);
@@ -178,7 +178,9 @@ namespace VisualME7Logger
                     s.ToolTip = "so tool tips show up";
                     chart1.Series.Add(s);
                     for (int i = 0; i < this.DisplayOptions.GraphHRes; ++i)
-                        s.Points.Add(-1, -1);
+                    {
+                        s.Points.Add(-1, -1).AxisLabel = "0";                  
+                    }
                 }
             }
         }
@@ -186,24 +188,23 @@ namespace VisualME7Logger
         void PlotLineOnChart(LogLine line)
         {
             int i = 0;
-            Variable v;
-            Series s;
             foreach (GraphVariable graphVariable in this.DisplayOptions.GraphVariables.Where(gv => gv.Active))
             {
                 if (session.Variables.GetByName(graphVariable.Variable) != null)
                 {
-                    v = line[graphVariable.Variable];
-                    s = chart1.Series[i++];
+                    Variable v = line[graphVariable.Variable];
+                    Series s = chart1.Series[i++];
                     decimal parse;
                     if (decimal.TryParse(v.Value, out parse))
                     {
                         decimal percent = (parse - graphVariable.Min) / (graphVariable.Max - graphVariable.Min) * this.DisplayOptions.GraphVRes;
                         DataPoint p = s.Points.Add((double)percent);
-                        p.ToolTip = string.Format("{0} {1} {2}", graphVariable.Name, v.Value, v.SessionVariable.Unit);
+                        p.AxisLabel = decimal.Round(line.TimeStamp, 1).ToString();
+                        p.ToolTip = string.Format("{0}: {1} {2}", graphVariable.Name, v.Value, v.SessionVariable.Unit);
                     }
                     s.Points.RemoveAt(0);
                 }
-            }
+            }           
         }
 
         void LogLineRead(LogLine line)
@@ -268,7 +269,7 @@ namespace VisualME7Logger
             else
             {
                 MessageBox.Show("A session is already open");
-            } 
+            }
         }
 
         private void startToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -294,7 +295,7 @@ namespace VisualME7Logger
                 session.IdentificationInfo.PartNumber,
                 session.IdentificationInfo.EngineId);
 
-            MessageBox.Show(this, s); 
+            MessageBox.Show(this, s);
         }
 
         private void txtRefreshRate_KeyUp(object sender, KeyEventArgs e)
@@ -322,7 +323,7 @@ namespace VisualME7Logger
 
         private void freezeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DoFreeze();           
+            DoFreeze();
         }
 
         void DoFreeze()
@@ -379,6 +380,10 @@ namespace VisualME7Logger
                     this.OpenSession();
                 }
             }
+            else
+            {
+                chart1_KeyUp(sender, e);
+            }
         }
 
         private void flpVariables_Resize(object sender, EventArgs e)
@@ -389,5 +394,150 @@ namespace VisualME7Logger
                 c.Controls[0].Width = (int)((double)flpVariables.Width * .35) - (this.flpVariables.VerticalScroll.Visible ? 30 : 12);
             }
         }
+
+        #region Grid scrolling and zooming
+
+        private double SelectionStart = double.NaN;
+
+        private void chart1_Click(object sender, System.EventArgs e)
+        {
+            // Set input focus to the chart control
+            chart1.Focus();
+
+            // Set the selection start variable to that of the current position
+            this.SelectionStart = chart1.ChartAreas[0].CursorX.Position;
+        }
+
+        private void ProcessSelect(System.Windows.Forms.KeyEventArgs e)
+        {
+            // Process keyboard keys
+            if (e.KeyCode == Keys.Right)
+            {
+                // Make sure the selection start value is assigned
+                if (this.SelectionStart == double.NaN)
+                    this.SelectionStart = chart1.ChartAreas[0].CursorX.Position;
+
+                // Set the new cursor position 
+                chart1.ChartAreas[0].CursorX.Position += chart1.ChartAreas[0].CursorX.Interval;
+            }
+            else if (e.KeyCode == Keys.Left)
+            {
+                // Make sure the selection start value is assigned
+                if (this.SelectionStart == double.NaN)
+                    this.SelectionStart = chart1.ChartAreas[0].CursorX.Position;
+
+                // Set the new cursor position 
+                chart1.ChartAreas[0].CursorX.Position -= chart1.ChartAreas[0].CursorX.Interval;
+            }
+
+            // If the cursor is outside the view, set the view
+            // so that the cursor can be seen
+            SetView();
+
+            chart1.ChartAreas[0].CursorX.SelectionStart = this.SelectionStart;
+            chart1.ChartAreas[0].CursorX.SelectionEnd = chart1.ChartAreas[0].CursorX.Position;
+        }
+
+        private void SetView()
+        {
+            // Keep the cursor from leaving the max and min axis points
+            if (chart1.ChartAreas[0].CursorX.Position < 0)
+                chart1.ChartAreas[0].CursorX.Position = 0;
+            else if (chart1.ChartAreas[0].CursorX.Position > this.DisplayOptions.GraphHRes)
+                chart1.ChartAreas[0].CursorX.Position = this.DisplayOptions.GraphHRes;
+
+            // Move the view to keep the cursor visible
+            if (chart1.ChartAreas[0].CursorX.Position < chart1.ChartAreas[0].AxisX.ScaleView.Position)
+            {
+                chart1.ChartAreas[0].AxisX.ScaleView.Position = chart1.ChartAreas[0].CursorX.Position;
+            }
+            else if (chart1.ChartAreas[0].CursorX.Position >
+                (chart1.ChartAreas[0].AxisX.ScaleView.Position + chart1.ChartAreas[0].AxisX.ScaleView.Size))
+            {
+                chart1.ChartAreas[0].AxisX.ScaleView.Position =
+                    (chart1.ChartAreas[0].CursorX.Position - chart1.ChartAreas[0].AxisX.ScaleView.Size);
+            }
+        }
+
+        private void ProcessScroll(System.Windows.Forms.KeyEventArgs e)
+        {
+            // Process keyboard keys
+            if (e.KeyCode == Keys.Right)
+            {
+                // set the new cursor position 
+                chart1.ChartAreas[0].CursorX.Position += chart1.ChartAreas[0].CursorX.Interval;
+            }
+            else if (e.KeyCode == Keys.Left)
+            {
+                // Set the new cursor position 
+                chart1.ChartAreas[0].CursorX.Position -= chart1.ChartAreas[0].CursorX.Interval;
+            }
+
+            // If the cursor is outside the view, set the view
+            // so that the cursor can be seen
+            SetView();
+
+            // Set the selection start variable in case shift arrows are selected
+            this.SelectionStart = chart1.ChartAreas[0].CursorX.Position;
+
+            // Reset the old selection start and end
+            chart1.ChartAreas[0].CursorX.SelectionStart = double.NaN;
+            chart1.ChartAreas[0].CursorX.SelectionEnd = double.NaN;
+        }
+
+        private void chart1_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            if ((e.KeyCode == Keys.Right) || (e.KeyCode == Keys.Left))
+            {
+                // If the key event is shifted, process as a selection
+                if (e.Shift)
+                {
+                    ProcessSelect(e);
+                }
+                else // Process as a scroll
+                {
+                    ProcessScroll(e);
+                }
+            }
+            // On enter, zoom the selection
+            else if (e.KeyCode == Keys.Up)
+            {
+                double start, end;
+
+                if (chart1.ChartAreas[0].CursorX.SelectionStart > chart1.ChartAreas[0].CursorX.SelectionEnd)
+                {
+                    start = chart1.ChartAreas[0].CursorX.SelectionEnd;
+                    end = chart1.ChartAreas[0].CursorX.SelectionStart;
+                }
+                else
+                {
+                    end = chart1.ChartAreas[0].CursorX.SelectionEnd;
+                    start = chart1.ChartAreas[0].CursorX.SelectionStart;
+                }
+
+                // Return if no selection actually made
+                if (start == end)
+                    return;
+
+                // Zoom the selection
+                chart1.ChartAreas[0].AxisX.ScaleView.Zoom(start, (end - start), DateTimeIntervalType.Number, true);
+
+                // Reset selection values
+                this.SelectionStart = chart1.ChartAreas[0].CursorX.Position;
+                chart1.ChartAreas[0].CursorX.SelectionStart = double.NaN;
+                chart1.ChartAreas[0].CursorX.SelectionEnd = double.NaN;
+            }
+            else if (e.KeyCode == Keys.Down || e.KeyCode == Keys.Back || e.KeyCode == Keys.Escape)
+            {
+                // Reset zoom back to previous view state
+                chart1.ChartAreas[0].AxisX.ScaleView.ZoomReset(1);
+
+                // Reset selection values
+                this.SelectionStart = chart1.ChartAreas[0].CursorX.Position;
+                chart1.ChartAreas[0].CursorX.SelectionStart = double.NaN;
+                chart1.ChartAreas[0].CursorX.SelectionEnd = double.NaN;
+            }
+        }
+        #endregion
     }
 }

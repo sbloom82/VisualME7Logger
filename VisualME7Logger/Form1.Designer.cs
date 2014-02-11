@@ -233,8 +233,10 @@
             // 
             this.chart1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.chart1.BorderlineWidth = 0;
-            chartArea1.AxisX.LabelStyle.Enabled = false;
+            chartArea1.AxisX.IsLabelAutoFit = false;
+            chartArea1.AxisX.LabelAutoFitMaxFontSize = 8;
             chartArea1.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea1.AxisX.LabelStyle.Interval = 0D;
             chartArea1.AxisX.LineColor = System.Drawing.Color.White;
             chartArea1.AxisX.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
             chartArea1.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
@@ -261,6 +263,9 @@
             chartArea1.AxisY2.MajorTickMark.Enabled = false;
             chartArea1.BackColor = System.Drawing.Color.Transparent;
             chartArea1.BorderColor = System.Drawing.Color.White;
+            chartArea1.CursorX.Interval = 10D;
+            chartArea1.CursorX.IsUserEnabled = true;
+            chartArea1.CursorX.IsUserSelectionEnabled = true;
             chartArea1.CursorX.LineColor = System.Drawing.Color.RoyalBlue;
             chartArea1.Name = "ChartArea1";
             this.chart1.ChartAreas.Add(chartArea1);
@@ -275,6 +280,7 @@
             this.chart1.Size = new System.Drawing.Size(697, 665);
             this.chart1.TabIndex = 26;
             this.chart1.Text = "chart";
+            this.chart1.Click += new System.EventHandler(this.chart1_Click);
             // 
             // flpVariables
             // 
