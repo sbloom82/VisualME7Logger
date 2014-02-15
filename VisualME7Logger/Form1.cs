@@ -163,14 +163,12 @@ namespace VisualME7Logger
 
             chart1.Series.Clear();
 
-            SessionVariable var;
-            Series s;
             foreach (GraphVariable graphVariable in this.DisplayOptions.GraphVariables.Where(v => v.Active))
             {
-                var = session.Variables[graphVariable.Variable];
+                SessionVariable var = session.Variables[graphVariable.Variable];
                 if (var != null)
                 {
-                    s = new Series(string.Format("{0} {1}-{2} {3}", graphVariable.Name, graphVariable.Min.ToString("0.##"), graphVariable.Max.ToString("0.##"), var.Unit));
+                    Series s = new Series(string.Format("{0} {1}-{2} {3}", graphVariable.Name, graphVariable.Min.ToString("0.##"), graphVariable.Max.ToString("0.##"), var.Unit));
                     s.Color = graphVariable.LineColor;
                     s.ChartType = (SeriesChartType)cmbChartType.SelectedItem;
                     s.BorderWidth = graphVariable.LineThickness;
@@ -179,7 +177,7 @@ namespace VisualME7Logger
                     chart1.Series.Add(s);
                     for (int i = 0; i < this.DisplayOptions.GraphHRes; ++i)
                     {
-                        s.Points.Add(-1, -1).AxisLabel = "0";                  
+                        s.Points.Add(-1, -1).AxisLabel = "0";
                     }
                 }
             }
@@ -204,7 +202,7 @@ namespace VisualME7Logger
                     }
                     s.Points.RemoveAt(0);
                 }
-            }           
+            }
         }
 
         void LogLineRead(LogLine line)
@@ -214,15 +212,19 @@ namespace VisualME7Logger
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (session.Status == ME7LoggerSession.Statuses.Open)
+            if (!this.CloseSession())
             {
-                session.Close();
+                e.Cancel = true; 
             }
         }
 
         private void cmbChartType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SeriesChartType type = (SeriesChartType)cmbChartType.SelectedItem;
+            SetChartType((SeriesChartType)cmbChartType.SelectedItem);
+        }
+
+        private void SetChartType(SeriesChartType type)
+        {
             chart1.SuspendLayout();
             foreach (Series s in chart1.Series)
             {
@@ -272,6 +274,20 @@ namespace VisualME7Logger
             }
         }
 
+        private bool CloseSession()
+        {
+            if(session.Status == ME7LoggerSession.Statuses.Open)
+            {
+                if (DialogResult.No ==
+                   MessageBox.Show(this, "Do you wish to close the session?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1))
+                {
+                    return false;
+                }
+            }
+            session.Close();
+            return true;
+        }
+
         private void startToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             OpenSession();
@@ -279,22 +295,29 @@ namespace VisualME7Logger
 
         private void stopToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            session.Close();
+            this.CloseSession();
         }
 
         private void infoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string s = string.Format("Communication:\r\nConnect={0}\r\nCommunication={1}\r\nLogSpeed={2}",
-                  session.CommunicationInfo.Connect,
-                  session.CommunicationInfo.Communicate,
-                  session.CommunicationInfo.LogSpeed);
+            string s;
+            if (session.CommunicationInfo == null)
+            {
+                s = "Not Connected!";
+            }
+            else
+            {
+                s = string.Format("Communication:\r\nConnect={0}\r\nCommunication={1}\r\nLogSpeed={2}",
+                     session.CommunicationInfo.Connect,
+                     session.CommunicationInfo.Communicate,
+                     session.CommunicationInfo.LogSpeed);
 
-            s += string.Format("\r\n\r\nIdentification:\r\nHW#={0}\r\nSW#={1}\r\nPart#={2}\r\nEngineId={3}",
-                session.IdentificationInfo.HWNumber,
-                session.IdentificationInfo.SWNumber,
-                session.IdentificationInfo.PartNumber,
-                session.IdentificationInfo.EngineId);
-
+                s += string.Format("\r\n\r\nIdentification:\r\nHW#={0}\r\nSW#={1}\r\nPart#={2}\r\nEngineId={3}",
+                    session.IdentificationInfo.HWNumber,
+                    session.IdentificationInfo.SWNumber,
+                    session.IdentificationInfo.PartNumber,
+                    session.IdentificationInfo.EngineId);
+            }
             MessageBox.Show(this, s);
         }
 
@@ -326,6 +349,61 @@ namespace VisualME7Logger
             DoFreeze();
         }
 
+        void HighlightPoints(bool highlight = true)
+        {
+            if (highlight && (SeriesChartType)cmbChartType.SelectedItem == SeriesChartType.FastLine)
+            {
+                SetChartType(SeriesChartType.Line);
+            }
+            else if (!highlight)
+            {
+                SetChartType((SeriesChartType)cmbChartType.SelectedItem);
+            }
+
+            foreach (Series s in chart1.Series)
+            {
+                double size = chart1.ChartAreas[0].AxisX.ScaleView.Size;
+                double pos = chart1.ChartAreas[0].AxisX.ScaleView.Position;
+                bool zoomed = chart1.ChartAreas[0].AxisX.ScaleView.IsZoomed;
+                DataPoint lowest = null;
+                DataPoint highest = null;
+                int currentPos = 0;
+                foreach (DataPoint p in s.Points)
+                {
+                    p.Label = null;
+
+                    if (!zoomed || (currentPos >= pos && currentPos <= pos + size))
+                    {
+                        if (p.YValues[0] > 0 && (lowest == null || p.YValues[0] <= lowest.YValues[0]))
+                        {
+                            lowest = p;
+                        }
+
+                        if (highest == null || p.YValues[0] >= highest.YValues[0])
+                        {
+                            highest = p;
+                        }
+                    }
+                    currentPos++;
+                }
+
+                if (highlight)
+                {
+                    if (lowest != null)
+                    {
+                        lowest.Label = lowest.ToolTip;
+                        lowest.LabelForeColor = Color.White;
+                    }
+
+                    if (highest != null)
+                    {
+                        highest.Label = highest.ToolTip;
+                        highest.LabelForeColor = Color.White;
+                    }
+                }
+            }
+        }
+
         void DoFreeze()
         {
             this.freezeToolStripMenuItem.Checked =
@@ -334,9 +412,11 @@ namespace VisualME7Logger
             if (this.freezeToolStripMenuItem.Checked)
             {
                 refreshTimer.Stop();
+                HighlightPoints();
             }
             if (!this.freezeToolStripMenuItem.Checked && this.session.Status == ME7LoggerSession.Statuses.Open)
             {
+                HighlightPoints(false);
                 refreshTimer.Start();
             }
         }
@@ -348,10 +428,12 @@ namespace VisualME7Logger
             {
                 this.session.Pause();
                 this.pauseToolStripMenuItem.Checked = true;
+                HighlightPoints();
             }
             else if (this.session.Status == ME7LoggerSession.Statuses.Paused)
             {
                 this.session.Resume();
+                HighlightPoints(false);
             }
         }
 
@@ -359,7 +441,7 @@ namespace VisualME7Logger
         {
             if (this.session.Status == ME7LoggerSession.Statuses.Open)
             {
-                this.session.Close();
+                this.CloseSession();
             }
             else
             {
@@ -368,21 +450,25 @@ namespace VisualME7Logger
         }
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
+        {           
+            if(e.KeyData != Keys.Enter)
+            {
+                chart1_KeyUp(sender, e);
+            }
+        }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyData == Keys.Enter)
             {
                 if (this.session.Status == ME7LoggerSession.Statuses.Open)
                 {
-                    this.session.Close();
+                    this.CloseSession();
                 }
                 else
                 {
                     this.OpenSession();
                 }
-            }
-            else
-            {
-                chart1_KeyUp(sender, e);
             }
         }
 
@@ -398,13 +484,9 @@ namespace VisualME7Logger
         #region Grid scrolling and zooming
 
         private double SelectionStart = double.NaN;
-
         private void chart1_Click(object sender, System.EventArgs e)
         {
-            // Set input focus to the chart control
             chart1.Focus();
-
-            // Set the selection start variable to that of the current position
             this.SelectionStart = chart1.ChartAreas[0].CursorX.Position;
         }
 
@@ -498,6 +580,7 @@ namespace VisualME7Logger
                 {
                     ProcessScroll(e);
                 }
+                return;
             }
             // On enter, zoom the selection
             else if (e.KeyCode == Keys.Up)
@@ -537,7 +620,25 @@ namespace VisualME7Logger
                 chart1.ChartAreas[0].CursorX.SelectionStart = double.NaN;
                 chart1.ChartAreas[0].CursorX.SelectionEnd = double.NaN;
             }
+
+            if (this.freezeToolStripMenuItem.Checked || session.Status == ME7LoggerSession.Statuses.Paused)
+            {
+                HighlightPoints();
+            }
         }
+
+        private void chart1_AxisViewChanged(object sender, ViewEventArgs e)
+        {
+            if (this.freezeToolStripMenuItem.Checked || session.Status == ME7LoggerSession.Statuses.Paused)
+            {
+                HighlightPoints();
+            }
+        }      
         #endregion
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }     
     }
 }

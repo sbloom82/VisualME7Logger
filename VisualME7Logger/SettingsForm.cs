@@ -135,7 +135,7 @@ namespace VisualME7Logger
                 this.cmbGraphVariableVariable.DataSource =
                     this.SelectedECUFile.Measurements.Values.Select(m => m.Name).ToList();
 
-                LoadConfigFile(txtConfigFile.Text);
+                LoadConfigFile();
             }
         }
 
@@ -226,22 +226,20 @@ namespace VisualME7Logger
             return null;
         }
 
-        private void LoadConfigFile(string filePath)
+        private void LoadConfigFile()
         {
-            if (string.IsNullOrEmpty(filePath))
+            string filePath = txtConfigFile.Text;
+            if (!string.IsNullOrEmpty(filePath))
             {
-                return;
-            }
-
-            ConfigFile configFile = new ConfigFile(this.SelectedECUFile.FileName);
-            configFile.Read(filePath);
-            this.txtConfigFile.Text = filePath;
-           
-            foreach (Measurement m in this.SelectedECUFile.Measurements.Values)
-            {
-                if (configFile.Measurements[m.Name] != null)
+                ConfigFile configFile = new ConfigFile(this.SelectedECUFile.FileName);
+                configFile.Read(filePath);
+                          
+                foreach (Measurement m in this.SelectedECUFile.Measurements.Values)
                 {
-                    m.Selected = true;
+                    if (configFile.Measurements[m.Name] != null)
+                    {
+                        m.Selected = true;
+                    }
                 }
             }
             ApplyFilter();
@@ -275,7 +273,8 @@ namespace VisualME7Logger
             {
                 try
                 {
-                    this.LoadConfigFile(ofd.FileName);
+                    this.txtConfigFile.Text = ofd.FileName;
+                    this.LoadConfigFile();
                 }
                 catch (Exception ex)
                 {
@@ -353,7 +352,8 @@ namespace VisualME7Logger
                             }
                             break;
                         case "ConfigFile":
-                            this.LoadConfigFile(att.Value);
+                            this.txtConfigFile.Text = att.Value;
+                            this.LoadConfigFile();
                             break;
                     }
                 }
