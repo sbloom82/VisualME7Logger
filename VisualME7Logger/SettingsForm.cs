@@ -9,6 +9,9 @@ using System.Windows.Forms;
 using VisualME7Logger.Configuration;
 using System.Xml.Linq;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Security;
+using System.Security.Permissions;
+using System.Security.Principal;
 
 namespace VisualME7Logger
 {
@@ -44,6 +47,19 @@ namespace VisualME7Logger
 
             this.lstGraphVariables.DataSource = this.DisplayOptions.GraphVariables;
             this.cmbGraphVariableStyle.DataSource = Enum.GetValues(typeof(ChartDashStyle));
+
+#if !DEBUG
+            bool isAdmin = false;
+            try
+            {
+                isAdmin = new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
+            }
+            catch { }
+            if (!isAdmin)
+            {
+                MessageBox.Show(this, "VisualME7Logger detected that it is not running with administrative privileges.  You may have problems using this software.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+#endif
         }
 
         void SetupGrid()
@@ -128,7 +144,7 @@ namespace VisualME7Logger
             {
                 this.txtECUFile.Text = this.SelectedECUFile.FilePath;
                 this.loadConfigFileToolStripMenuItem.Enabled =
-                this.saveConfigFileToolStripMenuItem.Enabled = 
+                this.saveConfigFileToolStripMenuItem.Enabled =
                 this.saveConfigFileAsToolStripMenuItem.Enabled = true;
                 this.btnStartLog.Enabled = true;
 
@@ -170,7 +186,7 @@ namespace VisualME7Logger
                         m.Alias.IndexOf(lookup, StringComparison.InvariantCultureIgnoreCase) > -1 ||
                         m.Comment.IndexOf(lookup, StringComparison.InvariantCultureIgnoreCase) > -1);
                 }
-                
+
                 if (radFilterSelected.Checked)
                 {
                     dataGridView1.DataSource = measurements.Where(m => m.Selected).ToList();
@@ -202,7 +218,7 @@ namespace VisualME7Logger
                     {
                         SaveFileDialog d = new SaveFileDialog();
                         d.Title = "Save Config File As...";
-                        d.InitialDirectory = 
+                        d.InitialDirectory =
                             string.IsNullOrWhiteSpace(this.txtConfigFile.Text) ?
                             System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs") :
                             System.IO.Path.GetDirectoryName(this.txtConfigFile.Text);
@@ -233,7 +249,7 @@ namespace VisualME7Logger
             {
                 ConfigFile configFile = new ConfigFile(this.SelectedECUFile.FileName);
                 configFile.Read(filePath);
-                          
+
                 foreach (Measurement m in this.SelectedECUFile.Measurements.Values)
                 {
                     if (configFile.Measurements[m.Name] != null)
@@ -326,7 +342,7 @@ namespace VisualME7Logger
                 root.Add(this.DisplayOptions.Write());
                 root.Save(System.IO.Path.Combine(Program.ME7LoggerDirectory, "VisualME7Logger.cfg.xml"));
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 MessageBox.Show(string.Format("An error occurred while saving settings file\r\n{0}", e.ToString()));
             }
@@ -533,14 +549,28 @@ namespace VisualME7Logger
         private void txtFilter_TextChanged(object sender, EventArgs e)
         {
             ApplyFilter();
-        }       
+        }
+
+        private void cmbGraphVariableVariable_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (this.GraphVariableEditMode != EditModes.View && 
+                this.SelectedECUFile != null &&
+                this.SelectedECUFile.Measurements != null)
+            {
+                Measurement m = this.SelectedECUFile.Measurements[cmbGraphVariableVariable.Text];
+                if (m != null)
+                {
+                    txtGraphVariableName.Text = m.Alias;
+                }
+            }
+        }
     }
 
     public class DisplayOptions
     {
         public int RefreshInterval = 35;
         public int GraphVRes = 1000;
-        public int GraphHRes = 1200;       
+        public int GraphHRes = 1200;
         public List<GraphVariable> GraphVariables = new List<GraphVariable>();
         public XElement Write()
         {
@@ -560,12 +590,12 @@ namespace VisualME7Logger
         {
             foreach (XAttribute att in ele.Attributes())
             {
-                switch (att.Name.LocalName) 
+                switch (att.Name.LocalName)
                 {
                     case "RefreshInterval":
                         this.RefreshInterval = int.Parse(att.Value);
                         break;
-                    case"GraphVRes":
+                    case "GraphVRes":
                         this.GraphVRes = int.Parse(att.Value);
                         break;
                     case "GraphHRes":
@@ -597,13 +627,13 @@ namespace VisualME7Logger
 
     public class GraphVariable
     {
-        public bool Active { get; set; }       
+        public bool Active { get; set; }
         public string Variable { get; set; }
         public string Name { get; set; }
         public decimal Min { get; set; }
         public decimal Max { get; set; }
         public Color LineColor { get; set; }
-        public int LineThickness { get; set; }        
+        public int LineThickness { get; set; }
         public ChartDashStyle LineStyle { get; set; }
 
         public GraphVariable()
@@ -655,13 +685,13 @@ namespace VisualME7Logger
                         break;
                     case "LineColor":
                         LineColor = Color.FromArgb(int.Parse(att.Value));
-                        break;                    
+                        break;
                     case "LineThickness":
                         LineThickness = int.Parse(att.Value);
                         break;
                     case "LineStyle":
                         LineStyle = (ChartDashStyle)int.Parse(att.Value);
-                        break;                   
+                        break;
                 }
             }
         }

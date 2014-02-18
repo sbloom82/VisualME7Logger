@@ -52,6 +52,7 @@
             this.lstGraphVariables = new System.Windows.Forms.ListBox();
             this.btnEditGraphVariable = new System.Windows.Forms.Button();
             this.gbGraphVariables = new System.Windows.Forms.GroupBox();
+            this.cmbGraphVariableVariable = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
             this.cmbGraphVariableStyle = new System.Windows.Forms.ComboBox();
             this.chkGraphVariableActive = new System.Windows.Forms.CheckBox();
@@ -94,7 +95,6 @@
             this.createECUFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.cmbGraphVariableVariable = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tpMeasurements.SuspendLayout();
@@ -419,6 +419,17 @@
             this.gbGraphVariables.Size = new System.Drawing.Size(298, 155);
             this.gbGraphVariables.TabIndex = 1;
             this.gbGraphVariables.TabStop = false;
+            // 
+            // cmbGraphVariableVariable
+            // 
+            this.cmbGraphVariableVariable.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cmbGraphVariableVariable.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cmbGraphVariableVariable.FormattingEnabled = true;
+            this.cmbGraphVariableVariable.Location = new System.Drawing.Point(51, 29);
+            this.cmbGraphVariableVariable.Name = "cmbGraphVariableVariable";
+            this.cmbGraphVariableVariable.Size = new System.Drawing.Size(241, 21);
+            this.cmbGraphVariableVariable.TabIndex = 1;
+            this.cmbGraphVariableVariable.SelectedValueChanged += new System.EventHandler(this.cmbGraphVariableVariable_SelectedValueChanged);
             // 
             // label9
             // 
@@ -809,16 +820,6 @@
             this.menuStrip1.Size = new System.Drawing.Size(733, 24);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
-            // 
-            // cmbGraphVariableVariable
-            // 
-            this.cmbGraphVariableVariable.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cmbGraphVariableVariable.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cmbGraphVariableVariable.FormattingEnabled = true;
-            this.cmbGraphVariableVariable.Location = new System.Drawing.Point(51, 29);
-            this.cmbGraphVariableVariable.Name = "cmbGraphVariableVariable";
-            this.cmbGraphVariableVariable.Size = new System.Drawing.Size(241, 21);
-            this.cmbGraphVariableVariable.TabIndex = 1;
             // 
             // SettingsForm
             // 
