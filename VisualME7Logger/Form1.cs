@@ -276,15 +276,16 @@ namespace VisualME7Logger
 
         private bool CloseSession()
         {
-            if(session.Status == ME7LoggerSession.Statuses.Open)
+            if (session.Status == ME7LoggerSession.Statuses.Open)
             {
                 if (DialogResult.No ==
                    MessageBox.Show(this, "Do you wish to close the session?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1))
                 {
                     return false;
                 }
+
+                session.Close();
             }
-            session.Close();
             return true;
         }
 
