@@ -263,7 +263,7 @@ namespace VisualME7Logger.Configuration
                 BitMask = parts[4].Trim();
                 Unit = parts[5].Trim().Replace("{", "").Replace("}", "");
                 Signed = parts[6].Trim() == "1";
-                Inverse = parts[7].Trim() == "2";
+                Inverse = parts[7].Trim() == "1";
                 try { Factor = decimal.Parse(parts[8].Trim()); }
                 catch { }
                 try { Offset = decimal.Parse(parts[9].Trim()); }
