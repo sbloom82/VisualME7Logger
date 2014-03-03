@@ -130,10 +130,19 @@ namespace VisualME7Logger
             {
                 this.SelectedECUFile = null;
                 ECUFile file = new ECUFile(ofd.FileName);
-                if (file.Open())
+                try 
                 {
+                    file.Open();
+                    if (!file.Measurements.Values.Any())
+                    {
+                        MessageBox.Show(this, "ECU File loaded without error but no measurements were read.");
+                    }
                     this.SelectedECUFile = file;
                 }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(this, "An error occurred when opening ECU File.\r\n" + ex.ToString(), "Error");
+                }                
                 this.LoadECUFile();
             }
         }
@@ -172,6 +181,7 @@ namespace VisualME7Logger
 
         private void ApplyFilter()
         {
+            lblMeasurementCount.Text = string.Empty;
             if (this.SelectedECUFile != null)
             {
                 IEnumerable<Measurement> measurements =
@@ -187,18 +197,23 @@ namespace VisualME7Logger
                         m.Comment.IndexOf(lookup, StringComparison.InvariantCultureIgnoreCase) > -1);
                 }
 
+                List<Measurement> filtered = null;
                 if (radFilterSelected.Checked)
                 {
-                    dataGridView1.DataSource = measurements.Where(m => m.Selected).ToList();
+                    filtered = measurements.Where(m => m.Selected).ToList();
                 }
                 else if (radFilterUnselected.Checked)
                 {
-                    dataGridView1.DataSource = measurements.Where(m => !m.Selected).ToList();
+                    filtered = measurements.Where(m => !m.Selected).ToList();
                 }
                 else
                 {
-                    dataGridView1.DataSource = measurements.ToList();
+                    filtered = measurements.ToList();
                 }
+                dataGridView1.DataSource = filtered;
+                lblMeasurementCount.Text = string.Format("Showing {0} of {1}",
+                    filtered.Count,
+                    this.SelectedECUFile.Measurements.Values.Count());
             }
         }
 
@@ -312,9 +327,20 @@ namespace VisualME7Logger
                     ECUFile ecuFile = ECUFile.Create(Program.ME7LoggerDirectory, ofd.FileName);
                     if (DialogResult.Yes == MessageBox.Show(string.Format("ECU File Created at:{1}{1}{0}{1}{1}Would you like to load this ECU File now?", ecuFile.FilePath, Environment.NewLine),
                                                             "ECU File created successfully", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1))
-                    {
-                        if (ecuFile.Open())
+                    {                       
+                        try 
+                        {
+                            ecuFile.Open();
+                            if (!ecuFile.Measurements.Values.Any())
+                            {
+                                MessageBox.Show(this, "ECU File loaded without error but no measurements were read.");
+                            }
                             this.SelectedECUFile = ecuFile;
+                        }
+                        catch(Exception ex)
+                        {
+                            MessageBox.Show(this, "An error occurred when opening ECU File.\r\n" + ex.ToString(), "Error");
+                        }                
                         this.LoadECUFile();
                     }
                 }
@@ -360,12 +386,14 @@ namespace VisualME7Logger
                     {
                         case "ECUFile":
                             ECUFile file = new ECUFile(att.Value);
-                            if (file.Open())
+                            try
                             {
+                                file.Open();
                                 txtECUFile.Text = att.Value;
                                 this.SelectedECUFile = file;
-                                LoadECUFile();
+                                LoadECUFile();                             
                             }
+                            catch { }
                             break;
                         case "ConfigFile":
                             this.txtConfigFile.Text = att.Value;

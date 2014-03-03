@@ -37,7 +37,11 @@ namespace VisualME7Logger.Common
                     }
                     else if (parts[0] == "Logging with")
                     {
-                        SamplesPerSecond = short.Parse(parts[1].Replace("samples/second","").Trim());
+                        try
+                        {
+                            SamplesPerSecond = short.Parse(parts[1].Replace("samples/second", "").Trim());
+                        }
+                        catch { }
                     }
                     else if(parts[0] == "Used speed is")
                     {
