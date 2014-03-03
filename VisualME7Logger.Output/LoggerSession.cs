@@ -56,7 +56,7 @@ namespace VisualME7Logger.Session
         public ME7LoggerLog Log { get; private set; }
 
         public bool CanPause { get { return this.SessionType != SessionTypes.RealTime; } }
-        
+
         private LoggerOptions options;
         private string configFilePath;
         private string ME7LoggerDirectory;
@@ -85,13 +85,13 @@ namespace VisualME7Logger.Session
                 this.Log = new ME7LoggerLog(this);
                 this.options = new LoggerOptions("");
             }
-            else 
+            else
             {
                 throw new ArgumentOutOfRangeException("sessionType");
             }
         }
-               
-        Process p;        
+
+        Process p;
         StreamWriter outputWriter = null;
         public bool logReady = false;
         public int ExitCode { get; private set; }
@@ -109,7 +109,7 @@ namespace VisualME7Logger.Session
                 this.Variables = new SessionVariables();
                 this.Log.InitializeSession(IdentificationInfo, CommunicationInfo, Variables);
                 this.SamplesPerSecond = CommunicationInfo.SamplesPerSecond;
-                this.Status = Statuses.Initialized; 
+                this.Status = Statuses.Initialized;
                 this.LogStarted = CommunicationInfo.LogStarted;
                 this.Status = Statuses.Open;
                 this.Log.Open();
@@ -207,7 +207,7 @@ namespace VisualME7Logger.Session
 
         void p_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
-            this.ReadData(e.Data);   
+            this.ReadData(e.Data);
         }
 
         private void ReadData(string data)
@@ -280,7 +280,7 @@ namespace VisualME7Logger.Session
                         outputWriter.Dispose();
                         outputWriter = null;
                     }
-                    
+
                     Status = Statuses.Closed;
                 }
             }
@@ -358,7 +358,7 @@ namespace VisualME7Logger.Session
         public decimal Offset { get; private set; }
         public string Unit { get; private set; }
 
-        internal SessionVariable(int number, string name, string unit, string alias) 
+        internal SessionVariable(int number, string name, string unit, string alias)
         {
             this.Number = number;
             this.Name = name;
@@ -397,21 +397,21 @@ namespace VisualME7Logger.Session
 
         private List<SessionVariable> list = new List<SessionVariable>();
         private Dictionary<int, SessionVariable> byNumber = new Dictionary<int, SessionVariable>();
-        public SessionVariable this[int number] 
-        { 
-            get 
-            {
-                if(this.byNumber.ContainsKey(number))
-                    return this.byNumber[number];
-                return null;
-            } 
-        }
-        private Dictionary<string, SessionVariable> byName = new Dictionary<string, SessionVariable>(StringComparer.InvariantCultureIgnoreCase);
-        public SessionVariable this[string name] 
-        { 
+        public SessionVariable this[int number]
+        {
             get
             {
-                if(this.byName.ContainsKey(name))
+                if (this.byNumber.ContainsKey(number))
+                    return this.byNumber[number];
+                return null;
+            }
+        }
+        private Dictionary<string, SessionVariable> byName = new Dictionary<string, SessionVariable>(StringComparer.InvariantCultureIgnoreCase);
+        public SessionVariable this[string name]
+        {
+            get
+            {
+                if (this.byName.ContainsKey(name))
                     return this.byName[name];
                 return null;
             }
@@ -495,7 +495,8 @@ namespace VisualME7Logger.Session
                 }
                 else if (line.StartsWith("Logged data size is"))
                 {
-                    LoggedDataSize = short.Parse(line.Replace("Logged data size is ", "").Replace(" bytes.", "").Trim());
+                    try { LoggedDataSize = short.Parse(line.Replace("Logged data size is ", "").Replace(" bytes.", "").Trim()); }
+                    catch{}
                 }
             }
         }
@@ -642,7 +643,7 @@ namespace VisualME7Logger.Session
             root.Add(new XAttribute("WriteAbsoluteTimestamp", WriteAbsoluteTimestamp));
             root.Add(new XAttribute("ReadSingleMeasurement", ReadSingleMeasurement));
             root.Add(new XAttribute("WriteOutputFile", WriteOutputFile));
-            
+
             return root;
         }
 

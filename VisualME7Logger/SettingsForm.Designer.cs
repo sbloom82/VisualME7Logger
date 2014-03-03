@@ -95,6 +95,8 @@
             this.createECUFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.lblMeasurementCount = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tpMeasurements.SuspendLayout();
@@ -172,6 +174,8 @@
             // 
             this.panel3.BackColor = System.Drawing.SystemColors.Control;
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3.Controls.Add(this.label15);
+            this.panel3.Controls.Add(this.lblMeasurementCount);
             this.panel3.Controls.Add(this.radFilterUnselected);
             this.panel3.Controls.Add(this.radFilterSelected);
             this.panel3.Controls.Add(this.radFilterAll);
@@ -821,6 +825,26 @@
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
+            // lblMeasurementCount
+            // 
+            this.lblMeasurementCount.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lblMeasurementCount.Location = new System.Drawing.Point(575, 0);
+            this.lblMeasurementCount.Name = "lblMeasurementCount";
+            this.lblMeasurementCount.Size = new System.Drawing.Size(142, 24);
+            this.lblMeasurementCount.TabIndex = 5;
+            this.lblMeasurementCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label15
+            // 
+            this.label15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(823, 295);
+            this.label15.Name = "label15";
+            this.label15.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.label15.Size = new System.Drawing.Size(48, 13);
+            this.label15.TabIndex = 5;
+            this.label15.Text = "label14C";
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -929,6 +953,8 @@
         private System.Windows.Forms.TextBox txtFilter;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.ComboBox cmbGraphVariableVariable;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label lblMeasurementCount;
 
 
     }
