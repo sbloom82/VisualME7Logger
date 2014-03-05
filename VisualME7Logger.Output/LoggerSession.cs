@@ -31,6 +31,7 @@ namespace VisualME7Logger.Session
         }
 
         public delegate void LoggerSessionStatusChanged(Statuses status);
+        public delegate void LogLineRead(LogLine logLine);       
 
         private Statuses _status;
         public Statuses Status
@@ -49,6 +50,7 @@ namespace VisualME7Logger.Session
         public short SamplesPerSecond { get; private set; }
         public DateTime LogStarted { get; private set; }
         public LoggerSessionStatusChanged StatusChanged;
+        public LogLineRead LineRead;
         public SessionTypes SessionType { get; private set; }
         public CommunicationInfo CommunicationInfo { get; private set; }
         public IdentificationInfo IdentificationInfo { get; private set; }
@@ -239,7 +241,11 @@ namespace VisualME7Logger.Session
                         }
                         else if (logReady)
                         {
-                            this.Log.ReadLine(data);
+                            LogLine logLine = this.Log.ReadLine(data);
+                            if (LineRead != null)
+                            {
+                                LineRead(logLine);
+                            }
                         }
                     }
                 }

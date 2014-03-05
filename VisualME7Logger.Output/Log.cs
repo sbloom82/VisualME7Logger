@@ -11,10 +11,7 @@ namespace VisualME7Logger.Log
     public class ME7LoggerLog
     {
         public ME7LoggerSession Session { get; private set; }
-        public delegate void LogLineRead(LogLine logLine);
-        public delegate void LogComplete();
-        public LogLineRead LineRead;
-
+       
         internal ME7LoggerLog(ME7LoggerSession session)
         {
             this.Session = session;
@@ -133,7 +130,11 @@ namespace VisualME7Logger.Log
                         }
                         try
                         {
-                            this.ReadLine(line);
+                            LogLine logLine = this.ReadLine(line);
+                            if (this.Session.LineRead != null)
+                            {
+                                this.Session.LineRead(logLine);
+                            }
                             int waitTime = wait - (int)DateTime.Now.Subtract(time).TotalMilliseconds;
                             if (waitTime > 0)
                                 System.Threading.Thread.Sleep(waitTime);
@@ -150,13 +151,9 @@ namespace VisualME7Logger.Log
             }
         }
 
-        internal void ReadLine(string line)
+        internal LogLine ReadLine(string line)
         {
-            LogLine logLine = new LogLine(this, line, ++lineNumber);
-            if (LineRead != null)
-            {
-                LineRead(logLine);
-            }
+            return new LogLine(this, line, ++lineNumber);
         }
     }
 
