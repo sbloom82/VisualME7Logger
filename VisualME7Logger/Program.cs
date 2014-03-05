@@ -37,5 +37,17 @@ namespace VisualME7Logger
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new SettingsForm());
         }
+
+        static object LockObj = new object();
+        public static void WriteDebug(string line)
+        {
+           lock(LockObj)
+           {
+               using(StreamWriter sw = new StreamWriter(Path.Combine(ME7LoggerDirectory, "DEBUG.TXT"), true))
+               {
+                   sw.WriteLine("{0:H:mm:ss.ffff}: {1}", DateTime.Now, line);
+               }
+           }
+        }
     }
 }

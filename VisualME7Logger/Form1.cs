@@ -50,8 +50,10 @@ namespace VisualME7Logger
                 session = new ME7LoggerSession(Program.ME7LoggerDirectory, options, configFile);
             }
 
-            session.StatusChanged += new ME7LoggerSession.LoggerSessionStatusChanged(this.SessionStatusChanged);
-            session.Log.LineRead += new ME7LoggerLog.LogLineRead(this.LogLineRead);
+            session.StatusChanged = new ME7LoggerSession.LoggerSessionStatusChanged(this.SessionStatusChanged);
+            Program.WriteDebug("before session.lineread assignment.  Null? " + (session.LineRead == null).ToString());
+            session.LineRead = new ME7LoggerSession.LogLineRead(this.LogLineRead);
+            Program.WriteDebug("after session.lineread assignment.  Null? " + (session.LineRead == null).ToString() + " Value " + (session.LineRead != null ? session.LineRead.ToString() : "null"));
 
             this.OpenSession();
 
@@ -60,6 +62,8 @@ namespace VisualME7Logger
 
         void refreshTimer_Tick(object sender, EventArgs e)
         {
+            Program.WriteDebug("refresh timer tick session.lineread Null? " + (session.LineRead == null).ToString() + " Value " + (session.LineRead != null ? session.LineRead.ToString() : "null"));
+            
             while (queue.Count() > 0)
             {
                 LogLine line = queue.Dequeue();
