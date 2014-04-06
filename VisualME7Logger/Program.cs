@@ -26,6 +26,10 @@ namespace VisualME7Logger
                     {
                         DebugOutput = true;
                     }
+                    else if (arg == "-Debug")
+                    {
+                        Debug = true;
+                    }
                     else
                     {
                         ME7LoggerDirectory = arg;
@@ -39,15 +43,19 @@ namespace VisualME7Logger
         }
 
         static object LockObj = new object();
+        public static bool Debug = false;
         public static void WriteDebug(string line)
         {
-           lock(LockObj)
-           {
-               using(StreamWriter sw = new StreamWriter(Path.Combine(ME7LoggerDirectory, "DEBUG.TXT"), true))
-               {
-                   sw.WriteLine("{0:H:mm:ss.ffff}: {1}", DateTime.Now, line);
-               }
-           }
+            if (Debug)
+            {
+                lock (LockObj)
+                {
+                    using (StreamWriter sw = new StreamWriter(Path.Combine(ME7LoggerDirectory, "DEBUG.TXT"), true))
+                    {
+                        sw.WriteLine("{0:H:mm:ss.ffff}: {1}", DateTime.Now, line);
+                    }
+                }
+            }
         }
     }
 }

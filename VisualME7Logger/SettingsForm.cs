@@ -24,28 +24,27 @@ namespace VisualME7Logger
             Edit
         }
 
+
+        List<Profile> Profiles = new List<Profile>();
+        Profile CurrentProfile = new Profile("Default Profile");
+
+        EditModes ProfileEditMode;
+        Profile SelectedProfile;
         EditModes GraphVariableEditMode;
         GraphVariable SelectedGraphVariable;
 
-        ECUFile SelectedECUFile { get; set; }
-        VisualME7Logger.Session.LoggerOptions LoggerOptions { get; set; }
-        VisualME7Logger.Output.ChecksumInfo ChecksumInfo { get; set; }
-        DisplayOptions DisplayOptions { get; set; }
-
         public SettingsForm()
         {
+            VisualME7Logger.Session.ME7LoggerSession.Debug = Program.Debug;
+
             InitializeComponent();
 
             SetupGrid();
 
-            this.LoggerOptions = new Session.LoggerOptions(Program.ME7LoggerDirectory);
-            this.ChecksumInfo = new Output.ChecksumInfo();
-            this.DisplayOptions = new DisplayOptions();
-
             this.LoadSettings();
+
             this.SwitchUI();
 
-            this.lstGraphVariables.DataSource = this.DisplayOptions.GraphVariables;
             this.cmbGraphVariableStyle.DataSource = Enum.GetValues(typeof(ChartDashStyle));
 
 #if !DEBUG
@@ -110,9 +109,9 @@ namespace VisualME7Logger
         void ckBox_CheckedChanged(object sender, EventArgs e)
         {
             bool chked = ((CheckBox)sender).Checked;
-            if (this.SelectedECUFile != null)
+            if (this.CurrentProfile.ECUFile != null)
             {
-                foreach (Measurement m in this.SelectedECUFile.Measurements.Values)
+                foreach (Measurement m in this.CurrentProfile.ECUFile.Measurements.Values)
                 {
                     m.Selected = chked;
                 }
@@ -123,55 +122,57 @@ namespace VisualME7Logger
         private void loadECUFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.InitialDirectory = System.IO.Path.Combine(Program.ME7LoggerDirectory, "ecus");
+            ofd.InitialDirectory =
+               string.IsNullOrWhiteSpace(this.txtECUFile.Text) ?
+               System.IO.Path.Combine(Program.ME7LoggerDirectory, "ecus") :
+               System.IO.Path.GetDirectoryName(this.txtECUFile.Text);
+            ofd.FileName = System.IO.Path.GetFileName(this.txtECUFile.Text);
             ofd.Title = "Select ECU File";
             ofd.Filter = "ECU Files (*.ecu)|*.ecu";
             if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                this.SelectedECUFile = null;
+                this.CurrentProfile.ECUFile = null;
                 ECUFile file = new ECUFile(ofd.FileName);
-                try 
+                file.Open();
+                if (!file.Measurements.Values.Any())
                 {
-                    file.Open();
-                    if (!file.Measurements.Values.Any())
-                    {
-                        MessageBox.Show(this, "ECU File loaded without error but no measurements were read.");
-                    }
-                    this.SelectedECUFile = file;
+                    MessageBox.Show(this, "ECU File loaded without error but no measurements were read.");
                 }
-                catch(Exception ex)
-                {
-                    MessageBox.Show(this, "An error occurred when opening ECU File.\r\n" + ex.ToString(), "Error");
-                }                
+                this.CurrentProfile.ECUFile = file;
                 this.LoadECUFile();
             }
         }
 
         private void LoadECUFile()
         {
-            if (this.SelectedECUFile != null)
-            {
-                this.txtECUFile.Text = this.SelectedECUFile.FilePath;
-                this.loadConfigFileToolStripMenuItem.Enabled =
-                this.saveConfigFileToolStripMenuItem.Enabled =
-                this.saveConfigFileAsToolStripMenuItem.Enabled = true;
-                this.btnStartLog.Enabled = true;
+            this.txtECUFile.Text = this.CurrentProfile.ECUFile.FilePath;
+            this.CurrentProfile.ECUFile.Open();
+            this.loadConfigFileToolStripMenuItem.Enabled =
+            this.saveConfigFileToolStripMenuItem.Enabled =
+            this.saveConfigFileAsToolStripMenuItem.Enabled = true;
+            this.btnStartLog.Enabled = true;
 
-                this.cmbGraphVariableVariable.DataSource =
-                    this.SelectedECUFile.Measurements.Values.Select(m => m.Name).ToList();
+            this.cmbGraphVariableVariable.DataSource =
+                this.CurrentProfile.ECUFile.Measurements.Values.Select(m => m.Name).ToList();
 
-                LoadConfigFile();
-            }
+            LoadConfigFile();
         }
 
         private void SwitchUI()
         {
             this.lstGraphVariables.Enabled =
-                this.btnAddGraphVariable.Enabled =
-                this.btnEditGraphVariable.Enabled =
-                this.btnDeleteGraphVariable.Enabled = this.GraphVariableEditMode == EditModes.View;
-
+                this.btnAddGraphVariable.Enabled  = this.GraphVariableEditMode == EditModes.View;            
+            this.btnEditGraphVariable.Enabled =
+                this.btnDeleteGraphVariable.Enabled  = this.GraphVariableEditMode == EditModes.View && lstGraphVariables.SelectedItem != null;
             this.gbGraphVariables.Enabled = this.GraphVariableEditMode != EditModes.View;
+
+            this.lstProfiles.Enabled =
+                this.btnProfileAdd.Enabled = this.ProfileEditMode == EditModes.View;
+            this.btnProfileSetCurrent.Enabled =
+                this.btnProfileClone.Enabled =
+                this.btnProfileEdit.Enabled =
+                this.btnProfileDelete.Enabled = this.ProfileEditMode == EditModes.View && lstProfiles.SelectedItem != null;
+            this.gbProfile.Enabled = this.ProfileEditMode != EditModes.View;
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -182,47 +183,45 @@ namespace VisualME7Logger
         private void ApplyFilter()
         {
             lblMeasurementCount.Text = string.Empty;
-            if (this.SelectedECUFile != null)
+
+            IEnumerable<Measurement> measurements =
+                this.CurrentProfile.ECUFile.Measurements.Values.Where(m => !string.IsNullOrEmpty(m.Alias)).OrderBy(m => m.Alias).ThenBy(m => m.Name).Union(
+                this.CurrentProfile.ECUFile.Measurements.Values.Where(m => string.IsNullOrEmpty(m.Alias)).OrderBy(m => m.Alias).ThenBy(m => m.Name));
+
+            if (!string.IsNullOrEmpty(this.txtFilter.Text))
             {
-                IEnumerable<Measurement> measurements =
-                    this.SelectedECUFile.Measurements.Values.Where(m => !string.IsNullOrEmpty(m.Alias)).OrderBy(m => m.Alias).ThenBy(m => m.Name).Union(
-                    this.SelectedECUFile.Measurements.Values.Where(m => string.IsNullOrEmpty(m.Alias)).OrderBy(m => m.Alias).ThenBy(m => m.Name));
-
-                if (!string.IsNullOrEmpty(this.txtFilter.Text))
-                {
-                    string lookup = this.txtFilter.Text;
-                    measurements = measurements.Where(m =>
-                        m.Name.IndexOf(lookup, StringComparison.InvariantCultureIgnoreCase) > -1 ||
-                        m.Alias.IndexOf(lookup, StringComparison.InvariantCultureIgnoreCase) > -1 ||
-                        m.Comment.IndexOf(lookup, StringComparison.InvariantCultureIgnoreCase) > -1);
-                }
-
-                List<Measurement> filtered = null;
-                if (radFilterSelected.Checked)
-                {
-                    filtered = measurements.Where(m => m.Selected).ToList();
-                }
-                else if (radFilterUnselected.Checked)
-                {
-                    filtered = measurements.Where(m => !m.Selected).ToList();
-                }
-                else
-                {
-                    filtered = measurements.ToList();
-                }
-                dataGridView1.DataSource = filtered;
-                lblMeasurementCount.Text = string.Format("Showing {0} of {1}",
-                    filtered.Count,
-                    this.SelectedECUFile.Measurements.Values.Count());
+                string lookup = this.txtFilter.Text;
+                measurements = measurements.Where(m =>
+                    m.Name.IndexOf(lookup, StringComparison.InvariantCultureIgnoreCase) > -1 ||
+                    m.Alias.IndexOf(lookup, StringComparison.InvariantCultureIgnoreCase) > -1 ||
+                    m.Comment.IndexOf(lookup, StringComparison.InvariantCultureIgnoreCase) > -1);
             }
+
+            List<Measurement> filtered = null;
+            if (radFilterSelected.Checked)
+            {
+                filtered = measurements.Where(m => m.Selected).ToList();
+            }
+            else if (radFilterUnselected.Checked)
+            {
+                filtered = measurements.Where(m => !m.Selected).ToList();
+            }
+            else
+            {
+                filtered = measurements.ToList();
+            }
+            dataGridView1.DataSource = filtered;
+            lblMeasurementCount.Text = string.Format("Showing {0} of {1}",
+                filtered.Count,
+                this.CurrentProfile.ECUFile.Measurements.Values.Count());
         }
 
         private ConfigFile SaveConfigFile(bool saveNew = false)
         {
-            if (this.SelectedECUFile != null)
+            if (this.CurrentProfile.ECUFile != null)
             {
                 Measurements ms = new Measurements();
-                foreach (Measurement m in this.SelectedECUFile.Measurements.Values.Where(m => m.Selected))
+                foreach (Measurement m in this.CurrentProfile.ECUFile.Measurements.Values.Where(m => m.Selected))
                 {
                     ms.AddMeasurement(m);
                 }
@@ -245,8 +244,8 @@ namespace VisualME7Logger
                         this.txtConfigFile.Text = d.FileName;
                     }
 
-                    ConfigFile configFile = new ConfigFile(this.SelectedECUFile.FileName, ms);
-                    configFile.Write(txtConfigFile.Text);
+                    ConfigFile configFile = new ConfigFile(txtConfigFile.Text, this.CurrentProfile.ECUFile.FileName, ms);
+                    configFile.Write();
                     return configFile;
                 }
                 else
@@ -259,18 +258,15 @@ namespace VisualME7Logger
 
         private void LoadConfigFile()
         {
-            string filePath = txtConfigFile.Text;
-            if (!string.IsNullOrEmpty(filePath))
+            txtConfigFile.Text = this.CurrentProfile.ConfigFile.FilePath;
+            this.CurrentProfile.ConfigFile.Read();
+            
+            foreach (Measurement m in this.CurrentProfile.ECUFile.Measurements.Values)
             {
-                ConfigFile configFile = new ConfigFile(this.SelectedECUFile.FileName);
-                configFile.Read(filePath);
-
-                foreach (Measurement m in this.SelectedECUFile.Measurements.Values)
+                m.Selected = false;
+                if (this.CurrentProfile.ConfigFile.Measurements[m.Name] != null)
                 {
-                    if (configFile.Measurements[m.Name] != null)
-                    {
-                        m.Selected = true;
-                    }
+                    m.Selected = true;
                 }
             }
             ApplyFilter();
@@ -278,7 +274,7 @@ namespace VisualME7Logger
 
         private void btnStartLog_Click(object sender, EventArgs e)
         {
-            if (this.LoggerOptions.ConnectionType != Session.LoggerOptions.ConnectionTypes.LogFile)
+            if (this.CurrentProfile.LoggerOptions.ConnectionType != Session.LoggerOptions.ConnectionTypes.LogFile)
             {
                 if (this.SaveConfigFile() == null)
                 {
@@ -289,7 +285,7 @@ namespace VisualME7Logger
             this.SaveSettings();
 
             this.Visible = false;
-            Form1 logForm = new Form1(txtConfigFile.Text, this.LoggerOptions, this.DisplayOptions);
+            Form1 logForm = new Form1(txtConfigFile.Text, this.CurrentProfile.LoggerOptions, this.CurrentProfile.DisplayOptions);
             logForm.ShowDialog(this);
             this.Visible = true;
         }
@@ -297,14 +293,18 @@ namespace VisualME7Logger
         private void loadConfigFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.InitialDirectory = System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs");
+            ofd.InitialDirectory =
+              string.IsNullOrWhiteSpace(this.txtConfigFile.Text) ?
+              System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs") :
+              System.IO.Path.GetDirectoryName(this.txtConfigFile.Text);
+            ofd.FileName = System.IO.Path.GetFileName(this.txtConfigFile.Text);
             ofd.Title = "Select Config File";
             ofd.Filter = "Config Files (*.cfg)|*.cfg";
             if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 try
                 {
-                    this.txtConfigFile.Text = ofd.FileName;
+                    this.CurrentProfile.ConfigFile = new ConfigFile(ofd.FileName);
                     this.LoadConfigFile();
                 }
                 catch (Exception ex)
@@ -327,20 +327,13 @@ namespace VisualME7Logger
                     ECUFile ecuFile = ECUFile.Create(Program.ME7LoggerDirectory, ofd.FileName);
                     if (DialogResult.Yes == MessageBox.Show(string.Format("ECU File Created at:{1}{1}{0}{1}{1}Would you like to load this ECU File now?", ecuFile.FilePath, Environment.NewLine),
                                                             "ECU File created successfully", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1))
-                    {                       
-                        try 
+                    {
+                        ecuFile.Open();
+                        if (!ecuFile.Measurements.Values.Any())
                         {
-                            ecuFile.Open();
-                            if (!ecuFile.Measurements.Values.Any())
-                            {
-                                MessageBox.Show(this, "ECU File loaded without error but no measurements were read.");
-                            }
-                            this.SelectedECUFile = ecuFile;
+                            MessageBox.Show(this, "ECU File loaded without error but no measurements were read.");
                         }
-                        catch(Exception ex)
-                        {
-                            MessageBox.Show(this, "An error occurred when opening ECU File.\r\n" + ex.ToString(), "Error");
-                        }                
+                        this.CurrentProfile.ECUFile = ecuFile;
                         this.LoadECUFile();
                     }
                 }
@@ -353,19 +346,20 @@ namespace VisualME7Logger
 
         void SaveSettings()
         {
-            this.DisplayOptions.RefreshInterval = (int)this.nudResfreshRate.Value;
-            this.DisplayOptions.GraphHRes = (int)this.nudGraphResH.Value;
-            this.DisplayOptions.GraphVRes = (int)this.nudGraphResV.Value;
+            this.CurrentProfile.DisplayOptions.RefreshInterval = (int)this.nudResfreshRate.Value;
+            this.CurrentProfile.DisplayOptions.GraphHRes = (int)this.nudGraphResH.Value;
+            this.CurrentProfile.DisplayOptions.GraphVRes = (int)this.nudGraphResV.Value;
 
             try
             {
                 XElement root = new XElement("VisualME7LoggerSettings");
-                root.Add(new XAttribute("ECUFile", this.txtECUFile.Text));
-                root.Add(new XAttribute("ConfigFile", this.txtConfigFile.Text));
-
-                root.Add(this.LoggerOptions.Write());
-                root.Add(this.ChecksumInfo.Write());
-                root.Add(this.DisplayOptions.Write());
+                root.Add(new XAttribute("CurrentProfile", this.CurrentProfile.Name));
+                XElement profiles = new XElement("Profiles");
+                foreach (Profile p in this.Profiles)
+                {
+                    profiles.Add(p.Write());
+                }
+                root.Add(profiles);
                 root.Save(System.IO.Path.Combine(Program.ME7LoggerDirectory, "VisualME7Logger.cfg.xml"));
             }
             catch (Exception e)
@@ -376,52 +370,81 @@ namespace VisualME7Logger
 
         void LoadSettings()
         {
-            string filePath = System.IO.Path.Combine(Program.ME7LoggerDirectory, "VisualME7Logger.cfg.xml");
-            if (System.IO.File.Exists(filePath))
+            if (!Profiles.Contains(CurrentProfile))
             {
-                XElement root = XElement.Load(filePath);
-                foreach (XAttribute att in root.Attributes())
-                {
-                    switch (att.Name.LocalName)
-                    {
-                        case "ECUFile":
-                            ECUFile file = new ECUFile(att.Value);
-                            try
-                            {
-                                file.Open();
-                                txtECUFile.Text = att.Value;
-                                this.SelectedECUFile = file;
-                                LoadECUFile();                             
-                            }
-                            catch { }
-                            break;
-                        case "ConfigFile":
-                            this.txtConfigFile.Text = att.Value;
-                            this.LoadConfigFile();
-                            break;
-                    }
-                }
+                Profiles.Add(CurrentProfile);
+            }
 
-                foreach (XElement ele in root.Elements())
+            try
+            {
+                string filePath = System.IO.Path.Combine(Program.ME7LoggerDirectory, "VisualME7Logger.cfg.xml");
+                if (System.IO.File.Exists(filePath))
                 {
-                    switch (ele.Name.LocalName)
+                    string currentProfile = null;
+                    XElement root = XElement.Load(filePath);
+                    foreach (XAttribute att in root.Attributes())
                     {
-                        case "Options":
-                            this.LoggerOptions.Read(ele);
-                            break;
-                        case "ChecksumInfo":
-                            this.ChecksumInfo.Read(ele);
-                            break;
-                        case "DisplayOptions":
-                            this.DisplayOptions.Read(ele);
-                            break;
+                        switch (att.Name.LocalName)
+                        {
+                            case "CurrentProfile":
+                                currentProfile = att.Value;
+                                break;
+                        }
+                    }
+
+                    foreach (XElement ele in root.Elements())
+                    {
+                        switch (ele.Name.LocalName)
+                        {
+                            case "Profiles":
+                                this.Profiles = new List<Profile>();
+                                foreach (XElement child in ele.Elements())
+                                {
+                                    Profile p = new Profile(string.Empty);
+                                    p.Read(child);
+                                    Profiles.Add(p);
+                                    if (p.Name == currentProfile)
+                                    {
+                                        CurrentProfile = p;
+                                    }
+                                }
+                                break;
+                        }
+                    }
+
+                    if (currentProfile == null)
+                    {
+                        this.Profiles = new List<Profile>();
+                        CurrentProfile = new Profile("Default Profile");
+                        CurrentProfile.Read(root);
+                        this.Profiles.Add(CurrentProfile);
                     }
                 }
             }
+            catch (Exception e)
+            {
+                MessageBox.Show(string.Format("An error occurred while loading settings.\r\n\r\n{0}", e));
+            }
 
-            this.nudResfreshRate.Value = this.DisplayOptions.RefreshInterval;
-            this.nudGraphResH.Value = this.DisplayOptions.GraphHRes;
-            this.nudGraphResV.Value = this.DisplayOptions.GraphVRes;
+            this.lstProfiles.Items.Clear();
+            this.lstProfiles.Items.AddRange(this.Profiles.ToArray());
+            this.LoadProfile(CurrentProfile);
+        }
+
+        private void LoadProfile(Profile profile)
+        {
+            CurrentProfile = profile;
+            this.Text = string.Format("VisualME7Logger - {0}", CurrentProfile.Name);
+
+            txtECUFile.Text = CurrentProfile.ECUFile.FilePath;
+            LoadECUFile();
+            txtConfigFile.Text = CurrentProfile.ConfigFile.FilePath;
+            LoadConfigFile();
+
+            lstGraphVariables.DataSource = CurrentProfile.DisplayOptions.GraphVariables;
+            nudResfreshRate.Value = CurrentProfile.DisplayOptions.RefreshInterval;
+            nudGraphResH.Value = CurrentProfile.DisplayOptions.GraphHRes;
+            nudGraphResV.Value = CurrentProfile.DisplayOptions.GraphVRes;
         }
 
         private void dataGridView1_KeyDown(object sender, KeyEventArgs e)
@@ -438,7 +461,7 @@ namespace VisualME7Logger
 
         private void mE7CheckToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new ChecksumForm(this.ChecksumInfo).ShowDialog(this);
+            new ChecksumForm(this.CurrentProfile.ChecksumInfo).ShowDialog(this);
         }
 
         private void saveSettingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -457,7 +480,7 @@ namespace VisualME7Logger
 
         private void settingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new OptionsForm(this.LoggerOptions).ShowDialog(this);
+            new OptionsForm(this.CurrentProfile.LoggerOptions).ShowDialog(this);
             this.SwitchUI();
         }
 
@@ -473,9 +496,9 @@ namespace VisualME7Logger
         {
             if (this.SelectedGraphVariable != null)
             {
-                this.DisplayOptions.GraphVariables.Remove(this.SelectedGraphVariable);
+                this.CurrentProfile.DisplayOptions.GraphVariables.Remove(this.SelectedGraphVariable);
                 this.lstGraphVariables.DataSource = null;
-                this.lstGraphVariables.DataSource = this.DisplayOptions.GraphVariables;
+                this.lstGraphVariables.DataSource = this.CurrentProfile.DisplayOptions.GraphVariables;
             }
         }
 
@@ -509,9 +532,9 @@ namespace VisualME7Logger
             this.SelectedGraphVariable.LineStyle = (ChartDashStyle)cmbGraphVariableStyle.SelectedItem;
 
             if (this.GraphVariableEditMode == EditModes.Add)
-                this.DisplayOptions.GraphVariables.Add(this.SelectedGraphVariable);
+                this.CurrentProfile.DisplayOptions.GraphVariables.Add(this.SelectedGraphVariable);
             this.lstGraphVariables.DataSource = null;
-            this.lstGraphVariables.DataSource = this.DisplayOptions.GraphVariables;
+            this.lstGraphVariables.DataSource = this.CurrentProfile.DisplayOptions.GraphVariables;
 
             this.GraphVariableEditMode = EditModes.View;
             this.SwitchUI();
@@ -581,16 +604,202 @@ namespace VisualME7Logger
 
         private void cmbGraphVariableVariable_SelectedValueChanged(object sender, EventArgs e)
         {
-            if (this.GraphVariableEditMode != EditModes.View && 
-                this.SelectedECUFile != null &&
-                this.SelectedECUFile.Measurements != null)
+            if (this.GraphVariableEditMode != EditModes.View &&
+                this.CurrentProfile.ECUFile != null &&
+                this.CurrentProfile.ECUFile.Measurements != null)
             {
-                Measurement m = this.SelectedECUFile.Measurements[cmbGraphVariableVariable.Text];
+                Measurement m = this.CurrentProfile.ECUFile.Measurements[cmbGraphVariableVariable.Text];
                 if (m != null)
                 {
                     txtGraphVariableName.Text = m.Alias;
                 }
             }
+        }
+
+        private void btnProfileSetCurrent_Click(object sender, EventArgs e)
+        {
+            this.LoadProfile((Profile)lstProfiles.SelectedItem);
+        }
+
+        private void lstProfiles_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            this.SelectedProfile = lstProfiles.SelectedItem as Profile;
+            this.txtProfileName.Text = this.SelectedProfile != null ? this.SelectedProfile.Name : string.Empty;
+            this.SwitchUI();
+        }
+
+        private void btnProfileClone_Click(object sender, EventArgs e)
+        {
+            Profile clone = ((Profile)lstProfiles.SelectedItem).Clone();
+            clone.Name += " Clone";
+            while (true)
+            {
+                if (Profiles.Any(p => p.Name == clone.Name))
+                {
+                    clone.Name += " Clone";
+                }
+                else 
+                {
+                    break;
+                }
+            }
+            Profiles.Add(clone);
+            lstProfiles.DataSource = this.Profiles;
+            lstProfiles.SelectedItem = clone;
+        }
+
+        private void btnProfileAdd_Click(object sender, EventArgs e)
+        {
+            this.ProfileEditMode = EditModes.Add;
+            SwitchUI();
+        }
+
+        private void btnProfileEdit_Click(object sender, EventArgs e)
+        {
+            this.ProfileEditMode = EditModes.Edit;
+            SwitchUI();
+        }
+
+        private void btnProfileDelete_Click(object sender, EventArgs e)
+        {
+            this.Profiles.Remove(this.SelectedProfile);
+            if (this.SelectedProfile == this.CurrentProfile)
+            {
+                if(Profiles.Count > 0)
+                {
+                    this.CurrentProfile = Profiles[0];
+                }
+                else
+                {
+                    this.CurrentProfile = new Profile("Default Profile");
+                    this.Profiles.Add(this.CurrentProfile);                  
+                }
+                SelectedProfile = CurrentProfile;
+                this.LoadProfile(CurrentProfile);                          
+            }
+            this.lstProfiles.DataSource = Profiles;
+            this.lstProfiles.SelectedItem = this.SelectedProfile;
+        }
+
+        private void btnProfileCancel_Click(object sender, EventArgs e)
+        {
+            this.ProfileEditMode = EditModes.View;
+            this.SwitchUI();
+        }
+
+        private void btnProfileSave_Click(object sender, EventArgs e)
+        {
+            if (this.Profiles.Any(p => p != SelectedProfile && p.Name == txtProfileName.Text))
+            {
+                MessageBox.Show("Duplicate Profile Name");
+                return;
+            }
+
+            if (this.ProfileEditMode == EditModes.Add)
+            {
+                this.SelectedProfile = new Profile(txtProfileName.Text);
+                this.Profiles.Add(SelectedProfile);
+            }
+            this.SelectedProfile.Name = txtProfileName.Text;
+            if (this.SelectedProfile == CurrentProfile)
+            {
+                this.Text = string.Format("VisualME7Logger - {0}", this.CurrentProfile.Name);
+            }
+
+            lstProfiles.DataSource = this.Profiles;
+            lstProfiles.SelectedItem = this.SelectedProfile;           
+
+            this.ProfileEditMode = EditModes.View;
+            SwitchUI();
+        }
+    }
+
+    public class Profile
+    {
+        public string Name { get; set; }
+        public ECUFile ECUFile { get; set; }
+        public ConfigFile ConfigFile { get; set; }
+        public VisualME7Logger.Session.LoggerOptions LoggerOptions { get; set; }
+        public VisualME7Logger.Output.ChecksumInfo ChecksumInfo { get; set; }
+        public DisplayOptions DisplayOptions { get; set; }
+
+        public Profile()
+        {
+            this.LoggerOptions = new Session.LoggerOptions(Program.ME7LoggerDirectory);
+            this.ChecksumInfo = new Output.ChecksumInfo();
+            this.DisplayOptions = new DisplayOptions();
+            this.ECUFile = new ECUFile(string.Empty);
+            this.ConfigFile = new ConfigFile(string.Empty);
+        }
+
+        public Profile(string name)
+            : this()
+        {
+            this.Name = name;
+        }
+
+        public void Read(XElement ele)
+        {
+            foreach (XAttribute att in ele.Attributes())
+            {
+                switch (att.Name.LocalName)
+                {
+                    case "Name":
+                        this.Name = att.Value;
+                        break;
+                    case "ECUFile":
+                        this.ECUFile = new ECUFile(att.Value);
+                        break;
+                    case "ConfigFile":
+                        this.ConfigFile = new ConfigFile(att.Value);
+                        break;
+                }
+            }
+
+            foreach (XElement childEle in ele.Elements())
+            {
+                switch (childEle.Name.LocalName)
+                {
+                    case "Options":
+                        this.LoggerOptions.Read(childEle);
+                        break;
+                    case "ChecksumInfo":
+                        this.ChecksumInfo.Read(childEle);
+                        break;
+                    case "DisplayOptions":
+                        this.DisplayOptions.Read(childEle);
+                        break;
+                }
+            }
+        }
+
+        public XElement Write()
+        {
+            XElement retval = new XElement("Profile");
+            retval.Add(new XAttribute("Name", this.Name));
+            retval.Add(new XAttribute("ECUFile", this.ECUFile.FilePath));
+            retval.Add(new XAttribute("ConfigFile", this.ConfigFile.FilePath));
+            retval.Add(this.LoggerOptions.Write());
+            retval.Add(this.ChecksumInfo.Write());
+            retval.Add(this.DisplayOptions.Write());
+            return retval;
+        }
+
+        public Profile Clone()
+        {
+            Profile clone = new Profile();
+            clone.Name = this.Name;
+            clone.ECUFile = new ECUFile(this.ECUFile.FilePath);
+            clone.ConfigFile = new ConfigFile(this.ConfigFile.FilePath);
+            clone.LoggerOptions = this.LoggerOptions.Clone();
+            clone.ChecksumInfo = this.ChecksumInfo.Clone();
+            clone.DisplayOptions = this.DisplayOptions.Clone();
+            return clone;
+        }
+
+        public override string ToString()
+        {
+            return Name;
         }
     }
 
@@ -600,6 +809,7 @@ namespace VisualME7Logger
         public int GraphVRes = 1000;
         public int GraphHRes = 1200;
         public List<GraphVariable> GraphVariables = new List<GraphVariable>();
+       
         public XElement Write()
         {
             XElement retval = new XElement("DisplayOptions");
@@ -614,6 +824,7 @@ namespace VisualME7Logger
             retval.Add(graphVarsEle);
             return retval;
         }
+
         public void Read(XElement ele)
         {
             foreach (XAttribute att in ele.Attributes())
@@ -642,6 +853,21 @@ namespace VisualME7Logger
                 }
             }
         }
+
+        public DisplayOptions Clone()
+        {
+            DisplayOptions clone = new DisplayOptions();
+            clone.RefreshInterval = this.RefreshInterval;
+            clone.GraphVRes = this.GraphVRes;
+            clone.GraphHRes = this.GraphHRes;
+            clone.GraphVariables = new List<GraphVariable>();
+            foreach (GraphVariable gv in this.GraphVariables)
+            {
+                clone.GraphVariables.Add(gv.Clone());
+            }
+            return clone;
+        }
+
         private void ReadGraphVariables(XElement ele)
         {
             foreach (XElement e in ele.Elements())
@@ -722,6 +948,20 @@ namespace VisualME7Logger
                         break;
                 }
             }
+        }
+
+        public GraphVariable Clone()
+        {
+            GraphVariable clone = new GraphVariable();
+            clone.Active = this.Active;
+            clone.Variable = this.Variable;
+            clone.Name = this.Name;
+            clone.Min = this.Min;
+            clone.Max = this.Max;
+            clone.LineColor = this.LineColor;
+            clone.LineThickness = this.LineThickness;
+            clone.LineStyle = this.LineStyle;
+            return clone;
         }
 
         public override string ToString()

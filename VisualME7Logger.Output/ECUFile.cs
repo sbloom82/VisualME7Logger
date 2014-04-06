@@ -21,49 +21,62 @@ namespace VisualME7Logger.Configuration
         public ECUFile(string filePath)
         {
             this.FilePath = filePath;
+            VersionInfo = new VersionInfo();
+            CommunicationInfo = new CommunicationInfo();
+            IdentificationInfo = new IdentificationInfo();
+            Measurements = new Measurements();
         }
         
         public void Open()
         {
-            using (StreamReader sr = new StreamReader(this.FilePath, Encoding.UTF7))
+            VersionInfo = null;
+            CommunicationInfo = null;
+            IdentificationInfo = null;
+            Measurements = null;
+
+            try
             {
-                string line;
-                while ((line = sr.ReadLine()) != null)
+                using (StreamReader sr = new StreamReader(this.FilePath, Encoding.UTF7))
                 {
-                    if (VersionInfo == null && line == "[Version]")
+                    string line;
+                    while ((line = sr.ReadLine()) != null)
                     {
-                        VersionInfo = new VersionInfo();
-                    }
-                    else if (VersionInfo != null && !VersionInfo.Complete)
-                    {
-                        VersionInfo.ReadLine(line);
-                    }
-                    else if (CommunicationInfo == null && line == "[Communication]")
-                    {
-                        CommunicationInfo = new CommunicationInfo();
-                    }
-                    else if (CommunicationInfo != null && !CommunicationInfo.Complete)
-                    {
-                        CommunicationInfo.ReadLine(line);
-                    }
-                    else if (IdentificationInfo == null && line == "[Identification]")
-                    {
-                        IdentificationInfo = new IdentificationInfo();
-                    }
-                    else if (IdentificationInfo != null && !IdentificationInfo.Complete)
-                    {
-                        IdentificationInfo.ReadLine(line);
-                    }
-                    else if (Measurements == null && line == "[Measurements]")
-                    {
-                        Measurements = new Measurements();
-                    }
-                    else if (Measurements != null && !Measurements.Complete)
-                    {
-                        Measurements.ReadLine(line);
+                        if (VersionInfo == null && line == "[Version]")
+                        {
+                            VersionInfo = new VersionInfo();
+                        }
+                        else if (VersionInfo != null && !VersionInfo.Complete)
+                        {
+                            VersionInfo.ReadLine(line);
+                        }
+                        else if (CommunicationInfo == null && line == "[Communication]")
+                        {
+                            CommunicationInfo = new CommunicationInfo();
+                        }
+                        else if (CommunicationInfo != null && !CommunicationInfo.Complete)
+                        {
+                            CommunicationInfo.ReadLine(line);
+                        }
+                        else if (IdentificationInfo == null && line == "[Identification]")
+                        {
+                            IdentificationInfo = new IdentificationInfo();
+                        }
+                        else if (IdentificationInfo != null && !IdentificationInfo.Complete)
+                        {
+                            IdentificationInfo.ReadLine(line);
+                        }
+                        else if (Measurements == null && line == "[Measurements]")
+                        {
+                            Measurements = new Measurements();
+                        }
+                        else if (Measurements != null && !Measurements.Complete)
+                        {
+                            Measurements.ReadLine(line);
+                        }
                     }
                 }
             }
+            catch { }
 
             if (VersionInfo == null)
             {
@@ -121,20 +134,26 @@ namespace VisualME7Logger.Configuration
         public Measurements Measurements { get; private set; }
         public string ECUCharacteristics { get; private set; }
         public short SamplesPerSecond { get; private set; }
-
-        public ConfigFile(string ecuCharacteristics)
+        public string FilePath { get; set; }
+        
+        public ConfigFile(string filePath)
+        {
+            this.FilePath = filePath;
+            this.Measurements = new Measurements();
+        }
+        public ConfigFile(string filePath, string ecuCharacteristics) : this(filePath)
         {
             this.ECUCharacteristics = ecuCharacteristics;
         }
-        public ConfigFile(string ecuCharacteristics, Measurements measurements)
-            : this(ecuCharacteristics)
+        public ConfigFile(string filePath, string ecuCharacteristics, Measurements measurements)
+            : this(filePath, ecuCharacteristics)
         {
             this.Measurements = measurements;
         }
 
-        public void Write(string filePath)
+        public void Write()
         {
-            using (StreamWriter writer = new StreamWriter(filePath))
+            using (StreamWriter writer = new StreamWriter(this.FilePath))
             {
                 writer.WriteLine("[Configuration]");
                 writer.WriteLine("ECUCharacteristics = {0}", ECUCharacteristics);
@@ -153,42 +172,51 @@ namespace VisualME7Logger.Configuration
             }
         }
 
-        public void Read(string filePath)
+        public void Read()
         {
-            using (StreamReader reader = new StreamReader(filePath, Encoding.UTF7))
+            this.Measurements = null;
+            try
             {
-                this.Measurements = null;
-                string line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    if (!string.IsNullOrWhiteSpace(line))
+                using (StreamReader reader = new StreamReader(this.FilePath, Encoding.UTF7))
+                {                   
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
                     {
-                        line = line.Trim();
-                        if (!line.StartsWith(";"))
+                        if (!string.IsNullOrWhiteSpace(line))
                         {
-                            if (this.Measurements == null && line == "[LogVariables]")
+                            line = line.Trim();
+                            if (!line.StartsWith(";"))
                             {
-                                this.Measurements = new Measurements();
-                            }
-                            else if (this.Measurements != null && !this.Measurements.Complete)
-                            {
-                                this.Measurements.ReadLine(line);
-                            }
-                            else if (line.StartsWith("ECUCharacteristics"))
-                            {
-                                this.ECUCharacteristics = line.Split('=')[1].Trim();
-                            }
-                            else if (line.StartsWith("SamplesPerSecond"))
-                            {
-                                try
+                                if (this.Measurements == null && line == "[LogVariables]")
                                 {
-                                    this.SamplesPerSecond = short.Parse(line.Split('=')[1].Trim());
+                                    this.Measurements = new Measurements();
                                 }
-                                catch { }
+                                else if (this.Measurements != null && !this.Measurements.Complete)
+                                {
+                                    this.Measurements.ReadLine(line);
+                                }
+                                else if (line.StartsWith("ECUCharacteristics"))
+                                {
+                                    this.ECUCharacteristics = line.Split('=')[1].Trim();
+                                }
+                                else if (line.StartsWith("SamplesPerSecond"))
+                                {
+                                    try
+                                    {
+                                        this.SamplesPerSecond = short.Parse(line.Split('=')[1].Trim());
+                                    }
+                                    catch { }
+                                }
                             }
                         }
                     }
                 }
+            }
+            catch { }
+
+            if (Measurements == null)
+            {
+                Measurements = new Measurements();
             }
         }
     }
