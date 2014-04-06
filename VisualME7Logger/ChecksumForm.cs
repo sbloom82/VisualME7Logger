@@ -45,7 +45,11 @@ namespace VisualME7Logger
         private void btnAppPath_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.InitialDirectory = Program.ME7LoggerDirectory;
+            ofd.InitialDirectory =
+                string.IsNullOrWhiteSpace(txtAppPath.Text) ?
+                Program.ME7LoggerDirectory :
+                System.IO.Path.GetDirectoryName(txtAppPath.Text);
+            ofd.FileName = System.IO.Path.GetFileName(txtAppPath.Text);
             ofd.Title = "Select the path of the checksum application";
             if (ofd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
             {
@@ -56,7 +60,11 @@ namespace VisualME7Logger
         private void btnBinPath_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.InitialDirectory = System.IO.Path.Combine(Program.ME7LoggerDirectory, "images");
+            ofd.InitialDirectory =
+                string.IsNullOrWhiteSpace(txtBinPath.Text) ?
+                System.IO.Path.Combine(Program.ME7LoggerDirectory, "images") :
+                System.IO.Path.GetDirectoryName(txtBinPath.Text);
+            ofd.FileName = System.IO.Path.GetFileName(txtBinPath.Text);
             ofd.Title = "Select the bin path";
             if (ofd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
             {

@@ -192,7 +192,11 @@ namespace VisualME7Logger
         private void btnChooseLogPath_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.InitialDirectory = System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs");
+            ofd.InitialDirectory =
+                string.IsNullOrWhiteSpace(txtLogFilePath.Text) ?
+                System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs") :
+                System.IO.Path.GetDirectoryName(txtLogFilePath.Text);
+            ofd.FileName = System.IO.Path.GetFileName(txtLogFilePath.Text);
             ofd.Title = "Select a log file";
             if (ofd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
             {

@@ -36,6 +36,14 @@ namespace VisualME7Logger.Output
             return ele;
         }
 
+        public ChecksumInfo Clone()
+        {
+            ChecksumInfo clone = new ChecksumInfo();
+            clone.ApplicationPath = this.ApplicationPath;
+            clone.BinPath = this.BinPath;
+            return clone;
+        }
+
         public ChecksumResult Check()
         {
             Process p = new Process();

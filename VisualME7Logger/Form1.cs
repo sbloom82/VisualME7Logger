@@ -40,7 +40,7 @@ namespace VisualME7Logger
 
             if (options.ConnectionType == LoggerOptions.ConnectionTypes.LogFile)
             {
-                session = new ME7LoggerSession(options.LogFile,
+                session = new ME7LoggerSession(Program.ME7LoggerDirectory, options.LogFile,
                     Program.DebugOutput ?
                         ME7LoggerSession.SessionTypes.SessionOutput :
                         ME7LoggerSession.SessionTypes.LogFile);
@@ -50,11 +50,9 @@ namespace VisualME7Logger
                 session = new ME7LoggerSession(Program.ME7LoggerDirectory, options, configFile);
             }
 
-            session.StatusChanged = new ME7LoggerSession.LoggerSessionStatusChanged(this.SessionStatusChanged);
-            Program.WriteDebug("before session.lineread assignment.  Null? " + (session.LineRead == null).ToString());
-            session.LineRead = new ME7LoggerSession.LogLineRead(this.LogLineRead);
-            Program.WriteDebug("after session.lineread assignment.  Null? " + (session.LineRead == null).ToString() + " Value " + (session.LineRead != null ? session.LineRead.ToString() : "null"));
-
+            session.StatusChanged += new ME7LoggerSession.LoggerSessionStatusChanged(this.SessionStatusChanged);
+            session.LineRead += new ME7LoggerSession.LogLineRead(this.LogLineRead);
+            
             this.OpenSession();
 
             pauseToolStripMenuItem.Enabled = session.CanPause;
@@ -62,11 +60,19 @@ namespace VisualME7Logger
 
         void refreshTimer_Tick(object sender, EventArgs e)
         {
-            Program.WriteDebug("refresh timer tick session.lineread Null? " + (session.LineRead == null).ToString() + " Value " + (session.LineRead != null ? session.LineRead.ToString() : "null"));
-            
-            while (queue.Count() > 0)
+            if (Program.Debug)
             {
+                Program.WriteDebug("refresh timer tick session.lineread Null? " + (session.LineRead == null).ToString() + " Value " + (session.LineRead != null ? session.LineRead.ToString() : "null"));
+            }
+
+            while (queue.Count() > 0)
+            {                 
                 LogLine line = queue.Dequeue();
+
+                if (Program.Debug)
+                {
+                    Program.WriteDebug(string.Format("line with TS {0} dequeued", line.TimeStamp));
+                }
 
                 if (lblInfo.Tag == null || DateTime.Now.Subtract((DateTime)lblInfo.Tag).TotalSeconds > 3)
                 {
@@ -211,6 +217,10 @@ namespace VisualME7Logger
 
         void LogLineRead(LogLine line)
         {
+            if (Program.Debug)
+            {
+                Program.WriteDebug(string.Format("line at TS {0} read", line.TimeStamp));
+            }
             queue.Enqueue(line);
         }
 

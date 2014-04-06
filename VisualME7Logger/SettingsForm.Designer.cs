@@ -35,6 +35,8 @@
             this.tpMeasurements = new System.Windows.Forms.TabPage();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.label15 = new System.Windows.Forms.Label();
+            this.lblMeasurementCount = new System.Windows.Forms.Label();
             this.radFilterUnselected = new System.Windows.Forms.RadioButton();
             this.radFilterSelected = new System.Windows.Forms.RadioButton();
             this.radFilterAll = new System.Windows.Forms.RadioButton();
@@ -71,6 +73,19 @@
             this.label1 = new System.Windows.Forms.Label();
             this.btnDeleteGraphVariable = new System.Windows.Forms.Button();
             this.btnAddGraphVariable = new System.Windows.Forms.Button();
+            this.tpProfiles = new System.Windows.Forms.TabPage();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btnProfileSetCurrent = new System.Windows.Forms.Button();
+            this.btnProfileClone = new System.Windows.Forms.Button();
+            this.lstProfiles = new System.Windows.Forms.ListBox();
+            this.btnProfileEdit = new System.Windows.Forms.Button();
+            this.gbProfile = new System.Windows.Forms.GroupBox();
+            this.btnProfileCancel = new System.Windows.Forms.Button();
+            this.btnProfileSave = new System.Windows.Forms.Button();
+            this.txtProfileName = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.btnProfileDelete = new System.Windows.Forms.Button();
+            this.btnProfileAdd = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -95,8 +110,6 @@
             this.createECUFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.lblMeasurementCount = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tpMeasurements.SuspendLayout();
@@ -112,6 +125,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudGraphVariableThickness)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGraphVariableMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGraphVariableMin)).BeginInit();
+            this.tpProfiles.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.gbProfile.SuspendLayout();
             this.panel2.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -129,6 +145,7 @@
             // 
             this.tabControl1.Controls.Add(this.tpMeasurements);
             this.tabControl1.Controls.Add(this.tbGraphConfig);
+            this.tabControl1.Controls.Add(this.tpProfiles);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
@@ -186,6 +203,26 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(719, 26);
             this.panel3.TabIndex = 12;
+            // 
+            // label15
+            // 
+            this.label15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(823, 295);
+            this.label15.Name = "label15";
+            this.label15.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.label15.Size = new System.Drawing.Size(48, 13);
+            this.label15.TabIndex = 5;
+            this.label15.Text = "label14C";
+            // 
+            // lblMeasurementCount
+            // 
+            this.lblMeasurementCount.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lblMeasurementCount.Location = new System.Drawing.Point(575, 0);
+            this.lblMeasurementCount.Name = "lblMeasurementCount";
+            this.lblMeasurementCount.Size = new System.Drawing.Size(142, 24);
+            this.lblMeasurementCount.TabIndex = 5;
+            this.lblMeasurementCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // radFilterUnselected
             // 
@@ -628,6 +665,150 @@
             this.btnAddGraphVariable.UseVisualStyleBackColor = true;
             this.btnAddGraphVariable.Click += new System.EventHandler(this.btnAddGraphVariable_Click);
             // 
+            // tpProfiles
+            // 
+            this.tpProfiles.BackColor = System.Drawing.SystemColors.Control;
+            this.tpProfiles.Controls.Add(this.groupBox3);
+            this.tpProfiles.Location = new System.Drawing.Point(4, 22);
+            this.tpProfiles.Name = "tpProfiles";
+            this.tpProfiles.Size = new System.Drawing.Size(725, 315);
+            this.tpProfiles.TabIndex = 2;
+            this.tpProfiles.Text = "Profiles";
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox3.Controls.Add(this.btnProfileSetCurrent);
+            this.groupBox3.Controls.Add(this.btnProfileClone);
+            this.groupBox3.Controls.Add(this.lstProfiles);
+            this.groupBox3.Controls.Add(this.btnProfileEdit);
+            this.groupBox3.Controls.Add(this.gbProfile);
+            this.groupBox3.Controls.Add(this.btnProfileDelete);
+            this.groupBox3.Controls.Add(this.btnProfileAdd);
+            this.groupBox3.Location = new System.Drawing.Point(8, 6);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(393, 303);
+            this.groupBox3.TabIndex = 0;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Profiles";
+            // 
+            // btnProfileSetCurrent
+            // 
+            this.btnProfileSetCurrent.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnProfileSetCurrent.Location = new System.Drawing.Point(312, 19);
+            this.btnProfileSetCurrent.Name = "btnProfileSetCurrent";
+            this.btnProfileSetCurrent.Size = new System.Drawing.Size(75, 23);
+            this.btnProfileSetCurrent.TabIndex = 1;
+            this.btnProfileSetCurrent.Text = "Set Current";
+            this.btnProfileSetCurrent.UseVisualStyleBackColor = true;
+            this.btnProfileSetCurrent.Click += new System.EventHandler(this.btnProfileSetCurrent_Click);
+            // 
+            // btnProfileClone
+            // 
+            this.btnProfileClone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnProfileClone.Location = new System.Drawing.Point(312, 58);
+            this.btnProfileClone.Name = "btnProfileClone";
+            this.btnProfileClone.Size = new System.Drawing.Size(75, 23);
+            this.btnProfileClone.TabIndex = 2;
+            this.btnProfileClone.Text = "Clone";
+            this.btnProfileClone.UseVisualStyleBackColor = true;
+            this.btnProfileClone.Click += new System.EventHandler(this.btnProfileClone_Click);
+            // 
+            // lstProfiles
+            // 
+            this.lstProfiles.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstProfiles.FormattingEnabled = true;
+            this.lstProfiles.Location = new System.Drawing.Point(6, 19);
+            this.lstProfiles.Name = "lstProfiles";
+            this.lstProfiles.Size = new System.Drawing.Size(300, 199);
+            this.lstProfiles.TabIndex = 0;
+            this.lstProfiles.SelectedIndexChanged += new System.EventHandler(this.lstProfiles_SelectedIndexChanged);
+            // 
+            // btnProfileEdit
+            // 
+            this.btnProfileEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnProfileEdit.Location = new System.Drawing.Point(312, 104);
+            this.btnProfileEdit.Name = "btnProfileEdit";
+            this.btnProfileEdit.Size = new System.Drawing.Size(75, 23);
+            this.btnProfileEdit.TabIndex = 4;
+            this.btnProfileEdit.Text = "Edit";
+            this.btnProfileEdit.UseVisualStyleBackColor = true;
+            this.btnProfileEdit.Click += new System.EventHandler(this.btnProfileEdit_Click);
+            // 
+            // gbProfile
+            // 
+            this.gbProfile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.gbProfile.Controls.Add(this.btnProfileCancel);
+            this.gbProfile.Controls.Add(this.btnProfileSave);
+            this.gbProfile.Controls.Add(this.txtProfileName);
+            this.gbProfile.Controls.Add(this.label17);
+            this.gbProfile.Location = new System.Drawing.Point(8, 224);
+            this.gbProfile.Name = "gbProfile";
+            this.gbProfile.Size = new System.Drawing.Size(298, 73);
+            this.gbProfile.TabIndex = 1;
+            this.gbProfile.TabStop = false;
+            // 
+            // btnProfileCancel
+            // 
+            this.btnProfileCancel.Location = new System.Drawing.Point(133, 45);
+            this.btnProfileCancel.Name = "btnProfileCancel";
+            this.btnProfileCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnProfileCancel.TabIndex = 1;
+            this.btnProfileCancel.Text = "Cancel";
+            this.btnProfileCancel.UseVisualStyleBackColor = true;
+            this.btnProfileCancel.Click += new System.EventHandler(this.btnProfileCancel_Click);
+            // 
+            // btnProfileSave
+            // 
+            this.btnProfileSave.Location = new System.Drawing.Point(214, 45);
+            this.btnProfileSave.Name = "btnProfileSave";
+            this.btnProfileSave.Size = new System.Drawing.Size(75, 23);
+            this.btnProfileSave.TabIndex = 2;
+            this.btnProfileSave.Text = "Save";
+            this.btnProfileSave.UseVisualStyleBackColor = true;
+            this.btnProfileSave.Click += new System.EventHandler(this.btnProfileSave_Click);
+            // 
+            // txtProfileName
+            // 
+            this.txtProfileName.Location = new System.Drawing.Point(51, 19);
+            this.txtProfileName.Name = "txtProfileName";
+            this.txtProfileName.Size = new System.Drawing.Size(241, 20);
+            this.txtProfileName.TabIndex = 0;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(11, 22);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(38, 13);
+            this.label17.TabIndex = 9;
+            this.label17.Text = "Name:";
+            // 
+            // btnProfileDelete
+            // 
+            this.btnProfileDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnProfileDelete.Location = new System.Drawing.Point(312, 127);
+            this.btnProfileDelete.Name = "btnProfileDelete";
+            this.btnProfileDelete.Size = new System.Drawing.Size(75, 23);
+            this.btnProfileDelete.TabIndex = 5;
+            this.btnProfileDelete.Text = "Delete";
+            this.btnProfileDelete.UseVisualStyleBackColor = true;
+            this.btnProfileDelete.Click += new System.EventHandler(this.btnProfileDelete_Click);
+            // 
+            // btnProfileAdd
+            // 
+            this.btnProfileAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnProfileAdd.Location = new System.Drawing.Point(312, 81);
+            this.btnProfileAdd.Name = "btnProfileAdd";
+            this.btnProfileAdd.Size = new System.Drawing.Size(75, 23);
+            this.btnProfileAdd.TabIndex = 3;
+            this.btnProfileAdd.Text = "Add";
+            this.btnProfileAdd.UseVisualStyleBackColor = true;
+            this.btnProfileAdd.Click += new System.EventHandler(this.btnProfileAdd_Click);
+            // 
             // panel2
             // 
             this.panel2.Controls.Add(this.label4);
@@ -825,26 +1006,6 @@
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // lblMeasurementCount
-            // 
-            this.lblMeasurementCount.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblMeasurementCount.Location = new System.Drawing.Point(575, 0);
-            this.lblMeasurementCount.Name = "lblMeasurementCount";
-            this.lblMeasurementCount.Size = new System.Drawing.Size(142, 24);
-            this.lblMeasurementCount.TabIndex = 5;
-            this.lblMeasurementCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label15
-            // 
-            this.label15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(823, 295);
-            this.label15.Name = "label15";
-            this.label15.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.label15.Size = new System.Drawing.Size(48, 13);
-            this.label15.TabIndex = 5;
-            this.label15.Text = "label14C";
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -877,6 +1038,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudGraphVariableThickness)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGraphVariableMax)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGraphVariableMin)).EndInit();
+            this.tpProfiles.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
+            this.gbProfile.ResumeLayout(false);
+            this.gbProfile.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
@@ -955,6 +1120,19 @@
         private System.Windows.Forms.ComboBox cmbGraphVariableVariable;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label lblMeasurementCount;
+        private System.Windows.Forms.TabPage tpProfiles;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Button btnProfileSetCurrent;
+        private System.Windows.Forms.Button btnProfileClone;
+        private System.Windows.Forms.ListBox lstProfiles;
+        private System.Windows.Forms.Button btnProfileEdit;
+        private System.Windows.Forms.GroupBox gbProfile;
+        private System.Windows.Forms.Button btnProfileCancel;
+        private System.Windows.Forms.Button btnProfileSave;
+        private System.Windows.Forms.TextBox txtProfileName;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Button btnProfileDelete;
+        private System.Windows.Forms.Button btnProfileAdd;
 
 
     }

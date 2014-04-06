@@ -31,7 +31,7 @@ namespace VisualME7Logger.Session
         }
 
         public delegate void LoggerSessionStatusChanged(Statuses status);
-        public delegate void LogLineRead(LogLine logLine);       
+        public delegate void LogLineRead(LogLine logLine);
 
         private Statuses _status;
         public Statuses Status
@@ -73,10 +73,11 @@ namespace VisualME7Logger.Session
         }
 
         private string filePath;
-        public ME7LoggerSession(string filePath, SessionTypes sessionType = SessionTypes.LogFile)
+        public ME7LoggerSession(string ME7LoggerDirectory, string filePath, SessionTypes sessionType = SessionTypes.LogFile)
         {
             this.Status = Statuses.New;
             this.SessionType = sessionType;
+            this.ME7LoggerDirectory = ME7LoggerDirectory;
             this.filePath = filePath;
             if (this.SessionType == SessionTypes.LogFile)
             {
@@ -95,6 +96,7 @@ namespace VisualME7Logger.Session
 
         Process p;
         StreamWriter outputWriter = null;
+        StreamWriter debugWriter = null;
         public bool logReady = false;
         public int ExitCode { get; private set; }
         StringBuilder errorTextBuilder;
@@ -152,7 +154,7 @@ namespace VisualME7Logger.Session
 
         private void OpenFromSessionOutput()
         {
-            using (StreamReader sr = new StreamReader(filePath, Encoding.UTF7))
+            using (StreamReader sr = new StreamReader(filePath))
             {
                 string line = null;
                 while ((line = sr.ReadLine()) != null)
@@ -221,12 +223,26 @@ namespace VisualME7Logger.Session
                     outputWriter.WriteLine(data);
                 }
 
+                if (Debug)
+                {
+                    WriteDebug("line read: " + data);
+                }
+
                 try
                 {
                     if (this.Status == Statuses.Opening)
                     {
+                        if (Debug)
+                        {
+                            WriteDebug("Opening...before readline");
+                        }
                         if (this.ReadLine(data))
                         {
+                            if (Debug)
+                            {
+                                WriteDebug("Opening...readline true, var count:" + (this.Variables == null ? 0 : this.Variables.Count));
+                            }
+
                             this.Status = Statuses.Initialized;
                             this.Status = Statuses.Open;
                             this.Log.Open();
@@ -235,15 +251,28 @@ namespace VisualME7Logger.Session
                     }
                     else if (this.Status == Statuses.Open)
                     {
+                        if (Debug)
+                        {
+                            WriteDebug("Open... logready:" + logReady.ToString());
+                        }
+
                         if (!logReady && data == "Press ^C to stop logging")
                         {
                             logReady = true;
                         }
                         else if (logReady)
                         {
+                            if (Debug)
+                            {
+                                WriteDebug("Open... reading line");
+                            }
                             LogLine logLine = this.Log.ReadLine(data);
                             if (LineRead != null)
                             {
+                                if (Debug)
+                                {
+                                    WriteDebug("Open.... Line Read!");
+                                }
                                 LineRead(logLine);
                             }
                         }
@@ -252,6 +281,22 @@ namespace VisualME7Logger.Session
                 catch (Exception ex)
                 {
                     errorTextBuilder.AppendFormat("Error when reading line {0}\r\n{1}", data, ex);
+                }
+            }
+        }
+
+        private static object DebugLock = new object();
+        public static bool Debug;
+        public void WriteDebug(string line)
+        {
+            if (Debug)
+            {
+                lock (DebugLock)
+                {
+                    using (StreamWriter sw = new StreamWriter(System.IO.Path.Combine(ME7LoggerDirectory, "DEBUG1.TXT"), true))
+                    {
+                        sw.WriteLine("{0:HH:mm:ss.ffff}:  {1}", DateTime.Now, line);
+                    }
                 }
             }
         }
@@ -502,7 +547,7 @@ namespace VisualME7Logger.Session
                 else if (line.StartsWith("Logged data size is"))
                 {
                     try { LoggedDataSize = short.Parse(line.Replace("Logged data size is ", "").Replace(" bytes.", "").Trim()); }
-                    catch{}
+                    catch { }
                 }
             }
         }
@@ -651,6 +696,29 @@ namespace VisualME7Logger.Session
             root.Add(new XAttribute("WriteOutputFile", WriteOutputFile));
 
             return root;
+        }
+
+        public LoggerOptions Clone()
+        {
+            LoggerOptions clone = new LoggerOptions(string.Empty);
+            clone.ConnectionType = this.ConnectionType;
+            clone.COMPort = this.COMPort;
+            clone.FTDIInfo = this.FTDIInfo;
+            clone.BaudRate = this.BaudRate;
+            clone.OverrideBaudRate = this.OverrideBaudRate;
+            clone.OverrideSampleRate = this.OverrideSampleRate;
+            clone.SampleRate = this.SampleRate;
+            clone.TimeSync = this.TimeSync;
+            clone.WriteAbsoluteTimestamp = this.WriteAbsoluteTimestamp;
+            clone.WriteMilliSecondTimestamps = this.WriteMilliSecondTimestamps;
+            clone.SuppressHeaderInfoInLog = this.SuppressHeaderInfoInLog;
+            clone.ReadSingleMeasurement = this.ReadSingleMeasurement;
+            clone.WriteLogRealTime = this.WriteLogRealTime;
+            clone.RealTimeOutput = this.RealTimeOutput;
+            clone.WriteLogToFile = this.WriteLogToFile;
+            clone.LogFile = LogFile;
+            clone.WriteOutputFile = this.WriteOutputFile;
+            return clone;
         }
 
         public override string ToString()
