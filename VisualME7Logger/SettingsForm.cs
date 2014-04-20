@@ -287,6 +287,11 @@ namespace VisualME7Logger
             this.Visible = false;
             Form1 logForm = new Form1(txtConfigFile.Text, this.CurrentProfile.LoggerOptions, this.CurrentProfile.DisplayOptions);
             logForm.ShowDialog(this);
+
+            this.SaveSettings();
+
+            this.lstGraphVariables.DataSource = null;
+            this.lstGraphVariables.DataSource = this.CurrentProfile.DisplayOptions.GraphVariables;
             this.Visible = true;
         }
 
@@ -344,7 +349,7 @@ namespace VisualME7Logger
             }
         }
 
-        void SaveSettings()
+        public void SaveSettings()
         {
             this.CurrentProfile.DisplayOptions.RefreshInterval = (int)this.nudResfreshRate.Value;
             this.CurrentProfile.DisplayOptions.GraphHRes = (int)this.nudGraphResH.Value;
@@ -677,6 +682,8 @@ namespace VisualME7Logger
                 SelectedProfile = CurrentProfile;
                 this.LoadProfile(CurrentProfile);                          
             }
+
+            this.lstProfiles.DataSource = null;
             this.lstProfiles.DataSource = Profiles;
             this.lstProfiles.SelectedItem = this.SelectedProfile;
         }
@@ -706,11 +713,17 @@ namespace VisualME7Logger
                 this.Text = string.Format("VisualME7Logger - {0}", this.CurrentProfile.Name);
             }
 
+            lstProfiles.DataSource = null;
             lstProfiles.DataSource = this.Profiles;
             lstProfiles.SelectedItem = this.SelectedProfile;           
 
             this.ProfileEditMode = EditModes.View;
             SwitchUI();
+        }
+
+        private void SettingsForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
         }
     }
 

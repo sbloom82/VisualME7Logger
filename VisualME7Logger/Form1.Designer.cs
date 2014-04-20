@@ -39,7 +39,11 @@
             this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.stopToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
             this.pauseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.increasePlaybackSpeedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.decreasePlaybackSpeedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.resetPlaybackSpeedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.infoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
@@ -108,7 +112,11 @@
             this.startToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.startToolStripMenuItem1,
             this.stopToolStripMenuItem1,
+            this.toolStripMenuItem5,
             this.pauseToolStripMenuItem,
+            this.increasePlaybackSpeedToolStripMenuItem,
+            this.decreasePlaybackSpeedToolStripMenuItem,
+            this.resetPlaybackSpeedToolStripMenuItem,
             this.toolStripMenuItem2,
             this.infoToolStripMenuItem,
             this.toolStripMenuItem4,
@@ -121,7 +129,7 @@
             // 
             this.startToolStripMenuItem1.Name = "startToolStripMenuItem1";
             this.startToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.startToolStripMenuItem1.Size = new System.Drawing.Size(146, 22);
+            this.startToolStripMenuItem1.Size = new System.Drawing.Size(237, 22);
             this.startToolStripMenuItem1.Text = "&Open";
             this.startToolStripMenuItem1.Click += new System.EventHandler(this.startToolStripMenuItem1_Click);
             // 
@@ -129,40 +137,71 @@
             // 
             this.stopToolStripMenuItem1.Name = "stopToolStripMenuItem1";
             this.stopToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.stopToolStripMenuItem1.Size = new System.Drawing.Size(146, 22);
+            this.stopToolStripMenuItem1.Size = new System.Drawing.Size(237, 22);
             this.stopToolStripMenuItem1.Text = "&Close";
             this.stopToolStripMenuItem1.Click += new System.EventHandler(this.stopToolStripMenuItem1_Click);
+            // 
+            // toolStripMenuItem5
+            // 
+            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(234, 6);
             // 
             // pauseToolStripMenuItem
             // 
             this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
             this.pauseToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.pauseToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.pauseToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.pauseToolStripMenuItem.Text = "&Pause";
             this.pauseToolStripMenuItem.Click += new System.EventHandler(this.pauseToolStripMenuItem_Click);
+            // 
+            // increasePlaybackSpeedToolStripMenuItem
+            // 
+            this.increasePlaybackSpeedToolStripMenuItem.Name = "increasePlaybackSpeedToolStripMenuItem";
+            this.increasePlaybackSpeedToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+";
+            this.increasePlaybackSpeedToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Oemplus)));
+            this.increasePlaybackSpeedToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.increasePlaybackSpeedToolStripMenuItem.Text = "Increase Playback Speed";
+            this.increasePlaybackSpeedToolStripMenuItem.Click += new System.EventHandler(this.increasePlaybackSpeedToolStripMenuItem_Click);
+            // 
+            // decreasePlaybackSpeedToolStripMenuItem
+            // 
+            this.decreasePlaybackSpeedToolStripMenuItem.Name = "decreasePlaybackSpeedToolStripMenuItem";
+            this.decreasePlaybackSpeedToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl-";
+            this.decreasePlaybackSpeedToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.OemMinus)));
+            this.decreasePlaybackSpeedToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.decreasePlaybackSpeedToolStripMenuItem.Text = "Decrease Playback Speed";
+            this.decreasePlaybackSpeedToolStripMenuItem.Click += new System.EventHandler(this.decreasePlaybackSpeedToolStripMenuItem_Click);
+            // 
+            // resetPlaybackSpeedToolStripMenuItem
+            // 
+            this.resetPlaybackSpeedToolStripMenuItem.Name = "resetPlaybackSpeedToolStripMenuItem";
+            this.resetPlaybackSpeedToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+            this.resetPlaybackSpeedToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.resetPlaybackSpeedToolStripMenuItem.Text = "Reset Playback Speed";
+            this.resetPlaybackSpeedToolStripMenuItem.Click += new System.EventHandler(this.resetPlaybackSpeedToolStripMenuItem_Click);
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(143, 6);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(234, 6);
             // 
             // infoToolStripMenuItem
             // 
             this.infoToolStripMenuItem.Name = "infoToolStripMenuItem";
             this.infoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
-            this.infoToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.infoToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.infoToolStripMenuItem.Text = "&Info";
             this.infoToolStripMenuItem.Click += new System.EventHandler(this.infoToolStripMenuItem_Click);
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(143, 6);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(234, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -279,7 +318,7 @@
             chartArea1.AxisY2.MajorTickMark.Enabled = false;
             chartArea1.BackColor = System.Drawing.Color.Transparent;
             chartArea1.BorderColor = System.Drawing.Color.White;
-            chartArea1.CursorX.Interval = 10D;
+            chartArea1.CursorX.Interval = 5D;
             chartArea1.CursorX.IsUserEnabled = true;
             chartArea1.CursorX.IsUserSelectionEnabled = true;
             chartArea1.CursorX.LineColor = System.Drawing.Color.RoyalBlue;
@@ -296,6 +335,7 @@
             this.chart1.Size = new System.Drawing.Size(697, 665);
             this.chart1.TabIndex = 26;
             this.chart1.Text = "chart";
+            this.chart1.CursorPositionChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.chart1_CursorPositionChanged);
             this.chart1.AxisViewChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(this.chart1_AxisViewChanged);
             this.chart1.Click += new System.EventHandler(this.chart1_Click);
             // 
@@ -415,6 +455,10 @@
         private System.Windows.Forms.Splitter splitter1;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
+        private System.Windows.Forms.ToolStripMenuItem increasePlaybackSpeedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem decreasePlaybackSpeedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem resetPlaybackSpeedToolStripMenuItem;
     }
 }
 

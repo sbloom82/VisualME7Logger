@@ -21,6 +21,8 @@ namespace VisualME7Logger
         DateTime start;
 
         Queue<LogLine> queue;
+        List<LogLine> buffer;
+
         Timer refreshTimer = new Timer();
 
         public Form1(string configFile, VisualME7Logger.Session.LoggerOptions options, DisplayOptions displayOptions)
@@ -52,10 +54,13 @@ namespace VisualME7Logger
 
             session.StatusChanged += new ME7LoggerSession.LoggerSessionStatusChanged(this.SessionStatusChanged);
             session.LineRead += new ME7LoggerSession.LogLineRead(this.LogLineRead);
-            
+
             this.OpenSession();
 
-            pauseToolStripMenuItem.Enabled = session.CanPause;
+            pauseToolStripMenuItem.Enabled =
+            increasePlaybackSpeedToolStripMenuItem.Enabled =
+                decreasePlaybackSpeedToolStripMenuItem.Enabled = 
+                resetPlaybackSpeedToolStripMenuItem.Enabled = session.CanSetPlaybackSpeed;
         }
 
         void refreshTimer_Tick(object sender, EventArgs e)
@@ -66,7 +71,7 @@ namespace VisualME7Logger
             }
 
             while (queue.Count() > 0)
-            {                 
+            {
                 LogLine line = queue.Dequeue();
 
                 if (Program.Debug)
@@ -74,18 +79,32 @@ namespace VisualME7Logger
                     Program.WriteDebug(string.Format("line with TS {0} dequeued", line.TimeStamp));
                 }
 
-                if (lblInfo.Tag == null || DateTime.Now.Subtract((DateTime)lblInfo.Tag).TotalSeconds > 3)
+                lock (buffer)
                 {
-                    lblInfo.Text = string.Format("Timestamp: {0}", line.TimeStamp.ToString());
+                    buffer.Add(line);
+                    if (buffer.Count > this.DisplayOptions.GraphHRes)
+                    {
+                        buffer.RemoveAt(0);
+                    }
                 }
 
-                for (int i = 0; i < line.Variables.Count(); ++i)
-                {
-                    Label l = (Label)flpVariables.Controls[i].Controls[0];
-                    Variable v = line.Variables.ElementAt(i);
-                    l.Text = string.Format("{0} {1}", v.Value, v.SessionVariable.Unit);
-                }
+                this.DisplayLine(line);
                 this.PlotLineOnChart(line);
+            }
+        }
+
+        void DisplayLine(LogLine line)
+        {
+            if (lblInfo.Tag == null || DateTime.Now.Subtract((DateTime)lblInfo.Tag).TotalSeconds > 3)
+            {
+                lblInfo.Text = string.Format("Timestamp: {0}", line.TimeStamp.ToString());
+            }
+
+            for (int i = 0; i < line.Variables.Count(); ++i)
+            {
+                Label l = (Label)flpVariables.Controls[i].Controls[0];
+                Variable v = line.Variables.ElementAt(i);
+                l.Text = string.Format("{0} {1}", v.Value, v.SessionVariable.Unit);
             }
         }
 
@@ -100,14 +119,19 @@ namespace VisualME7Logger
 
             this.btnOpenCloseSession.Enabled = false;
 
-            lblStatus.Text = string.Format("Log Status: {0}", status);
+            lblStatus.Text = string.Format("Log Status: {0} - Samples: {1}/sec{2}",
+                status,
+                session.SamplesPerSecond,
+                session.CurrentSamplesPerSecond != session.SamplesPerSecond ? string.Format(" - Displaying: {0}/sec", session.CurrentSamplesPerSecond) : "");
 
             if (status == ME7LoggerSession.Statuses.Initialized)
             {
                 queue = new Queue<LogLine>();
+                buffer = new List<LogLine>();
+                
 
                 flpVariables.Controls.Clear();
-                Font f = null;
+                
                 foreach (SessionVariable v in session.Variables.Values)
                 {
                     FlowLayoutPanel flp = new FlowLayoutPanel();
@@ -116,12 +140,12 @@ namespace VisualME7Logger
                     flp.WrapContents = false;
                     flp.AutoSize = true;
                     flp.Margin = new Padding(0, 1, 0, 1);
+                    flp.Tag = v;
+                    flp.MouseUp += flp_MouseUp;
 
                     Label name = new Label();
-                    if (f == null)
-                    {
-                        f = new Font(name.Font.FontFamily, name.Font.Size + 1);
-                    }
+                    Font f = new Font(name.Font.FontFamily, name.Font.Size + 1, this.DisplayOptions.GraphVariables.Any(gv => gv.Variable == v.Name && gv.Active) ? FontStyle.Bold : FontStyle.Regular);
+                    
                     name.Name = v.Name;
                     name.Height = 20;
                     name.Text = v.ToString();
@@ -129,6 +153,8 @@ namespace VisualME7Logger
                     name.TextAlign = ContentAlignment.MiddleLeft;
                     name.Font = f;
                     name.RightToLeft = System.Windows.Forms.RightToLeft.No;
+                    name.Tag = v;
+                    name.MouseUp += flp_MouseUp;
 
                     Label value = new Label();
                     value.Name = v.Name;
@@ -137,6 +163,8 @@ namespace VisualME7Logger
                     value.BorderStyle = BorderStyle.Fixed3D;
                     value.Font = f;
                     value.RightToLeft = System.Windows.Forms.RightToLeft.No;
+                    value.Tag = v;
+                    value.MouseUp += flp_MouseUp;
 
                     flp.Controls.Add(value);
                     flp.Controls.Add(name);
@@ -166,6 +194,47 @@ namespace VisualME7Logger
             }
         }
 
+        void flp_MouseUp(object sender, EventArgs e)
+        {
+            SessionVariable v = ((Control)sender).Tag as SessionVariable;
+            if (v != null)
+            {
+                bool newVar = false;
+                GraphVariable graphVariable = this.DisplayOptions.GraphVariables.FirstOrDefault(gv => gv.Variable == v.Name);
+                if (graphVariable == null)
+                {
+                    newVar = true;
+                    graphVariable = new GraphVariable()
+                    {
+                        Variable = v.Name,
+                        Name = v.Alias
+                    };
+                }
+                GraphVariableForm gvf = new GraphVariableForm(graphVariable);
+                if (DialogResult.OK == gvf.ShowDialog())
+                {
+                    if (newVar)
+                    {
+                        this.DisplayOptions.GraphVariables.Add(graphVariable);
+                    }
+                    this.BuildChart();
+                    
+                    Control panel = (Control)sender;
+                    if (sender is Label)
+                    {
+                        panel = ((Control)sender).Parent;
+                    }
+
+                    Font f = panel.Controls[0].Font;
+                    f = new Font(f, graphVariable.Active ? FontStyle.Bold : FontStyle.Regular);
+                    foreach (Control c in panel.Controls)
+                    {
+                        c.Font = f;
+                    }
+                }
+            }
+        }
+
         void BuildChart()
         {
             chart1.ChartAreas[0].AxisY.Minimum = 0;
@@ -173,7 +242,7 @@ namespace VisualME7Logger
 
             chart1.Series.Clear();
 
-            foreach (GraphVariable graphVariable in this.DisplayOptions.GraphVariables.Where(v => v.Active))
+            foreach (GraphVariable graphVariable in this.DisplayOptions.GraphVariables)
             {
                 SessionVariable var = session.Variables[graphVariable.Variable];
                 if (var != null)
@@ -183,20 +252,27 @@ namespace VisualME7Logger
                     s.ChartType = (SeriesChartType)cmbChartType.SelectedItem;
                     s.BorderWidth = graphVariable.LineThickness;
                     s.BorderDashStyle = graphVariable.LineStyle;
+                    s.Enabled = graphVariable.Active;
                     s.ToolTip = "so tool tips show up";
                     chart1.Series.Add(s);
+                    
                     for (int i = 0; i < this.DisplayOptions.GraphHRes; ++i)
                     {
                         s.Points.Add(-1, -1).AxisLabel = "0";
                     }
                 }
             }
+
+            foreach (LogLine line in buffer)
+            {
+                this.PlotLineOnChart(line);
+            }
         }
 
         void PlotLineOnChart(LogLine line)
         {
             int i = 0;
-            foreach (GraphVariable graphVariable in this.DisplayOptions.GraphVariables.Where(gv => gv.Active))
+            foreach (GraphVariable graphVariable in this.DisplayOptions.GraphVariables)
             {
                 if (session.Variables.GetByName(graphVariable.Variable) != null)
                 {
@@ -209,6 +285,7 @@ namespace VisualME7Logger
                         DataPoint p = s.Points.Add((double)percent);
                         p.AxisLabel = decimal.Round(line.TimeStamp, 1).ToString();
                         p.ToolTip = string.Format("{0}: {1} {2}", graphVariable.Name, v.Value, v.SessionVariable.Unit);
+                        p.Tag = v;
                     }
                     s.Points.RemoveAt(0);
                 }
@@ -228,7 +305,7 @@ namespace VisualME7Logger
         {
             if (!this.CloseSession())
             {
-                e.Cancel = true; 
+                e.Cancel = true;
             }
         }
 
@@ -465,8 +542,8 @@ namespace VisualME7Logger
         }
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
-        {           
-            if(e.KeyData != Keys.Enter)
+        {
+            if (e.KeyData != Keys.Enter)
             {
                 chart1_KeyUp(sender, e);
             }
@@ -507,6 +584,7 @@ namespace VisualME7Logger
 
         private void ProcessSelect(System.Windows.Forms.KeyEventArgs e)
         {
+            chart1.ChartAreas[0].CursorX.Interval = 10;
             // Process keyboard keys
             if (e.KeyCode == Keys.Right)
             {
@@ -558,16 +636,19 @@ namespace VisualME7Logger
 
         private void ProcessScroll(System.Windows.Forms.KeyEventArgs e)
         {
+            chart1.ChartAreas[0].CursorX.Interval = 1;
             // Process keyboard keys
             if (e.KeyCode == Keys.Right)
             {
                 // set the new cursor position 
                 chart1.ChartAreas[0].CursorX.Position += chart1.ChartAreas[0].CursorX.Interval;
+                this.DisplayLineAtCursor(); 
             }
             else if (e.KeyCode == Keys.Left)
             {
                 // Set the new cursor position 
                 chart1.ChartAreas[0].CursorX.Position -= chart1.ChartAreas[0].CursorX.Interval;
+                this.DisplayLineAtCursor(); 
             }
 
             // If the cursor is outside the view, set the view
@@ -648,12 +729,49 @@ namespace VisualME7Logger
             {
                 HighlightPoints();
             }
-        }      
+        }
         #endregion
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
-        }     
+        }
+
+        private void increasePlaybackSpeedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.session.SetSpeed(5);
+        }
+
+        private void decreasePlaybackSpeedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.session.SetSpeed(-5);
+        }
+
+        private void resetPlaybackSpeedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.session.ResetSpeed();
+        }
+
+        private void chart1_CursorPositionChanged(object sender, CursorEventArgs e)
+        {
+            this.DisplayLineAtCursor(); 
+        }
+
+        private void DisplayLineAtCursor()
+        {
+            if (chart1.Series.Count > 0)
+            {
+                int pos = (int)chart1.ChartAreas[0].CursorX.Position;
+                if (pos >= 0 && pos < chart1.Series[0].Points.Count)
+                {
+                    DataPoint p = chart1.Series[0].Points[pos - 1];
+                    Variable var = p.Tag as Variable;
+                    if (var != null)
+                    {
+                        DisplayLine(var.LogLine);
+                    }
+                }
+            }
+        }
     }
 }
