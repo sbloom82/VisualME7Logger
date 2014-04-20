@@ -47,7 +47,20 @@ namespace VisualME7Logger.Session
                 }
             }
         }
-        public short SamplesPerSecond { get; private set; }
+        public short _samplesPerSecond;
+        public short SamplesPerSecond 
+        {
+            get
+            {
+                return _samplesPerSecond;
+            }
+            private set
+            {
+                _samplesPerSecond = value;
+                CurrentSamplesPerSecond = _samplesPerSecond;
+            }                 
+        }
+        public short CurrentSamplesPerSecond { get; private set; }
         public DateTime LogStarted { get; private set; }
         public LoggerSessionStatusChanged StatusChanged;
         public LogLineRead LineRead;
@@ -57,7 +70,7 @@ namespace VisualME7Logger.Session
         public SessionVariables Variables { get; private set; }
         public ME7LoggerLog Log { get; private set; }
 
-        public bool CanPause { get { return this.SessionType != SessionTypes.RealTime; } }
+        public bool CanSetPlaybackSpeed { get { return this.SessionType != SessionTypes.RealTime; } }
 
         private LoggerOptions options;
         private string configFilePath;
@@ -166,11 +179,43 @@ namespace VisualME7Logger.Session
             this.Close();
         }
 
+        public void ResetSpeed()
+        {
+            if (this.SessionType != SessionTypes.RealTime)
+            {
+                this.CurrentSamplesPerSecond = this.SamplesPerSecond;
+                if (this.StatusChanged != null)
+                {
+                    StatusChanged(_status);
+                }
+            }
+        }
+
+        public void SetSpeed(int add)
+        {
+            if (this.SessionType != SessionTypes.RealTime)
+            {
+                if (this.CurrentSamplesPerSecond + add > 0)
+                {
+                    this.CurrentSamplesPerSecond += (short)add;
+                }
+                else
+                {
+                    this.CurrentSamplesPerSecond = 1;
+                }
+
+                if(this.StatusChanged != null)
+                {
+                    StatusChanged(_status);
+                }
+            }
+        }
+
         public void Pause()
         {
             if (this.Status == Statuses.Open)
             {
-                if (this.SessionType == SessionTypes.LogFile)
+                if (this.SessionType != SessionTypes.RealTime)
                 {
                     this.Log.Pause();
                     this.Status = Statuses.Paused;

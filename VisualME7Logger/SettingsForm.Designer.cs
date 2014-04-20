@@ -1019,6 +1019,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "SettingsForm";
             this.Text = "Visual ME7Logger";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SettingsForm_FormClosed);
             this.panel1.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.tpMeasurements.ResumeLayout(false);

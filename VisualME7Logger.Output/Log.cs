@@ -104,11 +104,10 @@ namespace VisualME7Logger.Log
         {
             paused = false;
         }
-
+  
         private void OpenFromLogFile(object parameter)
         {
             string logFilePath = (string)parameter;
-            int wait = (int)((1 / (double)Session.SamplesPerSecond) * 1000);
             using (StreamReader sr = new StreamReader(logFilePath, Encoding.UTF7))
             {
                 bool ready = false;
@@ -135,7 +134,11 @@ namespace VisualME7Logger.Log
                             {
                                 this.Session.LineRead(logLine);
                             }
-                            int waitTime = wait - (int)DateTime.Now.Subtract(time).TotalMilliseconds;
+
+                            int waitTime =
+                                (int)((1 / (double)Session.CurrentSamplesPerSecond) * 1000) -
+                                (int)DateTime.Now.Subtract(time).TotalMilliseconds;
+                            
                             if (waitTime > 0)
                                 System.Threading.Thread.Sleep(waitTime);
                         }
@@ -187,7 +190,7 @@ namespace VisualME7Logger.Log
                 {
                     value = values[i].Trim();
                 }
-                Variable v = new Variable(Log.Session.Variables.GetByNumber(i), value);
+                Variable v = new Variable(this, Log.Session.Variables.GetByNumber(i), value);
                 variablesByNumber.Add(i, v);
                 variablesByName.Add(v.SessionVariable.Name, v);
             }
@@ -206,11 +209,13 @@ namespace VisualME7Logger.Log
 
     public class Variable
     {
+        public LogLine LogLine { get; private set; }
         public SessionVariable SessionVariable { get; private set; }
         public string Value { get; private set; }
 
-        public Variable(SessionVariable sessionVariable, string value)
+        public Variable(LogLine logLine, SessionVariable sessionVariable, string value)
         {
+            this.LogLine = logLine;
             this.SessionVariable = sessionVariable;
             this.Value = value;
         }

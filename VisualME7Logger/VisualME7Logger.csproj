@@ -109,6 +109,12 @@
     <Compile Include="ChecksumForm.Designer.cs">
       <DependentUpon>ChecksumForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="GraphVariableForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GraphVariableForm.Designer.cs">
+      <DependentUpon>GraphVariableForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="OptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -128,6 +134,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ChecksumForm.resx">
       <DependentUpon>ChecksumForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GraphVariableForm.resx">
+      <DependentUpon>GraphVariableForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OptionsForm.resx">
       <DependentUpon>OptionsForm.cs</DependentUpon>

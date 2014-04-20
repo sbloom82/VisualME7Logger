@@ -42,6 +42,7 @@
             this.radCommCOMPort = new System.Windows.Forms.RadioButton();
             this.radCommDefault = new System.Windows.Forms.RadioButton();
             this.gpOther = new System.Windows.Forms.GroupBox();
+            this.chkWriteOutputToFile = new System.Windows.Forms.CheckBox();
             this.chkReadSingleMeasurement = new System.Windows.Forms.CheckBox();
             this.chkWriteAbsoluteTimeStamp = new System.Windows.Forms.CheckBox();
             this.nudSampleRate = new System.Windows.Forms.NumericUpDown();
@@ -54,7 +55,6 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.btnChooseLogPath = new System.Windows.Forms.Button();
-            this.chkWriteOutputToFile = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.gpOther.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudSampleRate)).BeginInit();
@@ -219,6 +219,16 @@
             this.gpOther.TabStop = false;
             this.gpOther.Text = "Other";
             // 
+            // chkWriteOutputToFile
+            // 
+            this.chkWriteOutputToFile.AutoSize = true;
+            this.chkWriteOutputToFile.Location = new System.Drawing.Point(6, 134);
+            this.chkWriteOutputToFile.Name = "chkWriteOutputToFile";
+            this.chkWriteOutputToFile.Size = new System.Drawing.Size(170, 17);
+            this.chkWriteOutputToFile.TabIndex = 6;
+            this.chkWriteOutputToFile.Text = "Write ME7Logger output to file";
+            this.chkWriteOutputToFile.UseVisualStyleBackColor = true;
+            // 
             // chkReadSingleMeasurement
             // 
             this.chkReadSingleMeasurement.AutoSize = true;
@@ -356,16 +366,6 @@
             this.btnChooseLogPath.UseVisualStyleBackColor = true;
             this.btnChooseLogPath.Click += new System.EventHandler(this.btnChooseLogPath_Click);
             // 
-            // chkWriteOutputToFile
-            // 
-            this.chkWriteOutputToFile.AutoSize = true;
-            this.chkWriteOutputToFile.Location = new System.Drawing.Point(6, 134);
-            this.chkWriteOutputToFile.Name = "chkWriteOutputToFile";
-            this.chkWriteOutputToFile.Size = new System.Drawing.Size(170, 17);
-            this.chkWriteOutputToFile.TabIndex = 6;
-            this.chkWriteOutputToFile.Text = "Write ME7Logger output to file";
-            this.chkWriteOutputToFile.UseVisualStyleBackColor = true;
-            // 
             // OptionsForm
             // 
             this.AcceptButton = this.btnOk;
@@ -382,7 +382,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "OptionsForm";
-            this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Visual ME7Logger Options";
             this.groupBox1.ResumeLayout(false);
