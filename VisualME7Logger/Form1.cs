@@ -662,7 +662,7 @@ namespace VisualME7Logger
             chart1.ChartAreas[0].CursorX.SelectionStart = double.NaN;
             chart1.ChartAreas[0].CursorX.SelectionEnd = double.NaN;
         }
-
+        
         private void chart1_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
         {
             if ((e.KeyCode == Keys.Right) || (e.KeyCode == Keys.Left))
@@ -773,5 +773,6 @@ namespace VisualME7Logger
                 }
             }
         }
+       
     }
 }

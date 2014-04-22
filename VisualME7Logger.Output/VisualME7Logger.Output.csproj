@@ -48,6 +48,7 @@
     <Compile Include="ChecksumInfo.cs" />
     <Compile Include="CommunicationInfo.cs" />
     <Compile Include="ECUFile.cs" />
+    <Compile Include="EEPROM.cs" />
     <Compile Include="IdentificationInfo.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="LoggerSession.cs" />
