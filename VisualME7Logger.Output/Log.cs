@@ -152,6 +152,7 @@ namespace VisualME7Logger.Log
                     time = DateTime.Now;
                 }
             }
+            Session.Close();
         }
 
         internal LogLine ReadLine(string line)
