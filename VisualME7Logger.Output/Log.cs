@@ -114,12 +114,20 @@ namespace VisualME7Logger.Log
                 string line;
                 DateTime time = DateTime.Now;
                 while ((line = sr.ReadLine()) != null && !stop)
-                {
-                    if (!ready && line.StartsWith("\"TIME"))
+                {   
+                    if (!ready)
                     {
-                        ready = true;
+                        if (this.Session.DataRead != null)
+                        {
+                            this.Session.DataRead(line);
+                        }
+
+                        if (line.StartsWith("\"TIME"))
+                        {
+                            ready = true;
+                        }
                     }
-                    else if (ready)
+                    else
                     {
                         if (string.IsNullOrWhiteSpace(line) || line[0] == '#')
                         {
@@ -138,14 +146,14 @@ namespace VisualME7Logger.Log
                             int waitTime =
                                 (int)((1 / (double)Session.CurrentSamplesPerSecond) * 1000) -
                                 (int)DateTime.Now.Subtract(time).TotalMilliseconds;
-                            
+
                             if (waitTime > 0)
                                 System.Threading.Thread.Sleep(waitTime);
                         }
                         catch { }
                     }                    
                     
-                    while (paused)
+                    while (paused && !stop)
                     {
                         System.Threading.Thread.Sleep(25);
                     }

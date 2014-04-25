@@ -32,6 +32,7 @@ namespace VisualME7Logger.Session
 
         public delegate void LoggerSessionStatusChanged(Statuses status);
         public delegate void LogLineRead(LogLine logLine);
+        public delegate void SessionDataRead(string line, bool error = false);
 
         private Statuses _status;
         public Statuses Status
@@ -47,8 +48,9 @@ namespace VisualME7Logger.Session
                 }
             }
         }
+        public bool IsOpen { get { return this.Status != Statuses.Closed && this.Status != Statuses.Closing && this.Status != Statuses.New; } }
         public short _samplesPerSecond;
-        public short SamplesPerSecond 
+        public short SamplesPerSecond
         {
             get
             {
@@ -58,12 +60,13 @@ namespace VisualME7Logger.Session
             {
                 _samplesPerSecond = value;
                 CurrentSamplesPerSecond = _samplesPerSecond;
-            }                 
+            }
         }
         public short CurrentSamplesPerSecond { get; private set; }
         public DateTime LogStarted { get; private set; }
         public LoggerSessionStatusChanged StatusChanged;
         public LogLineRead LineRead;
+        public SessionDataRead DataRead;
         public SessionTypes SessionType { get; private set; }
         public CommunicationInfo CommunicationInfo { get; private set; }
         public IdentificationInfo IdentificationInfo { get; private set; }
@@ -204,7 +207,7 @@ namespace VisualME7Logger.Session
                     this.CurrentSamplesPerSecond = 1;
                 }
 
-                if(this.StatusChanged != null)
+                if (this.StatusChanged != null)
                 {
                     StatusChanged(_status);
                 }
@@ -250,7 +253,12 @@ namespace VisualME7Logger.Session
                 {
                     outputWriter.WriteLine("**error**{0}", e.Data);
                 }
-                errorTextBuilder.AppendFormat("{0}{1}", string.IsNullOrEmpty(ErrorText) ? string.Empty : Environment.NewLine, e.Data);
+
+                if (this.DataRead != null)
+                {
+                    this.DataRead(e.Data, true);
+                }                
+                errorTextBuilder.AppendFormat("{0}{1}", string.IsNullOrEmpty(ErrorText) ? string.Empty : Environment.NewLine, e.Data);           
             }
         }
 
@@ -387,54 +395,58 @@ namespace VisualME7Logger.Session
         private string ecuDef;
         private bool ReadLine(string line)
         {
-            if (line == null)
+            if (line != null)
             {
-                //nothing
-            }
-            else if (string.IsNullOrEmpty(logConfigFile))
-            {
-                logConfigFile = line;
-            }
-            else if (string.IsNullOrEmpty(ecuCharacteristicsFile))
-            {
-                ecuCharacteristicsFile = line;
-            }
-            else if (string.IsNullOrEmpty(ecuDef))
-            {
-                ecuDef = line;
-            }
-            else if (CommunicationInfo == null && line == "[Communication]")
-            {
-                //[Communication]
-                CommunicationInfo = new CommunicationInfo();
-            }
-            else if (CommunicationInfo != null && !CommunicationInfo.Complete)
-            {
-                CommunicationInfo.ReadLine(line);
-            }
-            else if (IdentificationInfo == null && line == "[Identification]")
-            {
-                //[Identification]
-                IdentificationInfo = new IdentificationInfo();
-            }
-            else if (IdentificationInfo != null && !IdentificationInfo.Complete)
-            {
-                IdentificationInfo.ReadLine(line);
-            }
-            else if (Variables == null && line == "Logged variables are:")
-            {
-                //logged variables are:
-                Variables = new SessionVariables();
-            }
-            else if (Variables != null && !Variables.Complete)
-            {
-                Variables.ReadLine(line);
-            }
-            else if (line.StartsWith("-> Start logging"))
-            {
-                SamplesPerSecond = short.Parse(line.Substring(line.IndexOf(",") + 2,
-                    line.IndexOf("samples/second") - line.IndexOf(",") - 3));
-                return true;
+                if (this.DataRead != null)
+                {
+                    this.DataRead(line);
+                }
+
+                if (string.IsNullOrEmpty(logConfigFile))
+                {
+                    logConfigFile = line;
+                }
+                else if (string.IsNullOrEmpty(ecuCharacteristicsFile))
+                {
+                    ecuCharacteristicsFile = line;
+                }
+                else if (string.IsNullOrEmpty(ecuDef))
+                {
+                    ecuDef = line;
+                }
+                else if (CommunicationInfo == null && line == "[Communication]")
+                {
+                    //[Communication]
+                    CommunicationInfo = new CommunicationInfo();
+                }
+                else if (CommunicationInfo != null && !CommunicationInfo.Complete)
+                {
+                    CommunicationInfo.ReadLine(line);
+                }
+                else if (IdentificationInfo == null && line == "[Identification]")
+                {
+                    //[Identification]
+                    IdentificationInfo = new IdentificationInfo();
+                }
+                else if (IdentificationInfo != null && !IdentificationInfo.Complete)
+                {
+                    IdentificationInfo.ReadLine(line);
+                }
+                else if (Variables == null && line == "Logged variables are:")
+                {
+                    //logged variables are:
+                    Variables = new SessionVariables();
+                }
+                else if (Variables != null && !Variables.Complete)
+                {
+                    Variables.ReadLine(line);
+                }
+                else if (line.StartsWith("-> Start logging"))
+                {
+                    SamplesPerSecond = short.Parse(line.Substring(line.IndexOf(",") + 2,
+                        line.IndexOf("samples/second") - line.IndexOf(",") - 3));
+                    return true;
+                }
             }
             return false;
         }
