@@ -29,7 +29,7 @@ namespace VisualME7Logger
         {
             InitializeComponent();
 
-            this.txtSessionData.Visible = this.spSessionData.Visible = sessionOutputToolStripMenuItem.Checked;
+            this.pnlSessionData.Visible = this.spSessionData.Visible = sessionOutputToolStripMenuItem.Checked;
 
             this.DisplayOptions = displayOptions;
             foreach (var v in Enum.GetValues(typeof(SeriesChartType)))
@@ -882,7 +882,7 @@ namespace VisualME7Logger
         private void sessionOutputToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.sessionOutputToolStripMenuItem.Checked = !this.sessionOutputToolStripMenuItem.Checked;
-            this.txtSessionData.Visible = this.spSessionData.Visible = sessionOutputToolStripMenuItem.Checked;
+            this.spSessionData.Visible = this.pnlSessionData.Visible = sessionOutputToolStripMenuItem.Checked;
         }
 
         private void showDataGridViewToolStripMenuItem_Click(object sender, EventArgs e)
