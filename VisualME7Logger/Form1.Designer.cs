@@ -57,10 +57,17 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.freezeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.snapImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
+            this.sessionOutputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showDataGridViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.flpVariables = new System.Windows.Forms.FlowLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.spDataGrid = new System.Windows.Forms.Splitter();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.spSessionData = new System.Windows.Forms.Splitter();
+            this.txtSessionData = new System.Windows.Forms.TextBox();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.panel2 = new System.Windows.Forms.Panel();
             this.btnOpenCloseSession = new System.Windows.Forms.Button();
@@ -68,6 +75,7 @@
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -128,7 +136,6 @@
             // startToolStripMenuItem1
             // 
             this.startToolStripMenuItem1.Name = "startToolStripMenuItem1";
-            this.startToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
             this.startToolStripMenuItem1.Size = new System.Drawing.Size(237, 22);
             this.startToolStripMenuItem1.Text = "&Open";
             this.startToolStripMenuItem1.Click += new System.EventHandler(this.startToolStripMenuItem1_Click);
@@ -136,7 +143,6 @@
             // stopToolStripMenuItem1
             // 
             this.stopToolStripMenuItem1.Name = "stopToolStripMenuItem1";
-            this.stopToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
             this.stopToolStripMenuItem1.Size = new System.Drawing.Size(237, 22);
             this.stopToolStripMenuItem1.Text = "&Close";
             this.stopToolStripMenuItem1.Click += new System.EventHandler(this.stopToolStripMenuItem1_Click);
@@ -215,7 +221,10 @@
             this.cmbChartType,
             this.toolStripMenuItem1,
             this.freezeToolStripMenuItem,
-            this.snapImageToolStripMenuItem});
+            this.snapImageToolStripMenuItem,
+            this.toolStripMenuItem6,
+            this.sessionOutputToolStripMenuItem,
+            this.showDataGridViewToolStripMenuItem});
             this.graphToolStripMenuItem.Name = "graphToolStripMenuItem";
             this.graphToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.graphToolStripMenuItem.Text = "&Options";
@@ -238,6 +247,7 @@
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
             this.toolStripMenuItem3.Size = new System.Drawing.Size(224, 6);
+            this.toolStripMenuItem3.Visible = false;
             // 
             // chartTypeToolStripMenuItem
             // 
@@ -245,11 +255,13 @@
             this.chartTypeToolStripMenuItem.Name = "chartTypeToolStripMenuItem";
             this.chartTypeToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
             this.chartTypeToolStripMenuItem.Text = "Chart Type";
+            this.chartTypeToolStripMenuItem.Visible = false;
             // 
             // cmbChartType
             // 
             this.cmbChartType.Name = "cmbChartType";
             this.cmbChartType.Size = new System.Drawing.Size(121, 23);
+            this.cmbChartType.Visible = false;
             this.cmbChartType.SelectedIndexChanged += new System.EventHandler(this.cmbChartType_SelectedIndexChanged);
             // 
             // toolStripMenuItem1
@@ -272,6 +284,25 @@
             this.snapImageToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
             this.snapImageToolStripMenuItem.Text = "&Capture Graph Image";
             this.snapImageToolStripMenuItem.Click += new System.EventHandler(this.snapImageToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem6
+            // 
+            this.toolStripMenuItem6.Name = "toolStripMenuItem6";
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(224, 6);
+            // 
+            // sessionOutputToolStripMenuItem
+            // 
+            this.sessionOutputToolStripMenuItem.Name = "sessionOutputToolStripMenuItem";
+            this.sessionOutputToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.sessionOutputToolStripMenuItem.Text = "Show Session Output";
+            this.sessionOutputToolStripMenuItem.Click += new System.EventHandler(this.sessionOutputToolStripMenuItem_Click);
+            // 
+            // showDataGridViewToolStripMenuItem
+            // 
+            this.showDataGridViewToolStripMenuItem.Name = "showDataGridViewToolStripMenuItem";
+            this.showDataGridViewToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.showDataGridViewToolStripMenuItem.Text = "Show Data Grid View";
+            this.showDataGridViewToolStripMenuItem.Click += new System.EventHandler(this.showDataGridViewToolStripMenuItem_Click);
             // 
             // menuStrip1
             // 
@@ -332,7 +363,7 @@
             this.chart1.Legends.Add(legend1);
             this.chart1.Location = new System.Drawing.Point(287, 0);
             this.chart1.Name = "chart1";
-            this.chart1.Size = new System.Drawing.Size(697, 665);
+            this.chart1.Size = new System.Drawing.Size(697, 379);
             this.chart1.TabIndex = 26;
             this.chart1.Text = "chart";
             this.chart1.CursorPositionChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.chart1_CursorPositionChanged);
@@ -357,6 +388,10 @@
             // panel1
             // 
             this.panel1.Controls.Add(this.chart1);
+            this.panel1.Controls.Add(this.spDataGrid);
+            this.panel1.Controls.Add(this.dataGridView1);
+            this.panel1.Controls.Add(this.spSessionData);
+            this.panel1.Controls.Add(this.txtSessionData);
             this.panel1.Controls.Add(this.splitter1);
             this.panel1.Controls.Add(this.panel2);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -364,6 +399,58 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(984, 665);
             this.panel1.TabIndex = 40;
+            // 
+            // spDataGrid
+            // 
+            this.spDataGrid.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.spDataGrid.Location = new System.Drawing.Point(287, 379);
+            this.spDataGrid.Name = "spDataGrid";
+            this.spDataGrid.Size = new System.Drawing.Size(697, 3);
+            this.spDataGrid.TabIndex = 46;
+            this.spDataGrid.TabStop = false;
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.AllowUserToOrderColumns = true;
+            this.dataGridView1.AllowUserToResizeRows = false;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.dataGridView1.Location = new System.Drawing.Point(287, 382);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.RowHeadersVisible = false;
+            this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToFirstHeader;
+            this.dataGridView1.RowTemplate.DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.dataGridView1.RowTemplate.Height = 15;
+            this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dataGridView1.Size = new System.Drawing.Size(697, 150);
+            this.dataGridView1.TabIndex = 45;
+            this.dataGridView1.VisibleChanged += new System.EventHandler(this.dataGridView1_VisibleChanged);
+            // 
+            // spSessionData
+            // 
+            this.spSessionData.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.spSessionData.Location = new System.Drawing.Point(287, 532);
+            this.spSessionData.Name = "spSessionData";
+            this.spSessionData.Size = new System.Drawing.Size(697, 3);
+            this.spSessionData.TabIndex = 44;
+            this.spSessionData.TabStop = false;
+            // 
+            // txtSessionData
+            // 
+            this.txtSessionData.BackColor = System.Drawing.SystemColors.Control;
+            this.txtSessionData.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.txtSessionData.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSessionData.Location = new System.Drawing.Point(287, 535);
+            this.txtSessionData.Multiline = true;
+            this.txtSessionData.Name = "txtSessionData";
+            this.txtSessionData.ReadOnly = true;
+            this.txtSessionData.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.txtSessionData.Size = new System.Drawing.Size(697, 130);
+            this.txtSessionData.TabIndex = 43;
+            this.txtSessionData.WordWrap = false;
             // 
             // splitter1
             // 
@@ -419,6 +506,8 @@
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -460,6 +549,13 @@
         private System.Windows.Forms.ToolStripMenuItem increasePlaybackSpeedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem decreasePlaybackSpeedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resetPlaybackSpeedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sessionOutputToolStripMenuItem;
+        private System.Windows.Forms.Splitter spSessionData;
+        private System.Windows.Forms.TextBox txtSessionData;
+        private System.Windows.Forms.ToolStripMenuItem showDataGridViewToolStripMenuItem;
+        private System.Windows.Forms.Splitter spDataGrid;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;
     }
 }
 

@@ -29,6 +29,8 @@ namespace VisualME7Logger
         {
             InitializeComponent();
 
+            this.txtSessionData.Visible = this.spSessionData.Visible = sessionOutputToolStripMenuItem.Checked;
+
             this.DisplayOptions = displayOptions;
             foreach (var v in Enum.GetValues(typeof(SeriesChartType)))
             {
@@ -54,13 +56,145 @@ namespace VisualME7Logger
 
             session.StatusChanged += new ME7LoggerSession.LoggerSessionStatusChanged(this.SessionStatusChanged);
             session.LineRead += new ME7LoggerSession.LogLineRead(this.LogLineRead);
+            session.DataRead += new ME7LoggerSession.SessionDataRead(this.SessionDataRead);
 
             this.OpenSession();
 
             pauseToolStripMenuItem.Enabled =
             increasePlaybackSpeedToolStripMenuItem.Enabled =
-                decreasePlaybackSpeedToolStripMenuItem.Enabled = 
+                decreasePlaybackSpeedToolStripMenuItem.Enabled =
                 resetPlaybackSpeedToolStripMenuItem.Enabled = session.CanSetPlaybackSpeed;
+        }
+
+        void SessionStatusChanged(ME7LoggerSession.Statuses status)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new MethodInvoker(
+                    delegate() { SessionStatusChanged(status); }));
+                return;
+            }
+
+            this.btnOpenCloseSession.Enabled = false;
+
+            txtSessionData.AppendText(string.Format("VISUALME7LOGGER STATUS: {0}\r\n", status));
+            if (status == ME7LoggerSession.Statuses.Closed)
+            {
+                txtSessionData.AppendText("\r\n**********************VISUALME7LOGGER SESSION CLOSED**********************\r\n\r\n");
+            }
+
+            lblStatus.Text = string.Format("Log Status: {0} - Samples: {1}/sec{2}",
+                status,
+                session.SamplesPerSecond,
+                session.CurrentSamplesPerSecond != session.SamplesPerSecond ? string.Format(" - Displaying: {0}/sec", session.CurrentSamplesPerSecond) : "");
+
+            if (status == ME7LoggerSession.Statuses.Initialized)
+            {
+                this.Initialize();
+
+            }
+            else if (status == ME7LoggerSession.Statuses.Open)
+            {
+                refreshTimer.Start();
+                flpVariables_Resize(null, null);
+                this.btnOpenCloseSession.Enabled = true;
+                this.btnOpenCloseSession.Text = "Close Session";
+                this.showDataGridViewToolStripMenuItem.Enabled = false;
+                this.spDataGrid.Visible =
+                    this.dataGridView1.Visible =
+                    this.showDataGridViewToolStripMenuItem.Checked = false;
+            }
+            else if (status == ME7LoggerSession.Statuses.Closed)
+            {
+                refreshTimer.Stop();
+                if (session.ExitCode > 0)
+                {
+                    MessageBox.Show(string.Format("Error! Exit Code:{0}{1}{2}", session.ExitCode, Environment.NewLine, session.ErrorText));
+                }
+                this.btnOpenCloseSession.Enabled = true;
+                this.btnOpenCloseSession.Text = "Open Session";
+            }
+            else if (status == ME7LoggerSession.Statuses.Paused)
+            {
+                refreshTimer.Stop();
+                this.showDataGridViewToolStripMenuItem.Enabled = true;
+            }
+        }
+
+        void SessionDataRead(string line, bool error = false)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new MethodInvoker(
+                    delegate() { SessionDataRead(line, error); }));
+                return;
+            }
+            this.txtSessionData.AppendText(string.Format("{0}{1}\r\n", error ? "***" : "", line));
+        }
+
+        void LogLineRead(LogLine line)
+        {
+            if (Program.Debug)
+            {
+                Program.WriteDebug(string.Format("line at TS {0} read", line.TimeStamp));
+            }
+            queue.Enqueue(line);
+        }
+
+        void Initialize()
+        {
+            queue = new Queue<LogLine>();
+            buffer = new List<LogLine>();
+
+            flpVariables.Controls.Clear();
+
+            dataGridView1.Rows.Clear();
+            dataGridView1.Columns.Clear();
+            dataGridView1.Columns.Add("Timestamp", "TIME");
+            foreach (SessionVariable v in session.Variables.Values)
+            {
+                dataGridView1.Columns.Add(v.Name, string.IsNullOrEmpty(v.Alias) ? v.Name : v.Alias);
+
+                FlowLayoutPanel flp = new FlowLayoutPanel();
+                flp.Name = v.Name;
+                flp.FlowDirection = FlowDirection.LeftToRight;
+                flp.WrapContents = false;
+                flp.AutoSize = true;
+                flp.Margin = new Padding(0, 1, 0, 1);
+                flp.Tag = v;
+                flp.MouseUp += flp_MouseUp;
+
+                Label name = new Label();
+                Font f = new Font(name.Font.FontFamily, name.Font.Size + 1, this.DisplayOptions.GraphVariables.Any(gv => gv.Variable == v.Name && gv.Active) ? FontStyle.Bold : FontStyle.Regular);
+
+                name.Name = v.Name;
+                name.Height = 20;
+                name.Text = v.ToString();
+                name.BorderStyle = BorderStyle.Fixed3D;
+                name.TextAlign = ContentAlignment.MiddleLeft;
+                name.Font = f;
+                name.RightToLeft = System.Windows.Forms.RightToLeft.No;
+                name.Tag = v;
+                name.MouseUp += flp_MouseUp;
+
+                Label value = new Label();
+                value.Name = v.Name;
+                value.TextAlign = ContentAlignment.MiddleLeft;
+                value.Height = 20;
+                value.BorderStyle = BorderStyle.Fixed3D;
+                value.Font = f;
+                value.RightToLeft = System.Windows.Forms.RightToLeft.No;
+                value.Tag = v;
+                value.MouseUp += flp_MouseUp;
+
+                flp.Controls.Add(value);
+                flp.Controls.Add(name);
+                flpVariables.Controls.Add(flp);
+            }
+
+            this.BuildChart();
+
+            start = DateTime.Now;
         }
 
         void refreshTimer_Tick(object sender, EventArgs e)
@@ -88,8 +222,42 @@ namespace VisualME7Logger
                     }
                 }
 
+                this.AddLineToGrid(line);
                 this.DisplayLine(line);
                 this.PlotLineOnChart(line);
+            }
+        }
+
+        void AddLineToGrid(LogLine line)
+        {
+            if (dataGridView1.Visible)
+            {
+                DataGridViewRow row = new DataGridViewRow();
+                row.Height = 14;
+                row.Tag = line;
+                object[] gridValues = new object[line.Variables.Count() + 1];
+                int i = 0;
+                gridValues[i++] = line.TimeStamp;
+                foreach (Variable var in line.Variables)
+                {
+                    gridValues[i++] = var.Value;
+                }
+                row.CreateCells(dataGridView1, gridValues);
+
+                int firstDisplayed = dataGridView1.FirstDisplayedScrollingRowIndex;
+                int lastVisible = firstDisplayed + dataGridView1.DisplayedRowCount(true) - 1;
+                int lastIndex = dataGridView1.RowCount - 1;
+
+                dataGridView1.Rows.Add(row);
+                if (dataGridView1.Rows.Count > this.DisplayOptions.GraphHRes)
+                {
+                    dataGridView1.Rows.RemoveAt(0);
+                }
+
+                if (lastVisible == lastIndex)
+                {
+                    dataGridView1.FirstDisplayedScrollingRowIndex = firstDisplayed + 1;
+                }
             }
         }
 
@@ -105,92 +273,6 @@ namespace VisualME7Logger
                 Label l = (Label)flpVariables.Controls[i].Controls[0];
                 Variable v = line.Variables.ElementAt(i);
                 l.Text = string.Format("{0} {1}", v.Value, v.SessionVariable.Unit);
-            }
-        }
-
-        void SessionStatusChanged(ME7LoggerSession.Statuses status)
-        {
-            if (this.InvokeRequired)
-            {
-                this.Invoke(new MethodInvoker(
-                    delegate() { SessionStatusChanged(status); }));
-                return;
-            }
-
-            this.btnOpenCloseSession.Enabled = false;
-
-            lblStatus.Text = string.Format("Log Status: {0} - Samples: {1}/sec{2}",
-                status,
-                session.SamplesPerSecond,
-                session.CurrentSamplesPerSecond != session.SamplesPerSecond ? string.Format(" - Displaying: {0}/sec", session.CurrentSamplesPerSecond) : "");
-
-            if (status == ME7LoggerSession.Statuses.Initialized)
-            {
-                queue = new Queue<LogLine>();
-                buffer = new List<LogLine>();
-                
-
-                flpVariables.Controls.Clear();
-                
-                foreach (SessionVariable v in session.Variables.Values)
-                {
-                    FlowLayoutPanel flp = new FlowLayoutPanel();
-                    flp.Name = v.Name;
-                    flp.FlowDirection = FlowDirection.LeftToRight;
-                    flp.WrapContents = false;
-                    flp.AutoSize = true;
-                    flp.Margin = new Padding(0, 1, 0, 1);
-                    flp.Tag = v;
-                    flp.MouseUp += flp_MouseUp;
-
-                    Label name = new Label();
-                    Font f = new Font(name.Font.FontFamily, name.Font.Size + 1, this.DisplayOptions.GraphVariables.Any(gv => gv.Variable == v.Name && gv.Active) ? FontStyle.Bold : FontStyle.Regular);
-                    
-                    name.Name = v.Name;
-                    name.Height = 20;
-                    name.Text = v.ToString();
-                    name.BorderStyle = BorderStyle.Fixed3D;
-                    name.TextAlign = ContentAlignment.MiddleLeft;
-                    name.Font = f;
-                    name.RightToLeft = System.Windows.Forms.RightToLeft.No;
-                    name.Tag = v;
-                    name.MouseUp += flp_MouseUp;
-
-                    Label value = new Label();
-                    value.Name = v.Name;
-                    value.TextAlign = ContentAlignment.MiddleLeft;
-                    value.Height = 20;
-                    value.BorderStyle = BorderStyle.Fixed3D;
-                    value.Font = f;
-                    value.RightToLeft = System.Windows.Forms.RightToLeft.No;
-                    value.Tag = v;
-                    value.MouseUp += flp_MouseUp;
-
-                    flp.Controls.Add(value);
-                    flp.Controls.Add(name);
-                    flpVariables.Controls.Add(flp);
-                }
-
-                this.BuildChart();
-
-                start = DateTime.Now;
-                refreshTimer.Start();
-            }
-            else if (status == ME7LoggerSession.Statuses.Open)
-            {
-                flpVariables_Resize(null, null);
-                this.btnOpenCloseSession.Enabled = true;
-                this.btnOpenCloseSession.Text = "Close Session";
-            }
-            else if (status == ME7LoggerSession.Statuses.Closed)
-            {
-                refreshTimer.Stop();
-                if (session.ExitCode > 0)
-                {
-                    MessageBox.Show(string.Format("Error! Exit Code:{0}{1}{2}", session.ExitCode, Environment.NewLine, session.ErrorText));
-                }
-                this.btnOpenCloseSession.Enabled = true;
-                this.btnOpenCloseSession.Text = "Open Session";
             }
         }
 
@@ -218,7 +300,7 @@ namespace VisualME7Logger
                         this.DisplayOptions.GraphVariables.Add(graphVariable);
                     }
                     this.BuildChart();
-                    
+
                     Control panel = (Control)sender;
                     if (sender is Label)
                     {
@@ -255,7 +337,7 @@ namespace VisualME7Logger
                     s.Enabled = graphVariable.Active;
                     s.ToolTip = "so tool tips show up";
                     chart1.Series.Add(s);
-                    
+
                     for (int i = 0; i < this.DisplayOptions.GraphHRes; ++i)
                     {
                         s.Points.Add(-1, -1).AxisLabel = "0";
@@ -290,15 +372,6 @@ namespace VisualME7Logger
                     s.Points.RemoveAt(0);
                 }
             }
-        }
-
-        void LogLineRead(LogLine line)
-        {
-            if (Program.Debug)
-            {
-                Program.WriteDebug(string.Format("line at TS {0} read", line.TimeStamp));
-            }
-            queue.Enqueue(line);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -347,7 +420,7 @@ namespace VisualME7Logger
 
         private void OpenSession()
         {
-            if (session.Status != ME7LoggerSession.Statuses.Open)
+            if (!session.IsOpen)
             {
                 try
                 {
@@ -367,7 +440,7 @@ namespace VisualME7Logger
 
         private bool CloseSession()
         {
-            if (session.Status == ME7LoggerSession.Statuses.Open)
+            if (session.Status != ME7LoggerSession.Statuses.Closed)
             {
                 if (DialogResult.No ==
                    MessageBox.Show(this, "Do you wish to close the session?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1))
@@ -505,11 +578,19 @@ namespace VisualME7Logger
             {
                 refreshTimer.Stop();
                 HighlightPoints();
+
+                this.showDataGridViewToolStripMenuItem.Enabled = true;
             }
             if (!this.freezeToolStripMenuItem.Checked && this.session.Status == ME7LoggerSession.Statuses.Open)
             {
                 HighlightPoints(false);
                 refreshTimer.Start();
+
+                this.showDataGridViewToolStripMenuItem.Enabled =
+                    this.showDataGridViewToolStripMenuItem.Checked =
+                    this.dataGridView1.Visible =
+                    this.spDataGrid.Visible = false;
+
             }
         }
 
@@ -642,13 +723,13 @@ namespace VisualME7Logger
             {
                 // set the new cursor position 
                 chart1.ChartAreas[0].CursorX.Position += chart1.ChartAreas[0].CursorX.Interval;
-                this.DisplayLineAtCursor(); 
+                this.DisplayLineAtCursor();
             }
             else if (e.KeyCode == Keys.Left)
             {
                 // Set the new cursor position 
                 chart1.ChartAreas[0].CursorX.Position -= chart1.ChartAreas[0].CursorX.Interval;
-                this.DisplayLineAtCursor(); 
+                this.DisplayLineAtCursor();
             }
 
             // If the cursor is outside the view, set the view
@@ -662,7 +743,7 @@ namespace VisualME7Logger
             chart1.ChartAreas[0].CursorX.SelectionStart = double.NaN;
             chart1.ChartAreas[0].CursorX.SelectionEnd = double.NaN;
         }
-        
+
         private void chart1_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
         {
             if ((e.KeyCode == Keys.Right) || (e.KeyCode == Keys.Left))
@@ -739,22 +820,31 @@ namespace VisualME7Logger
 
         private void increasePlaybackSpeedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.session.SetSpeed(5);
+            if (this.session.Status == ME7LoggerSession.Statuses.Open)
+            {
+                this.session.SetSpeed(5);
+            }
         }
 
         private void decreasePlaybackSpeedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.session.SetSpeed(-5);
+            if (this.session.Status == ME7LoggerSession.Statuses.Open)
+            {
+                this.session.SetSpeed(-5);
+            }
         }
 
         private void resetPlaybackSpeedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.session.ResetSpeed();
+            if (this.session.Status == ME7LoggerSession.Statuses.Open)
+            {
+                this.session.ResetSpeed();
+            }
         }
 
         private void chart1_CursorPositionChanged(object sender, CursorEventArgs e)
         {
-            this.DisplayLineAtCursor(); 
+            this.DisplayLineAtCursor();
         }
 
         private void DisplayLineAtCursor()
@@ -769,10 +859,49 @@ namespace VisualME7Logger
                     if (var != null)
                     {
                         DisplayLine(var.LogLine);
+
+                        if (dataGridView1.Visible)
+                        {
+                            for (int i = 0; i < dataGridView1.Rows.Count; ++i)
+                            {
+                                if (dataGridView1.Rows[i].Tag == var.LogLine)
+                                {
+                                    dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+                                    dataGridView1.ClearSelection();
+                                    dataGridView1.FirstDisplayedScrollingRowIndex = i;
+                                    dataGridView1.Rows[i].Selected = true;
+                                    chart1.Focus();
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
-       
+
+        private void sessionOutputToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.sessionOutputToolStripMenuItem.Checked = !this.sessionOutputToolStripMenuItem.Checked;
+            this.txtSessionData.Visible = this.spSessionData.Visible = sessionOutputToolStripMenuItem.Checked;
+        }
+
+        private void showDataGridViewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            showDataGridViewToolStripMenuItem.Checked = !showDataGridViewToolStripMenuItem.Checked;
+            dataGridView1.Visible =
+                spDataGrid.Visible = showDataGridViewToolStripMenuItem.Checked;
+        }
+
+        private void dataGridView1_VisibleChanged(object sender, EventArgs e)
+        {
+            if (this.dataGridView1.Visible)
+            {
+                this.dataGridView1.Rows.Clear();
+                foreach (LogLine line in buffer)
+                {
+                    this.AddLineToGrid(line);
+                }
+            }
+        }
     }
 }
