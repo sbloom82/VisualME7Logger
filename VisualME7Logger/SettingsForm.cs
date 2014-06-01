@@ -32,6 +32,8 @@ namespace VisualME7Logger
         Profile SelectedProfile;
         EditModes GraphVariableEditMode;
         GraphVariable SelectedGraphVariable;
+        EditModes ExpressionEditMode;
+        Session.ExpressionVariable SelectedExpression;
 
         public SettingsForm()
         {
@@ -173,6 +175,13 @@ namespace VisualME7Logger
                 this.btnProfileEdit.Enabled =
                 this.btnProfileDelete.Enabled = this.ProfileEditMode == EditModes.View && lstProfiles.SelectedItem != null;
             this.gbProfile.Enabled = this.ProfileEditMode != EditModes.View;
+
+            this.lstExpressions.Enabled =
+                this.btnExpressionAdd.Enabled = this.ExpressionEditMode == EditModes.View;
+            this.btnExpressionClone.Enabled =
+                this.btnExpressionEdit.Enabled =
+                this.btnExpressionDelete.Enabled = this.ExpressionEditMode == EditModes.View && lstExpressions.SelectedItem != null;
+            this.gbExpressions.Enabled = this.ExpressionEditMode != EditModes.View;
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -292,6 +301,7 @@ namespace VisualME7Logger
 
             this.lstGraphVariables.DataSource = null;
             this.lstGraphVariables.DataSource = this.CurrentProfile.DisplayOptions.GraphVariables;
+
             this.Visible = true;
         }
 
@@ -354,7 +364,7 @@ namespace VisualME7Logger
             this.CurrentProfile.DisplayOptions.RefreshInterval = (int)this.nudResfreshRate.Value;
             this.CurrentProfile.DisplayOptions.GraphHRes = (int)this.nudGraphResH.Value;
             this.CurrentProfile.DisplayOptions.GraphVRes = (int)this.nudGraphResV.Value;
-
+       
             try
             {
                 XElement root = new XElement("VisualME7LoggerSettings");
@@ -447,6 +457,7 @@ namespace VisualME7Logger
             LoadConfigFile();
 
             lstGraphVariables.DataSource = CurrentProfile.DisplayOptions.GraphVariables;
+            lstExpressions.DataSource = CurrentProfile.DisplayOptions.Expressions;
             nudResfreshRate.Value = CurrentProfile.DisplayOptions.RefreshInterval;
             nudGraphResH.Value = CurrentProfile.DisplayOptions.GraphHRes;
             nudGraphResV.Value = CurrentProfile.DisplayOptions.GraphVRes;
@@ -649,6 +660,7 @@ namespace VisualME7Logger
                 }
             }
             Profiles.Add(clone);
+            lstProfiles.DataSource = null;
             lstProfiles.DataSource = this.Profiles;
             lstProfiles.SelectedItem = clone;
         }
@@ -724,6 +736,98 @@ namespace VisualME7Logger
         private void SettingsForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();
+        }
+
+        private void groupBox5_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lstExpressions_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            this.SelectedExpression = lstExpressions.SelectedItem as Session.ExpressionVariable;
+            this.txtExpressionName.Text = this.SelectedExpression != null ? this.SelectedExpression.Name : string.Empty;
+            this.txtExpressionUnit.Text = this.SelectedExpression != null ? this.SelectedExpression.Unit : string.Empty;
+            this.txtExpressionExpression.Text = this.SelectedExpression != null ? this.SelectedExpression.Expression : string.Empty;
+            this.SwitchUI();
+        }
+
+        private void btnExpressionClone_Click(object sender, EventArgs e)
+        {
+            Session.ExpressionVariable clone = ((Session.ExpressionVariable)lstExpressions.SelectedItem).Clone();
+            clone.Name += " Clone";
+            while (true)
+            {
+                if (this.CurrentProfile.DisplayOptions.Expressions.Any(p => p.Name == clone.Name))
+                {
+                    clone.Name += " Clone";
+                }
+                else
+                {
+                    break;
+                }
+            }
+            this.CurrentProfile.DisplayOptions.Expressions.Add(clone);
+            lstExpressions.DataSource = null;
+            lstExpressions.DataSource = this.CurrentProfile.DisplayOptions.Expressions;
+            lstExpressions.SelectedItem = clone;
+        }
+
+        private void btnExpressionAdd_Click(object sender, EventArgs e)
+        {
+            this.ExpressionEditMode = EditModes.Add;
+            SwitchUI();
+        }
+
+        private void btnExpressionEdit_Click(object sender, EventArgs e)
+        {
+            this.ExpressionEditMode = EditModes.Edit;
+            SwitchUI();
+        }
+
+        private void btnExpressionDelete_Click(object sender, EventArgs e)
+        {
+            this.CurrentProfile.DisplayOptions.Expressions.Remove(this.SelectedExpression);
+            this.lstExpressions.DataSource = null;
+            this.lstExpressions.DataSource = this.CurrentProfile.DisplayOptions.Expressions;
+            this.lstExpressions.SelectedItem = this.SelectedExpression;
+        }
+
+        private void btnExpressionCancel_Click(object sender, EventArgs e)
+        {
+            this.ExpressionEditMode = EditModes.View;
+            this.SwitchUI();
+        }
+
+        private void btnExpressionSave_Click(object sender, EventArgs e)
+        {
+            if (this.CurrentProfile.DisplayOptions.Expressions.Any(p => p != SelectedExpression && p.Name == txtExpressionName.Text))
+            {
+                MessageBox.Show("Duplicate Expression Name");
+                return;
+            }
+
+            if (this.CurrentProfile.ECUFile.Measurements.Values.Any(m => m.Name == txtExpressionName.Text))
+            {
+                MessageBox.Show("Invalid Expression Name");
+                return;
+            }
+
+            if (this.ExpressionEditMode == EditModes.Add)
+            {
+                this.SelectedExpression = new Session.ExpressionVariable(txtExpressionName.Text, txtExpressionUnit.Text, txtExpressionExpression.Text);
+                this.CurrentProfile.DisplayOptions.Expressions.Add(SelectedExpression);
+            }
+            this.SelectedExpression.Name = txtExpressionName.Text;
+            this.SelectedExpression.Unit = txtExpressionUnit.Text;
+            this.SelectedExpression.Expression = txtExpressionExpression.Text;
+
+            lstExpressions.DataSource = null;
+            lstExpressions.DataSource = this.CurrentProfile.DisplayOptions.Expressions;
+            lstExpressions.SelectedItem = this.SelectedExpression;
+
+            this.ExpressionEditMode = EditModes.View;
+            SwitchUI();
         }
     }
 
@@ -822,19 +926,30 @@ namespace VisualME7Logger
         public int GraphVRes = 1000;
         public int GraphHRes = 1200;
         public List<GraphVariable> GraphVariables = new List<GraphVariable>();
+        public List<Session.ExpressionVariable> Expressions = new List<Session.ExpressionVariable>();
        
         public XElement Write()
         {
             XElement retval = new XElement("DisplayOptions");
+            
             retval.Add(new XAttribute("RefreshInterval", this.RefreshInterval));
             retval.Add(new XAttribute("GraphVRes", this.GraphVRes));
             retval.Add(new XAttribute("GraphHRes", this.GraphHRes));
+
+            XElement expressionsEle = new XElement("Expressions");
+            foreach (var exp in Expressions)
+            {
+                expressionsEle.Add(exp.Write());
+            }
+            retval.Add(expressionsEle);
+
             XElement graphVarsEle = new XElement("GraphVariables");
             foreach (GraphVariable gv in this.GraphVariables)
             {
                 graphVarsEle.Add(gv.Write());
             }
             retval.Add(graphVarsEle);
+           
             return retval;
         }
 
@@ -860,6 +975,9 @@ namespace VisualME7Logger
             {
                 switch (child.Name.LocalName)
                 {
+                    case "Expressions":
+                        this.ReadExpressions(child);
+                        break;
                     case "GraphVariables":
                         this.ReadGraphVariables(child);
                         break;
@@ -873,6 +991,13 @@ namespace VisualME7Logger
             clone.RefreshInterval = this.RefreshInterval;
             clone.GraphVRes = this.GraphVRes;
             clone.GraphHRes = this.GraphHRes;
+
+            clone.Expressions = new List<Session.ExpressionVariable>();
+            foreach (var ev in this.Expressions)
+            {
+                clone.Expressions.Add(ev.Clone());
+            }
+
             clone.GraphVariables = new List<GraphVariable>();
             foreach (GraphVariable gv in this.GraphVariables)
             {
@@ -888,6 +1013,16 @@ namespace VisualME7Logger
                 GraphVariable v = new GraphVariable();
                 v.Read(e);
                 GraphVariables.Add(v);
+            }
+        }
+
+        private void ReadExpressions(XElement ele)
+        {
+            foreach (XElement e in ele.Elements())
+            {
+                Session.ExpressionVariable v = new Session.ExpressionVariable();
+                v.Read(e);
+                Expressions.Add(v);
             }
         }
     }

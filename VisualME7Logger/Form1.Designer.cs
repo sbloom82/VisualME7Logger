@@ -66,21 +66,21 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.spDataGrid = new System.Windows.Forms.Splitter();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.dataGridView1 = new VisualME7Logger.DataGridViewCSVCopy();
             this.spSessionData = new System.Windows.Forms.Splitter();
+            this.pnlSessionData = new System.Windows.Forms.Panel();
+            this.txtSessionData = new System.Windows.Forms.TextBox();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.panel2 = new System.Windows.Forms.Panel();
             this.btnOpenCloseSession = new System.Windows.Forms.Button();
-            this.pnlSessionData = new System.Windows.Forms.Panel();
-            this.txtSessionData = new System.Windows.Forms.TextBox();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            this.panel2.SuspendLayout();
             this.pnlSessionData.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip1
@@ -428,6 +428,7 @@
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.AllowUserToOrderColumns = true;
             this.dataGridView1.AllowUserToResizeRows = false;
+            this.dataGridView1.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.dataGridView1.Location = new System.Drawing.Point(0, 412);
@@ -441,6 +442,7 @@
             this.dataGridView1.Size = new System.Drawing.Size(697, 150);
             this.dataGridView1.TabIndex = 50;
             this.dataGridView1.Visible = false;
+            this.dataGridView1.SelectionChanged += new System.EventHandler(this.dataGridView1_SelectionChanged);
             this.dataGridView1.VisibleChanged += new System.EventHandler(this.dataGridView1_VisibleChanged);
             // 
             // spSessionData
@@ -452,6 +454,30 @@
             this.spSessionData.TabIndex = 49;
             this.spSessionData.TabStop = false;
             this.spSessionData.Visible = false;
+            // 
+            // pnlSessionData
+            // 
+            this.pnlSessionData.Controls.Add(this.txtSessionData);
+            this.pnlSessionData.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlSessionData.Location = new System.Drawing.Point(0, 565);
+            this.pnlSessionData.Name = "pnlSessionData";
+            this.pnlSessionData.Size = new System.Drawing.Size(697, 100);
+            this.pnlSessionData.TabIndex = 52;
+            this.pnlSessionData.Visible = false;
+            // 
+            // txtSessionData
+            // 
+            this.txtSessionData.BackColor = System.Drawing.SystemColors.Control;
+            this.txtSessionData.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtSessionData.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSessionData.Location = new System.Drawing.Point(0, 0);
+            this.txtSessionData.Multiline = true;
+            this.txtSessionData.Name = "txtSessionData";
+            this.txtSessionData.ReadOnly = true;
+            this.txtSessionData.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.txtSessionData.Size = new System.Drawing.Size(697, 100);
+            this.txtSessionData.TabIndex = 49;
+            this.txtSessionData.WordWrap = false;
             // 
             // splitter1
             // 
@@ -483,30 +509,6 @@
             this.btnOpenCloseSession.UseVisualStyleBackColor = true;
             this.btnOpenCloseSession.Click += new System.EventHandler(this.btnOpenCloseSession_Click);
             // 
-            // pnlSessionData
-            // 
-            this.pnlSessionData.Controls.Add(this.txtSessionData);
-            this.pnlSessionData.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlSessionData.Location = new System.Drawing.Point(0, 565);
-            this.pnlSessionData.Name = "pnlSessionData";
-            this.pnlSessionData.Size = new System.Drawing.Size(697, 100);
-            this.pnlSessionData.TabIndex = 52;
-            this.pnlSessionData.Visible = false;
-            // 
-            // txtSessionData
-            // 
-            this.txtSessionData.BackColor = System.Drawing.SystemColors.Control;
-            this.txtSessionData.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtSessionData.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSessionData.Location = new System.Drawing.Point(0, 0);
-            this.txtSessionData.Multiline = true;
-            this.txtSessionData.Name = "txtSessionData";
-            this.txtSessionData.ReadOnly = true;
-            this.txtSessionData.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtSessionData.Size = new System.Drawing.Size(697, 100);
-            this.txtSessionData.TabIndex = 49;
-            this.txtSessionData.WordWrap = false;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -524,7 +526,6 @@
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
-            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
@@ -533,9 +534,9 @@
             this.panel3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            this.panel2.ResumeLayout(false);
             this.pnlSessionData.ResumeLayout(false);
             this.pnlSessionData.PerformLayout();
+            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -582,7 +583,7 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.Splitter spSessionData;
         private System.Windows.Forms.Splitter spDataGrid;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private DataGridViewCSVCopy dataGridView1;
         private System.Windows.Forms.Panel pnlSessionData;
         private System.Windows.Forms.TextBox txtSessionData;
     }

@@ -30,7 +30,7 @@ namespace VisualME7Logger
             nudGraphVariableMax.Value = GraphVariable.Max;
             txtGraphVariableColor.BackColor = GraphVariable.LineColor;
             nudGraphVariableThickness.Value = GraphVariable.LineThickness;
-            chkGraphVariableActive.Checked = GraphVariable.Active;
+            chkGraphVariableActive.Checked = true;// GraphVariable.Active;
             cmbGraphVariableStyle.SelectedItem = GraphVariable.LineStyle;            
         }
 

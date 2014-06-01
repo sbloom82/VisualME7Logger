@@ -11,7 +11,7 @@ namespace VisualME7Logger.Log
     public class ME7LoggerLog
     {
         public ME7LoggerSession Session { get; private set; }
-       
+
         internal ME7LoggerLog(ME7LoggerSession session)
         {
             this.Session = session;
@@ -104,7 +104,7 @@ namespace VisualME7Logger.Log
         {
             paused = false;
         }
-  
+
         private void OpenFromLogFile(object parameter)
         {
             string logFilePath = (string)parameter;
@@ -114,7 +114,7 @@ namespace VisualME7Logger.Log
                 string line;
                 DateTime time = DateTime.Now;
                 while ((line = sr.ReadLine()) != null && !stop)
-                {   
+                {
                     if (!ready)
                     {
                         if (this.Session.DataRead != null)
@@ -138,10 +138,7 @@ namespace VisualME7Logger.Log
                         try
                         {
                             LogLine logLine = this.ReadLine(line);
-                            if (this.Session.LineRead != null)
-                            {
-                                this.Session.LineRead(logLine);
-                            }
+                            Session.LineRead(logLine);
 
                             int waitTime =
                                 (int)((1 / (double)Session.CurrentSamplesPerSecond) * 1000) -
@@ -151,8 +148,8 @@ namespace VisualME7Logger.Log
                                 System.Threading.Thread.Sleep(waitTime);
                         }
                         catch { }
-                    }                    
-                    
+                    }
+
                     while (paused && !stop)
                     {
                         System.Threading.Thread.Sleep(25);
@@ -174,11 +171,10 @@ namespace VisualME7Logger.Log
         public ME7LoggerLog Log { get; private set; }
         public decimal TimeStamp { get; private set; }
         public int LineNumber { get; private set; }
-        private Dictionary<int, Variable> variablesByNumber = new Dictionary<int, Variable>();
-        public Variable this[int number] { get { return variablesByNumber[number]; } }
         private Dictionary<string, Variable> variablesByName = new Dictionary<string, Variable>(StringComparer.InvariantCultureIgnoreCase);
         public Variable this[string name] { get { return variablesByName[name]; } }
-        public IEnumerable<Variable> Variables { get { return this.variablesByNumber.Values; } }
+        public IEnumerable<Variable> Variables { get { return this.variables; } }
+        private List<Variable> variables = new List<Variable>();
 
         public LogLine(ME7LoggerLog log, string line, int lineNumber)
         {
@@ -192,27 +188,26 @@ namespace VisualME7Logger.Log
         {
             string[] values = line.Split(LogLine.COLUMN_SEP);
             TimeStamp = decimal.Parse(values[0]);
-            for (int i = 1; i < Log.Session.Variables.Count + 1; ++i)
+            int i = 1;
+            foreach (SessionVariable sv in Log.Session.Variables.Values)
             {
                 string value = string.Empty;
                 if (values.Length > i)
                 {
                     value = values[i].Trim();
                 }
-                Variable v = new Variable(this, Log.Session.Variables.GetByNumber(i), value);
-                variablesByNumber.Add(i, v);
+                Variable v = new Variable(this, sv, value);
+                variables.Add(v);
                 variablesByName.Add(v.SessionVariable.Name, v);
+                i++;
             }
-        }
-
-        public Variable GetVariableByNumber(int number)
-        {
-            return variablesByNumber[number];
         }
 
         public Variable GetVariableByName(string name)
         {
-            return variablesByName[name];
+            if (variablesByName.ContainsKey(name))
+                return variablesByName[name];
+            return null;
         }
     }
 
@@ -220,7 +215,7 @@ namespace VisualME7Logger.Log
     {
         public LogLine LogLine { get; private set; }
         public SessionVariable SessionVariable { get; private set; }
-        public string Value { get; private set; }
+        public string Value { get; internal set; }
 
         public Variable(LogLine logLine, SessionVariable sessionVariable, string value)
         {
