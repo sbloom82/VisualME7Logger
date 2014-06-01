@@ -544,7 +544,17 @@ namespace VisualME7Logger.Session
 
     public class ExpressionVariable : SessionVariable
     {
-        public string Expression { get; set; }
+        private string _expression;
+        public string Expression
+        {
+            get { return _expression; }
+            set 
+            {
+                _expression = value;
+                _exp = null;
+                Error = false;
+            }
+        }
         public bool Error { get; private set; }
 
         public ExpressionVariable() : base(Types.Expression, null, null, null) { }
