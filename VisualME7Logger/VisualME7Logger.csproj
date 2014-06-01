@@ -198,14 +198,14 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="controls\PolyMonControls.dll" />
-    <Content Include="controls\PolyMonControls.pdb" />
-    <Content Include="controls\PolyMonControls.xml" />
+    <Content Include="resources\controls\PolyMonControls.dll" />
+    <Content Include="resources\controls\PolyMonControls.pdb" />
+    <Content Include="resources\controls\PolyMonControls.xml" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if "$(ConfigurationName)" == "Release" ("C:\Program Files (x86)\Microsoft\ILMerge\ILMerge.exe" /out:"$(TargetDir)\Merged\VisualME7Logger.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)$(TargetName).Output.dll" /targetplatform:v4)</PostBuildEvent>
+    <PostBuildEvent>if "$(ConfigurationName)" == "Release" ("C:\Program Files (x86)\Microsoft\ILMerge\ILMerge.exe" /out:"$(TargetDir)\Merged\VisualME7Logger.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)$(TargetName).Output.dll" "$(TargetDir)NCalc.dll" "$(TargetDir)Antlr3.Runtime.dll" /targetplatform:v4)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

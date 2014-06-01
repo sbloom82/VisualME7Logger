@@ -53,9 +53,10 @@ namespace VisualME7Logger
             {
                 session = new ME7LoggerSession(Program.ME7LoggerDirectory, options, configFile);
             }
+            session.ExpressionVariables = DisplayOptions.Expressions;
 
             session.StatusChanged += new ME7LoggerSession.LoggerSessionStatusChanged(this.SessionStatusChanged);
-            session.LineRead += new ME7LoggerSession.LogLineRead(this.LogLineRead);
+            session.LogLineRead += new ME7LoggerSession.LogLineReadDel(this.LogLineRead);
             session.DataRead += new ME7LoggerSession.SessionDataRead(this.SessionDataRead);
 
             this.OpenSession();
@@ -74,9 +75,7 @@ namespace VisualME7Logger
                     delegate() { SessionStatusChanged(status); }));
                 return;
             }
-
-            this.btnOpenCloseSession.Enabled = false;
-
+            
             txtSessionData.AppendText(string.Format("VISUALME7LOGGER STATUS: {0}\r\n", status));
             if (status == ME7LoggerSession.Statuses.Closed)
             {
@@ -87,11 +86,12 @@ namespace VisualME7Logger
                 status,
                 session.SamplesPerSecond,
                 session.CurrentSamplesPerSecond != session.SamplesPerSecond ? string.Format(" - Displaying: {0}/sec", session.CurrentSamplesPerSecond) : "");
-
+            
+            this.btnOpenCloseSession.Enabled = false;
+            this.showDataGridViewToolStripMenuItem.Enabled = true;
             if (status == ME7LoggerSession.Statuses.Initialized)
             {
                 this.Initialize();
-
             }
             else if (status == ME7LoggerSession.Statuses.Open)
             {
@@ -99,8 +99,9 @@ namespace VisualME7Logger
                 flpVariables_Resize(null, null);
                 this.btnOpenCloseSession.Enabled = true;
                 this.btnOpenCloseSession.Text = "Close Session";
-                this.showDataGridViewToolStripMenuItem.Enabled = false;
-                this.spDataGrid.Visible =
+                
+                this.showDataGridViewToolStripMenuItem.Enabled = 
+                    this.spDataGrid.Visible =
                     this.dataGridView1.Visible =
                     this.showDataGridViewToolStripMenuItem.Checked = false;
             }
@@ -116,8 +117,7 @@ namespace VisualME7Logger
             }
             else if (status == ME7LoggerSession.Statuses.Paused)
             {
-                refreshTimer.Stop();
-                this.showDataGridViewToolStripMenuItem.Enabled = true;
+                refreshTimer.Stop();                
             }
         }
 
@@ -131,7 +131,6 @@ namespace VisualME7Logger
             }
             this.txtSessionData.AppendText(string.Format("{0}{1}\r\n", error ? "***" : "", line));
         }
-
         void LogLineRead(LogLine line)
         {
             if (Program.Debug)
@@ -153,6 +152,7 @@ namespace VisualME7Logger
             dataGridView1.Columns.Add("Timestamp", "TIME");
             foreach (SessionVariable v in session.Variables.Values)
             {
+                bool hasActiveGraphVariable = this.DisplayOptions.GraphVariables.Any(gv => gv.Variable == v.Name && gv.Active);
                 dataGridView1.Columns.Add(v.Name, string.IsNullOrEmpty(v.Alias) ? v.Name : v.Alias);
 
                 FlowLayoutPanel flp = new FlowLayoutPanel();
@@ -165,7 +165,7 @@ namespace VisualME7Logger
                 flp.MouseUp += flp_MouseUp;
 
                 Label name = new Label();
-                Font f = new Font(name.Font.FontFamily, name.Font.Size + 1, this.DisplayOptions.GraphVariables.Any(gv => gv.Variable == v.Name && gv.Active) ? FontStyle.Bold : FontStyle.Regular);
+                Font f = new Font(name.Font.FontFamily, name.Font.Size + 1, hasActiveGraphVariable ? FontStyle.Bold : FontStyle.Regular);
 
                 name.Name = v.Name;
                 name.Height = 20;
@@ -187,21 +187,33 @@ namespace VisualME7Logger
                 value.Tag = v;
                 value.MouseUp += flp_MouseUp;
 
+               /*
+                CheckBox graphed = new CheckBox();
+                graphed.Name = v.Name;
+                graphed.CheckAlign = ContentAlignment.TopCenter;
+                graphed.Height = 20;
+                graphed.Width = 13;
+                graphed.Checked = hasActiveGraphVariable;
+                graphed.RightToLeft = System.Windows.Forms.RightToLeft.No;
+                graphed.Tag = v;
+                graphed.Click += graphed_Click;
+
+                flp.Controls.Add(graphed);*/
                 flp.Controls.Add(value);
-                flp.Controls.Add(name);
+                flp.Controls.Add(name);                
                 flpVariables.Controls.Add(flp);
             }
 
             this.BuildChart();
 
             start = DateTime.Now;
-        }
+        }       
 
         void refreshTimer_Tick(object sender, EventArgs e)
         {
             if (Program.Debug)
             {
-                Program.WriteDebug("refresh timer tick session.lineread Null? " + (session.LineRead == null).ToString() + " Value " + (session.LineRead != null ? session.LineRead.ToString() : "null"));
+                Program.WriteDebug("refresh timer tick session.lineread Null? " + (session.LogLineRead == null).ToString() + " Value " + (session.LogLineRead != null ? session.LogLineRead.ToString() : "null"));
             }
 
             while (queue.Count() > 0)
@@ -295,24 +307,58 @@ namespace VisualME7Logger
                 GraphVariableForm gvf = new GraphVariableForm(graphVariable);
                 if (DialogResult.OK == gvf.ShowDialog())
                 {
-                    if (newVar)
-                    {
-                        this.DisplayOptions.GraphVariables.Add(graphVariable);
-                    }
-                    this.BuildChart();
-
                     Control panel = (Control)sender;
                     if (sender is Label)
                     {
                         panel = ((Control)sender).Parent;
                     }
+                    this.AddGraphVariable(graphVariable, panel, newVar);                    
+                }
+            }
+        }
 
-                    Font f = panel.Controls[0].Font;
-                    f = new Font(f, graphVariable.Active ? FontStyle.Bold : FontStyle.Regular);
-                    foreach (Control c in panel.Controls)
+        void graphed_Click(object sender, EventArgs e)
+        {
+            CheckBox c = (CheckBox)sender;
+            SessionVariable v = c.Tag as SessionVariable;
+            if (v != null)
+            {
+                bool newVar = false;
+                GraphVariable graphVariable = this.DisplayOptions.GraphVariables.FirstOrDefault(gv => gv.Variable == v.Name);
+                if (graphVariable == null)
+                {
+                    newVar = true;
+                    graphVariable = new GraphVariable()
                     {
-                        c.Font = f;
-                    }
+                        Variable = v.Name,
+                        Name = v.Alias
+                    };
+                }
+                graphVariable.Active = c.Checked;
+
+                this.AddGraphVariable(graphVariable, c.Parent, newVar);                
+            }
+        }
+
+        void AddGraphVariable(GraphVariable graphVariable, Control panel, bool isNew)
+        {
+            if (isNew)
+            {
+                this.DisplayOptions.GraphVariables.Add(graphVariable);
+            }
+            this.BuildChart();
+
+            Font f = panel.Controls[0].Font;
+            f = new Font(f, graphVariable.Active ? FontStyle.Bold : FontStyle.Regular);
+            foreach (Control c in panel.Controls)
+            {
+                if (c is Label)
+                {
+                    c.Font = f;
+                }
+                else if (c is CheckBox)
+                {
+                    ((CheckBox)c).Checked = graphVariable.Active;
                 }
             }
         }
@@ -622,14 +668,6 @@ namespace VisualME7Logger
             }
         }
 
-        private void Form1_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyData != Keys.Enter)
-            {
-                chart1_KeyUp(sender, e);
-            }
-        }
-
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyData == Keys.Enter)
@@ -660,7 +698,9 @@ namespace VisualME7Logger
         private void chart1_Click(object sender, System.EventArgs e)
         {
             chart1.Focus();
+
             this.SelectionStart = chart1.ChartAreas[0].CursorX.Position;
+            this.DisplayLineAtCursor();
         }
 
         private void ProcessSelect(System.Windows.Forms.KeyEventArgs e)
@@ -870,7 +910,7 @@ namespace VisualME7Logger
                                     dataGridView1.ClearSelection();
                                     dataGridView1.FirstDisplayedScrollingRowIndex = i;
                                     dataGridView1.Rows[i].Selected = true;
-                                    chart1.Focus();
+                                    break;                                    
                                 }
                             }
                         }
@@ -903,5 +943,36 @@ namespace VisualME7Logger
                 }
             }
         }
+
+        private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView1.Visible && dataGridView1.SelectedRows.Count > 0)
+            {
+                LogLine logLine = dataGridView1.SelectedRows[0].Tag as LogLine;
+                if (logLine != null)
+                {
+                    DataPoint dp = chart1.Series[0].Points.FirstOrDefault(p => p.Tag != null && ((Variable)p.Tag).LogLine == logLine);
+                    if (dp != null)
+                    {
+                        chart1.ChartAreas[0].CursorX.Position = chart1.Series[0].Points.IndexOf(dp);
+                    }
+                }
+            }
+        }
     }
+
+    public class DataGridViewCSVCopy : DataGridView 
+    {
+        public override DataObject GetClipboardContent()
+        {
+            this.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText;
+            DataObject obj = base.GetClipboardContent();
+            if (obj != null)
+            {
+                string txt = obj.GetText();
+                obj.SetText(obj.GetText().Replace("\t", ","));
+            }
+            return obj;
+        }
+    } 
 }

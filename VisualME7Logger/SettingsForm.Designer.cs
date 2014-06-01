@@ -42,6 +42,23 @@
             this.radFilterAll = new System.Windows.Forms.RadioButton();
             this.txtFilter = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
+            this.tpExpressions = new System.Windows.Forms.TabPage();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.btnExpressionClone = new System.Windows.Forms.Button();
+            this.lstExpressions = new System.Windows.Forms.ListBox();
+            this.btnExpressionEdit = new System.Windows.Forms.Button();
+            this.gbExpressions = new System.Windows.Forms.GroupBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.txtExpressionExpression = new System.Windows.Forms.TextBox();
+            this.label18 = new System.Windows.Forms.Label();
+            this.txtExpressionUnit = new System.Windows.Forms.TextBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.btnExpressionCancel = new System.Windows.Forms.Button();
+            this.btnExpressionSave = new System.Windows.Forms.Button();
+            this.txtExpressionName = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.btnExpressionDelete = new System.Windows.Forms.Button();
+            this.btnExpressionAdd = new System.Windows.Forms.Button();
             this.tbGraphConfig = new System.Windows.Forms.TabPage();
             this.nudResfreshRate = new System.Windows.Forms.NumericUpDown();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -115,6 +132,9 @@
             this.tpMeasurements.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.panel3.SuspendLayout();
+            this.tpExpressions.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            this.gbExpressions.SuspendLayout();
             this.tbGraphConfig.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudResfreshRate)).BeginInit();
             this.groupBox2.SuspendLayout();
@@ -144,6 +164,7 @@
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tpMeasurements);
+            this.tabControl1.Controls.Add(this.tpExpressions);
             this.tabControl1.Controls.Add(this.tbGraphConfig);
             this.tabControl1.Controls.Add(this.tpProfiles);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -275,6 +296,188 @@
             this.label13.Size = new System.Drawing.Size(32, 13);
             this.label13.TabIndex = 0;
             this.label13.Text = "Filter:";
+            // 
+            // tpExpressions
+            // 
+            this.tpExpressions.BackColor = System.Drawing.SystemColors.Control;
+            this.tpExpressions.Controls.Add(this.groupBox4);
+            this.tpExpressions.Location = new System.Drawing.Point(4, 22);
+            this.tpExpressions.Name = "tpExpressions";
+            this.tpExpressions.Size = new System.Drawing.Size(725, 315);
+            this.tpExpressions.TabIndex = 3;
+            this.tpExpressions.Text = "Expressions";
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox4.Controls.Add(this.btnExpressionClone);
+            this.groupBox4.Controls.Add(this.lstExpressions);
+            this.groupBox4.Controls.Add(this.btnExpressionEdit);
+            this.groupBox4.Controls.Add(this.gbExpressions);
+            this.groupBox4.Controls.Add(this.btnExpressionDelete);
+            this.groupBox4.Controls.Add(this.btnExpressionAdd);
+            this.groupBox4.Location = new System.Drawing.Point(8, 6);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(393, 303);
+            this.groupBox4.TabIndex = 0;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Expressions";
+            // 
+            // btnExpressionClone
+            // 
+            this.btnExpressionClone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExpressionClone.Location = new System.Drawing.Point(312, 19);
+            this.btnExpressionClone.Name = "btnExpressionClone";
+            this.btnExpressionClone.Size = new System.Drawing.Size(75, 23);
+            this.btnExpressionClone.TabIndex = 2;
+            this.btnExpressionClone.Text = "Clone";
+            this.btnExpressionClone.UseVisualStyleBackColor = true;
+            this.btnExpressionClone.Click += new System.EventHandler(this.btnExpressionClone_Click);
+            // 
+            // lstExpressions
+            // 
+            this.lstExpressions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstExpressions.FormattingEnabled = true;
+            this.lstExpressions.Location = new System.Drawing.Point(6, 19);
+            this.lstExpressions.Name = "lstExpressions";
+            this.lstExpressions.Size = new System.Drawing.Size(300, 147);
+            this.lstExpressions.TabIndex = 0;
+            this.lstExpressions.SelectedIndexChanged += new System.EventHandler(this.lstExpressions_SelectedIndexChanged);
+            // 
+            // btnExpressionEdit
+            // 
+            this.btnExpressionEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExpressionEdit.Location = new System.Drawing.Point(312, 65);
+            this.btnExpressionEdit.Name = "btnExpressionEdit";
+            this.btnExpressionEdit.Size = new System.Drawing.Size(75, 23);
+            this.btnExpressionEdit.TabIndex = 4;
+            this.btnExpressionEdit.Text = "Edit";
+            this.btnExpressionEdit.UseVisualStyleBackColor = true;
+            this.btnExpressionEdit.Click += new System.EventHandler(this.btnExpressionEdit_Click);
+            // 
+            // gbExpressions
+            // 
+            this.gbExpressions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.gbExpressions.Controls.Add(this.label19);
+            this.gbExpressions.Controls.Add(this.txtExpressionExpression);
+            this.gbExpressions.Controls.Add(this.label18);
+            this.gbExpressions.Controls.Add(this.txtExpressionUnit);
+            this.gbExpressions.Controls.Add(this.label16);
+            this.gbExpressions.Controls.Add(this.btnExpressionCancel);
+            this.gbExpressions.Controls.Add(this.btnExpressionSave);
+            this.gbExpressions.Controls.Add(this.txtExpressionName);
+            this.gbExpressions.Controls.Add(this.label14);
+            this.gbExpressions.Location = new System.Drawing.Point(8, 172);
+            this.gbExpressions.Name = "gbExpressions";
+            this.gbExpressions.Size = new System.Drawing.Size(298, 125);
+            this.gbExpressions.TabIndex = 1;
+            this.gbExpressions.TabStop = false;
+            this.gbExpressions.Enter += new System.EventHandler(this.groupBox5_Enter);
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Font = new System.Drawing.Font("Courier New", 8F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label19.Location = new System.Drawing.Point(67, 39);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(217, 15);
+            this.label19.TabIndex = 14;
+            this.label19.Text = "ex. ([pvdks_w] - 1000) * .0145";
+            // 
+            // txtExpressionExpression
+            // 
+            this.txtExpressionExpression.Font = new System.Drawing.Font("Courier New", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtExpressionExpression.Location = new System.Drawing.Point(6, 57);
+            this.txtExpressionExpression.Multiline = true;
+            this.txtExpressionExpression.Name = "txtExpressionExpression";
+            this.txtExpressionExpression.Size = new System.Drawing.Size(286, 35);
+            this.txtExpressionExpression.TabIndex = 2;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(4, 39);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(61, 13);
+            this.label18.TabIndex = 13;
+            this.label18.Text = "Expression:";
+            // 
+            // txtExpressionUnit
+            // 
+            this.txtExpressionUnit.Location = new System.Drawing.Point(251, 14);
+            this.txtExpressionUnit.Name = "txtExpressionUnit";
+            this.txtExpressionUnit.Size = new System.Drawing.Size(41, 20);
+            this.txtExpressionUnit.TabIndex = 1;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(220, 17);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(29, 13);
+            this.label16.TabIndex = 11;
+            this.label16.Text = "Unit:";
+            // 
+            // btnExpressionCancel
+            // 
+            this.btnExpressionCancel.Location = new System.Drawing.Point(136, 96);
+            this.btnExpressionCancel.Name = "btnExpressionCancel";
+            this.btnExpressionCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnExpressionCancel.TabIndex = 3;
+            this.btnExpressionCancel.Text = "Cancel";
+            this.btnExpressionCancel.UseVisualStyleBackColor = true;
+            this.btnExpressionCancel.Click += new System.EventHandler(this.btnExpressionCancel_Click);
+            // 
+            // btnExpressionSave
+            // 
+            this.btnExpressionSave.Location = new System.Drawing.Point(217, 96);
+            this.btnExpressionSave.Name = "btnExpressionSave";
+            this.btnExpressionSave.Size = new System.Drawing.Size(75, 23);
+            this.btnExpressionSave.TabIndex = 4;
+            this.btnExpressionSave.Text = "Save";
+            this.btnExpressionSave.UseVisualStyleBackColor = true;
+            this.btnExpressionSave.Click += new System.EventHandler(this.btnExpressionSave_Click);
+            // 
+            // txtExpressionName
+            // 
+            this.txtExpressionName.Location = new System.Drawing.Point(44, 14);
+            this.txtExpressionName.Name = "txtExpressionName";
+            this.txtExpressionName.Size = new System.Drawing.Size(174, 20);
+            this.txtExpressionName.TabIndex = 0;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(4, 17);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(38, 13);
+            this.label14.TabIndex = 9;
+            this.label14.Text = "Name:";
+            // 
+            // btnExpressionDelete
+            // 
+            this.btnExpressionDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExpressionDelete.Location = new System.Drawing.Point(312, 88);
+            this.btnExpressionDelete.Name = "btnExpressionDelete";
+            this.btnExpressionDelete.Size = new System.Drawing.Size(75, 23);
+            this.btnExpressionDelete.TabIndex = 5;
+            this.btnExpressionDelete.Text = "Delete";
+            this.btnExpressionDelete.UseVisualStyleBackColor = true;
+            this.btnExpressionDelete.Click += new System.EventHandler(this.btnExpressionDelete_Click);
+            // 
+            // btnExpressionAdd
+            // 
+            this.btnExpressionAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExpressionAdd.Location = new System.Drawing.Point(312, 42);
+            this.btnExpressionAdd.Name = "btnExpressionAdd";
+            this.btnExpressionAdd.Size = new System.Drawing.Size(75, 23);
+            this.btnExpressionAdd.TabIndex = 3;
+            this.btnExpressionAdd.Text = "Add";
+            this.btnExpressionAdd.UseVisualStyleBackColor = true;
+            this.btnExpressionAdd.Click += new System.EventHandler(this.btnExpressionAdd_Click);
             // 
             // tbGraphConfig
             // 
@@ -1026,6 +1229,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
+            this.tpExpressions.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
+            this.gbExpressions.ResumeLayout(false);
+            this.gbExpressions.PerformLayout();
             this.tbGraphConfig.ResumeLayout(false);
             this.tbGraphConfig.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudResfreshRate)).EndInit();
@@ -1134,6 +1341,23 @@
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Button btnProfileDelete;
         private System.Windows.Forms.Button btnProfileAdd;
+        private System.Windows.Forms.TabPage tpExpressions;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Button btnExpressionClone;
+        private System.Windows.Forms.ListBox lstExpressions;
+        private System.Windows.Forms.Button btnExpressionEdit;
+        private System.Windows.Forms.GroupBox gbExpressions;
+        private System.Windows.Forms.Button btnExpressionCancel;
+        private System.Windows.Forms.Button btnExpressionSave;
+        private System.Windows.Forms.TextBox txtExpressionName;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Button btnExpressionDelete;
+        private System.Windows.Forms.Button btnExpressionAdd;
+        private System.Windows.Forms.TextBox txtExpressionExpression;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.TextBox txtExpressionUnit;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label19;
 
 
     }

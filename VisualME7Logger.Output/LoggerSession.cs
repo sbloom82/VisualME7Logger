@@ -31,7 +31,7 @@ namespace VisualME7Logger.Session
         }
 
         public delegate void LoggerSessionStatusChanged(Statuses status);
-        public delegate void LogLineRead(LogLine logLine);
+        public delegate void LogLineReadDel(LogLine logLine);
         public delegate void SessionDataRead(string line, bool error = false);
 
         private Statuses _status;
@@ -65,13 +65,14 @@ namespace VisualME7Logger.Session
         public short CurrentSamplesPerSecond { get; private set; }
         public DateTime LogStarted { get; private set; }
         public LoggerSessionStatusChanged StatusChanged;
-        public LogLineRead LineRead;
+        public LogLineReadDel LogLineRead;
         public SessionDataRead DataRead;
         public SessionTypes SessionType { get; private set; }
         public CommunicationInfo CommunicationInfo { get; private set; }
         public IdentificationInfo IdentificationInfo { get; private set; }
         public SessionVariables Variables { get; private set; }
         public ME7LoggerLog Log { get; private set; }
+        public List<ExpressionVariable> ExpressionVariables { get; set; }
 
         public bool CanSetPlaybackSpeed { get { return this.SessionType != SessionTypes.RealTime; } }
 
@@ -112,7 +113,6 @@ namespace VisualME7Logger.Session
 
         Process p;
         StreamWriter outputWriter = null;
-        StreamWriter debugWriter = null;
         public bool logReady = false;
         public int ExitCode { get; private set; }
         StringBuilder errorTextBuilder;
@@ -128,6 +128,7 @@ namespace VisualME7Logger.Session
                 this.CommunicationInfo = new CommunicationInfo();
                 this.Variables = new SessionVariables();
                 this.Log.InitializeSession(IdentificationInfo, CommunicationInfo, Variables);
+                this.AddExpressions();
                 this.SamplesPerSecond = CommunicationInfo.SamplesPerSecond;
                 this.Status = Statuses.Initialized;
                 this.LogStarted = CommunicationInfo.LogStarted;
@@ -166,6 +167,21 @@ namespace VisualME7Logger.Session
             {
                 new System.Threading.Thread(new System.Threading.ThreadStart(OpenFromSessionOutput)).Start();
             }
+        }
+
+        private void AddExpressions()
+        {
+            if (ExpressionVariables != null)
+            {
+                foreach (ExpressionVariable ev in this.ExpressionVariables)
+                {
+                    this.Variables.Add(ev);
+                }
+            }
+
+           // this.Variables.Add(new ExpressionVariable("Boost Actual", "psi", "([pvdks_w] - 980) * .0145"));
+           // this.Variables.Add(new ExpressionVariable("Boost Desired", "psi", "([plsol] - 980) * .0145"));
+           // this.Variables.Add(new ExpressionVariable("Vehicle Speed", "mph", "[vfil_w] * 0.621371"));
         }
 
         private void OpenFromSessionOutput()
@@ -257,8 +273,8 @@ namespace VisualME7Logger.Session
                 if (this.DataRead != null)
                 {
                     this.DataRead(e.Data, true);
-                }                
-                errorTextBuilder.AppendFormat("{0}{1}", string.IsNullOrEmpty(ErrorText) ? string.Empty : Environment.NewLine, e.Data);           
+                }
+                errorTextBuilder.AppendFormat("{0}{1}", string.IsNullOrEmpty(ErrorText) ? string.Empty : Environment.NewLine, e.Data);
             }
         }
 
@@ -320,14 +336,7 @@ namespace VisualME7Logger.Session
                                 WriteDebug("Open... reading line");
                             }
                             LogLine logLine = this.Log.ReadLine(data);
-                            if (LineRead != null)
-                            {
-                                if (Debug)
-                                {
-                                    WriteDebug("Open.... Line Read!");
-                                }
-                                LineRead(logLine);
-                            }
+                            this.LineRead(logLine);
                         }
                     }
                 }
@@ -335,6 +344,23 @@ namespace VisualME7Logger.Session
                 {
                     errorTextBuilder.AppendFormat("Error when reading line {0}\r\n{1}", data, ex);
                 }
+            }
+        }
+
+        internal void LineRead(LogLine logLine)
+        {
+            foreach (Variable v in logLine.Variables.Where(v => v.SessionVariable.Type == SessionVariable.Types.Expression))
+            {
+                v.Value = ((ExpressionVariable)v.SessionVariable).Compute(Variables, logLine);
+            }
+
+            if (LogLineRead != null)
+            {
+                if (Debug)
+                {
+                    WriteDebug("Open.... Line Read!");
+                }
+                LogLineRead(logLine);
             }
         }
 
@@ -454,9 +480,29 @@ namespace VisualME7Logger.Session
 
     public class SessionVariable
     {
+        public enum Types
+        {
+            Log,
+            Expression
+        }
+
+        public Types Type { get; private set; }
+        public string Name { get; set; }
+        public string Unit { get; set; }
+        public string Alias { get; set; }
+
+        internal SessionVariable(Types type, string name, string unit, string alias)
+        {
+            this.Type = type;
+            this.Name = name;
+            this.Unit = unit;
+            this.Alias = alias;
+        }
+    }
+
+    public class LogVariable : SessionVariable
+    {
         public int Number { get; private set; }
-        public string Name { get; private set; }
-        public string Alias { get; private set; }
         public string Address { get; private set; }
         public short Size { get; private set; }
         public string BitMask { get; private set; }
@@ -464,17 +510,16 @@ namespace VisualME7Logger.Session
         public bool Inverse { get; private set; }
         public decimal Factor { get; private set; }
         public decimal Offset { get; private set; }
-        public string Unit { get; private set; }
 
-        internal SessionVariable(int number, string name, string unit, string alias)
+        internal LogVariable(int number, string name, string unit, string alias)
+            : base(Types.Log, name, unit, alias)
         {
             this.Number = number;
-            this.Name = name;
-            this.Unit = unit;
             this.Alias = alias;
         }
 
-        internal SessionVariable(string line)
+        internal LogVariable(string line)
+            : base(Types.Log, null, null, null)
         {
             int indexOfColon = line.IndexOf(':');
             this.Number = int.Parse(line.Substring(1, indexOfColon - 1));
@@ -499,21 +544,100 @@ namespace VisualME7Logger.Session
         }
     }
 
+    public class ExpressionVariable : SessionVariable
+    {
+        public string Expression { get; set; }
+        public bool Error { get; private set; }
+
+        public ExpressionVariable() : base(Types.Expression, null, null, null) { }
+
+        public ExpressionVariable(string name, string unit, string expression)
+            : base(Types.Expression, name, unit, name)
+        {
+            Expression = expression;
+        }
+
+        NCalc.Expression _exp = null;
+        LogLine curLL = null;
+        public string Compute(SessionVariables variables, LogLine logLine)
+        {
+            if (_exp == null)
+            {
+                _exp = new NCalc.Expression(this.Expression);
+                _exp.EvaluateParameter += delegate(string name, NCalc.ParameterArgs args)
+                {
+                    Variable var = curLL.GetVariableByName(name);
+                    if (var != null)
+                    {
+                        args.Result = var.Value;
+                    }
+                    else
+                    {
+                        args.HasResult = false;
+                    }
+                };
+            }
+            object obj = "ERR";
+            if (!Error)
+            {
+                curLL = logLine;
+                _exp.Parameters.Clear();
+                try
+                {
+                    obj = _exp.Evaluate().ToString();
+                }
+                catch
+                {
+                    Error = true;
+                }
+            }
+            return obj.ToString();
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        public void Read(XElement ele)
+        {
+            foreach (XAttribute att in ele.Attributes())
+            {
+                switch (att.Name.LocalName)
+                {
+                    case "Name":
+                        this.Name = att.Value;
+                        break;
+                    case "Unit":
+                        this.Unit = att.Value;
+                        break;
+                    case "Expression":
+                        this.Expression = att.Value;
+                        break;
+                }
+            }
+        }
+
+        public XElement Write()
+        {
+            XElement retval = new XElement("Expression");
+            retval.Add(new XAttribute("Name", this.Name));
+            retval.Add(new XAttribute("Unit", this.Unit));
+            retval.Add(new XAttribute("Expression", this.Expression));
+            return retval;
+        }
+
+        public ExpressionVariable Clone()
+        {
+            return new ExpressionVariable(this.Name, this.Unit, this.Expression);
+        }
+    }
+
     public class SessionVariables
     {
         public short LoggedDataSize { get; private set; }
 
         private List<SessionVariable> list = new List<SessionVariable>();
-        private Dictionary<int, SessionVariable> byNumber = new Dictionary<int, SessionVariable>();
-        public SessionVariable this[int number]
-        {
-            get
-            {
-                if (this.byNumber.ContainsKey(number))
-                    return this.byNumber[number];
-                return null;
-            }
-        }
         private Dictionary<string, SessionVariable> byName = new Dictionary<string, SessionVariable>(StringComparer.InvariantCultureIgnoreCase);
         public SessionVariable this[string name]
         {
@@ -527,16 +651,10 @@ namespace VisualME7Logger.Session
 
         internal SessionVariables() { }
 
-        internal bool Add(SessionVariable loggedVariable)
+        internal void Add(SessionVariable loggedVariable)
         {
-            if (!byNumber.ContainsKey(loggedVariable.Number) && !byName.ContainsKey(loggedVariable.Name))
-            {
-                list.Add(loggedVariable);
-                byNumber.Add(loggedVariable.Number, loggedVariable);
-                byName.Add(loggedVariable.Name, loggedVariable);
-                return true;
-            }
-            return false;
+            list.Add(loggedVariable);
+            byName[loggedVariable.Name] = loggedVariable;
         }
 
         public IEnumerable<SessionVariable> Values
@@ -547,13 +665,6 @@ namespace VisualME7Logger.Session
         public int Count
         {
             get { return this.list.Count; }
-        }
-
-        public SessionVariable GetByNumber(int number)
-        {
-            if (byNumber.ContainsKey(number))
-                return byNumber[number];
-            return null;
         }
 
         public SessionVariable GetByName(string name)
@@ -585,7 +696,7 @@ namespace VisualME7Logger.Session
 
                         for (int i = 1; i < names.Length; ++i)
                         {
-                            this.Add(new SessionVariable(i, names[i].Trim(), units[i].Trim(), aliases[i].Replace("\"", "").Trim()));
+                            this.Add(new LogVariable(i, names[i].Trim(), units[i].Trim(), aliases[i].Replace("\"", "").Trim()));
                         }
                         Complete = true;
                     }
@@ -599,7 +710,7 @@ namespace VisualME7Logger.Session
                 }
                 else if (line.Length > 1 && line[0] == '#' && line[1] != 'n' && line[1] != '-')
                 {
-                    this.Add(new SessionVariable(line));
+                    this.Add(new LogVariable(line));
                 }
                 else if (line.StartsWith("Logged data size is"))
                 {
