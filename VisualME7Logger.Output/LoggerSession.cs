@@ -178,10 +178,6 @@ namespace VisualME7Logger.Session
                     this.Variables.Add(ev);
                 }
             }
-
-           // this.Variables.Add(new ExpressionVariable("Boost Actual", "psi", "([pvdks_w] - 980) * .0145"));
-           // this.Variables.Add(new ExpressionVariable("Boost Desired", "psi", "([plsol] - 980) * .0145"));
-           // this.Variables.Add(new ExpressionVariable("Vehicle Speed", "mph", "[vfil_w] * 0.621371"));
         }
 
         private void OpenFromSessionOutput()
@@ -311,6 +307,8 @@ namespace VisualME7Logger.Session
                             {
                                 WriteDebug("Opening...readline true, var count:" + (this.Variables == null ? 0 : this.Variables.Count));
                             }
+
+                            this.AddExpressions();
 
                             this.Status = Statuses.Initialized;
                             this.Status = Statuses.Open;
