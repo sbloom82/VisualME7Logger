@@ -10,7 +10,13 @@ namespace VisualME7Logger.Output
     public class ChecksumInfo
     {
         public string ApplicationPath = string.Empty;
-        public string BinPath = string.Empty;        
+        public string BinPath = string.Empty;
+
+        private ChecksumInfo() { }
+        public ChecksumInfo(string ME7LoggerDirectory) : this()
+        {
+            ApplicationPath = System.IO.Path.Combine(ME7LoggerDirectory, "ME7Check.exe");
+        }
 
         public void Read(XElement element)
         {

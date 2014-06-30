@@ -15,6 +15,12 @@ namespace VisualME7Logger.Output
         public string COMPort = "1";
         public string Baudrate = string.Empty;
 
+        private EEProm() { }
+        public EEProm(string ME7LoggerDirectory) : this()
+        {
+            ApplicationPath = Path.Combine(ME7LoggerDirectory, "ME7_95040.exe");
+        }
+
         public void Read(XElement element)
         {
             foreach (XAttribute att in element.Attributes())
@@ -159,6 +165,10 @@ email: agv.tuning@gmail.com
                     if (file.Length == 512)
                     {
                         byte[] fileBytes = File.ReadAllBytes(this.BinPath);
+                        if (fileBytes[0x32] == 0xFF && fileBytes[0x33] == 0xFF)
+                        {
+                            return "NO SKC";
+                        }
                         string hex1 = BitConverter.ToString(new byte[] { fileBytes[0x32] });
                         string hex2 = BitConverter.ToString(new byte[] { fileBytes[0x33] });
                         return string.Format("0{0:0000}", int.Parse(hex2 + hex1, System.Globalization.NumberStyles.HexNumber));
@@ -188,7 +198,11 @@ email: agv.tuning@gmail.com
                 {
                     return new EEPromResult() { Success = false, Output = "SKC must begin with '0'" };
                 }
-                short skcInt = short.Parse(SKC);
+                short skcInt;
+                if (!short.TryParse(SKC, out skcInt))
+                {
+                    return new EEPromResult() { Success = false, Output = "Invalid SKC" };
+                }
                 byte[] skcBytes = BitConverter.GetBytes(skcInt);
 
                 fileBytes[0x32] = skcBytes[0];
@@ -480,7 +494,7 @@ change to
         {
             fileBytes[0x1C] = 0x00;
             fileBytes[0x2C] = 0x00;
-            return new EEPromResult();
+            return new EEPromResult() { Output = "Death Code Fixed" };
         }
 
         public EEPromResult CalculateChecksum(byte[] fileData)
@@ -548,7 +562,7 @@ change to
             }
         }
 
-        public EEPromResult WriteFile(string filePath, string vin, string skc, string immoID, byte[] immoData, bool immoEnabled, bool fixDeathCode, bool correctChecksum)
+        public EEPromResult WriteFile(string filePath, string vin, string skc, string immoID, byte[] immoData, bool? enableImmo, bool fixDeathCode, bool correctChecksum)
         {
             try
             {
@@ -580,16 +594,19 @@ change to
                 retval.Success = retval.Success && localResult.Success;
                 retval.Output += localResult.Output + "\r\n";
 
-                if (immoEnabled)
+                if (enableImmo.HasValue)
                 {
-                    localResult = this.EnableImmo(newFileBytes);
+                    if (enableImmo.Value)
+                    {
+                        localResult = this.EnableImmo(newFileBytes);
+                    }
+                    else
+                    {
+                        localResult = this.DisableImmo(newFileBytes);
+                    }
+                    retval.Success = retval.Success && localResult.Success;
+                    retval.Output += localResult.Output + "\r\n";
                 }
-                else
-                {
-                    localResult = this.DisableImmo(newFileBytes);
-                }
-                retval.Success = retval.Success && localResult.Success;
-                retval.Output += localResult.Output + "\r\n";
 
                 if (fixDeathCode)
                 {
