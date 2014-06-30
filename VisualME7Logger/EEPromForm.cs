@@ -198,7 +198,7 @@ namespace VisualME7Logger
                     this.txtSKC.Text,
                     this.txtImmoID.Text,
                     this.txtImmoData.Tag as byte[],
-                    this.radImmoEnabled.Checked,
+                    !this.radImmoEnabled.Checked && !radImmoDisabled.Checked ? new bool?() : new bool?(radImmoEnabled.Checked),
                     this.chkFixDeathCode.Checked,
                     this.chkCorrectChecksums.Checked);
                 this.txtOutput.Text = result.Output;

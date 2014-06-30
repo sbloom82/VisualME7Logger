@@ -46,18 +46,18 @@
             this.txtOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtOutput.Location = new System.Drawing.Point(9, 183);
+            this.txtOutput.Location = new System.Drawing.Point(9, 131);
             this.txtOutput.Multiline = true;
             this.txtOutput.Name = "txtOutput";
             this.txtOutput.ReadOnly = true;
             this.txtOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtOutput.Size = new System.Drawing.Size(670, 243);
+            this.txtOutput.Size = new System.Drawing.Size(503, 254);
             this.txtOutput.TabIndex = 1;
             // 
             // btnOk
             // 
             this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOk.Location = new System.Drawing.Point(604, 432);
+            this.btnOk.Location = new System.Drawing.Point(437, 391);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 4;
@@ -69,7 +69,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(523, 432);
+            this.btnCancel.Location = new System.Drawing.Point(356, 391);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 3;
@@ -89,7 +89,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 84);
+            this.label2.Location = new System.Drawing.Point(6, 56);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(47, 13);
             this.label2.TabIndex = 6;
@@ -99,9 +99,9 @@
             // 
             this.btnRun.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRun.Location = new System.Drawing.Point(9, 154);
+            this.btnRun.Location = new System.Drawing.Point(9, 102);
             this.btnRun.Name = "btnRun";
-            this.btnRun.Size = new System.Drawing.Size(670, 23);
+            this.btnRun.Size = new System.Drawing.Size(503, 23);
             this.btnRun.TabIndex = 9;
             this.btnRun.Text = "Run";
             this.btnRun.UseVisualStyleBackColor = true;
@@ -112,25 +112,23 @@
             this.txtAppPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAppPath.Location = new System.Drawing.Point(9, 29);
-            this.txtAppPath.Multiline = true;
             this.txtAppPath.Name = "txtAppPath";
-            this.txtAppPath.Size = new System.Drawing.Size(670, 44);
+            this.txtAppPath.Size = new System.Drawing.Size(503, 20);
             this.txtAppPath.TabIndex = 10;
             // 
             // txtBinPath
             // 
             this.txtBinPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtBinPath.Location = new System.Drawing.Point(9, 104);
-            this.txtBinPath.Multiline = true;
+            this.txtBinPath.Location = new System.Drawing.Point(9, 76);
             this.txtBinPath.Name = "txtBinPath";
-            this.txtBinPath.Size = new System.Drawing.Size(670, 44);
+            this.txtBinPath.Size = new System.Drawing.Size(503, 20);
             this.txtBinPath.TabIndex = 11;
             // 
             // btnAppPath
             // 
             this.btnAppPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAppPath.Location = new System.Drawing.Point(604, 4);
+            this.btnAppPath.Location = new System.Drawing.Point(437, 4);
             this.btnAppPath.Name = "btnAppPath";
             this.btnAppPath.Size = new System.Drawing.Size(75, 23);
             this.btnAppPath.TabIndex = 12;
@@ -141,7 +139,7 @@
             // btnBinPath
             // 
             this.btnBinPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBinPath.Location = new System.Drawing.Point(604, 79);
+            this.btnBinPath.Location = new System.Drawing.Point(437, 51);
             this.btnBinPath.Name = "btnBinPath";
             this.btnBinPath.Size = new System.Drawing.Size(75, 23);
             this.btnBinPath.TabIndex = 13;
@@ -155,7 +153,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(687, 461);
+            this.ClientSize = new System.Drawing.Size(520, 420);
             this.ControlBox = false;
             this.Controls.Add(this.btnBinPath);
             this.Controls.Add(this.btnAppPath);
@@ -171,6 +169,7 @@
             this.Name = "ChecksumForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Checksum Validation";
+            this.Load += new System.EventHandler(this.ChecksumForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

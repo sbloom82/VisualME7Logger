@@ -853,8 +853,8 @@ namespace VisualME7Logger
         public Profile()
         {
             this.LoggerOptions = new Session.LoggerOptions(Program.ME7LoggerDirectory);
-            this.ChecksumInfo = new Output.ChecksumInfo();
-            this.EEProm = new Output.EEProm();
+            this.ChecksumInfo = new Output.ChecksumInfo(Program.ME7LoggerDirectory);
+            this.EEProm = new Output.EEProm(Program.ME7LoggerDirectory);
             this.DisplayOptions = new DisplayOptions();
             this.ECUFile = new ECUFile(string.Empty);
             this.ConfigFile = new ConfigFile(string.Empty);
