@@ -480,6 +480,15 @@ namespace VisualME7Logger
             new ChecksumForm(this.CurrentProfile.ChecksumInfo).ShowDialog(this);
         }
 
+        private void eEPromToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EEPromForm form = new EEPromForm(this.CurrentProfile.EEProm);
+            if (form.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+            {
+                this.CurrentProfile.EEProm = form.EEProm;
+            }
+        }
+
         private void saveSettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.SaveSettings();
@@ -838,12 +847,14 @@ namespace VisualME7Logger
         public ConfigFile ConfigFile { get; set; }
         public VisualME7Logger.Session.LoggerOptions LoggerOptions { get; set; }
         public VisualME7Logger.Output.ChecksumInfo ChecksumInfo { get; set; }
+        public VisualME7Logger.Output.EEProm EEProm { get; set; }
         public DisplayOptions DisplayOptions { get; set; }
 
         public Profile()
         {
             this.LoggerOptions = new Session.LoggerOptions(Program.ME7LoggerDirectory);
             this.ChecksumInfo = new Output.ChecksumInfo();
+            this.EEProm = new Output.EEProm();
             this.DisplayOptions = new DisplayOptions();
             this.ECUFile = new ECUFile(string.Empty);
             this.ConfigFile = new ConfigFile(string.Empty);
@@ -883,6 +894,9 @@ namespace VisualME7Logger
                     case "ChecksumInfo":
                         this.ChecksumInfo.Read(childEle);
                         break;
+                    case "EEProm":
+                        this.EEProm.Read(childEle);
+                        break;
                     case "DisplayOptions":
                         this.DisplayOptions.Read(childEle);
                         break;
@@ -898,6 +912,7 @@ namespace VisualME7Logger
             retval.Add(new XAttribute("ConfigFile", this.ConfigFile.FilePath));
             retval.Add(this.LoggerOptions.Write());
             retval.Add(this.ChecksumInfo.Write());
+            retval.Add(this.EEProm.Write());
             retval.Add(this.DisplayOptions.Write());
             return retval;
         }
@@ -910,6 +925,7 @@ namespace VisualME7Logger
             clone.ConfigFile = new ConfigFile(this.ConfigFile.FilePath);
             clone.LoggerOptions = this.LoggerOptions.Clone();
             clone.ChecksumInfo = this.ChecksumInfo.Clone();
+            clone.EEProm = this.EEProm.Clone();
             clone.DisplayOptions = this.DisplayOptions.Clone();
             return clone;
         }

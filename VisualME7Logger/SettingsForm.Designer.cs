@@ -127,6 +127,7 @@
             this.createECUFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.eEPromToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tpMeasurements.SuspendLayout();
@@ -1177,8 +1178,9 @@
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.createECUFileToolStripMenuItem,
             this.mE7CheckToolStripMenuItem,
-            this.createECUFileToolStripMenuItem});
+            this.eEPromToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
@@ -1208,6 +1210,13 @@
             this.menuStrip1.Size = new System.Drawing.Size(733, 24);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
+            // 
+            // eEPromToolStripMenuItem
+            // 
+            this.eEPromToolStripMenuItem.Name = "eEPromToolStripMenuItem";
+            this.eEPromToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.eEPromToolStripMenuItem.Text = "EEProm";
+            this.eEPromToolStripMenuItem.Click += new System.EventHandler(this.eEPromToolStripMenuItem_Click);
             // 
             // SettingsForm
             // 
@@ -1358,6 +1367,7 @@
         private System.Windows.Forms.TextBox txtExpressionUnit;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.ToolStripMenuItem eEPromToolStripMenuItem;
 
 
     }
