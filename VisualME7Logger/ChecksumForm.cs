@@ -74,10 +74,9 @@ namespace VisualME7Logger
 
         private void btnRun_Click(object sender, EventArgs e)
         {
-            VisualME7Logger.Output.ChecksumInfo checksumInfo = new Output.ChecksumInfo();
-            checksumInfo.ApplicationPath = this.txtAppPath.Text;
-            checksumInfo.BinPath = this.txtBinPath.Text;
-            Output.ChecksumResult result = checksumInfo.Check();
+            ChecksumInfo.ApplicationPath = this.txtAppPath.Text;
+            ChecksumInfo.BinPath = this.txtBinPath.Text;
+            Output.ChecksumResult result = ChecksumInfo.Check();
             this.txtOutput.Text = result.Output;
             MessageBox.Show(
                 this,
@@ -85,6 +84,11 @@ namespace VisualME7Logger
                 result.Success ? "Success" :"Error",
                 MessageBoxButtons.OK,
                 result.Success ? MessageBoxIcon.Information : MessageBoxIcon.Error);
+        }
+
+        private void ChecksumForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

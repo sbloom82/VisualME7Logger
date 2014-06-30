@@ -211,6 +211,12 @@
     <Content Include="resources\controls\PolyMonControls.pdb" />
     <Content Include="resources\controls\PolyMonControls.xml" />
     <Content Include="Icon.ico" />
+    <Content Include="resources\ME7Check.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\me7_95040.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

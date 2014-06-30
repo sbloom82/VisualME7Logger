@@ -71,18 +71,18 @@
             this.txtOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtOutput.Location = new System.Drawing.Point(9, 326);
+            this.txtOutput.Location = new System.Drawing.Point(9, 273);
             this.txtOutput.Multiline = true;
             this.txtOutput.Name = "txtOutput";
             this.txtOutput.ReadOnly = true;
             this.txtOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtOutput.Size = new System.Drawing.Size(535, 124);
+            this.txtOutput.Size = new System.Drawing.Size(535, 137);
             this.txtOutput.TabIndex = 6;
             // 
             // btnOk
             // 
             this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOk.Location = new System.Drawing.Point(470, 456);
+            this.btnOk.Location = new System.Drawing.Point(470, 416);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 8;
@@ -94,7 +94,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(389, 456);
+            this.btnCancel.Location = new System.Drawing.Point(389, 416);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 7;
@@ -114,7 +114,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 84);
+            this.label2.Location = new System.Drawing.Point(6, 56);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(47, 13);
             this.label2.TabIndex = 6;
@@ -125,9 +125,8 @@
             this.txtAppPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAppPath.Location = new System.Drawing.Point(9, 29);
-            this.txtAppPath.Multiline = true;
             this.txtAppPath.Name = "txtAppPath";
-            this.txtAppPath.Size = new System.Drawing.Size(535, 44);
+            this.txtAppPath.Size = new System.Drawing.Size(535, 20);
             this.txtAppPath.TabIndex = 0;
             this.txtAppPath.TextChanged += new System.EventHandler(this.txtAppPath_TextChanged);
             // 
@@ -135,10 +134,9 @@
             // 
             this.txtBinPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtBinPath.Location = new System.Drawing.Point(9, 104);
-            this.txtBinPath.Multiline = true;
+            this.txtBinPath.Location = new System.Drawing.Point(9, 76);
             this.txtBinPath.Name = "txtBinPath";
-            this.txtBinPath.Size = new System.Drawing.Size(535, 44);
+            this.txtBinPath.Size = new System.Drawing.Size(535, 20);
             this.txtBinPath.TabIndex = 2;
             this.txtBinPath.TextChanged += new System.EventHandler(this.txtBinPath_TextChanged);
             // 
@@ -156,7 +154,7 @@
             // btnBinPath
             // 
             this.btnBinPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBinPath.Location = new System.Drawing.Point(469, 79);
+            this.btnBinPath.Location = new System.Drawing.Point(469, 51);
             this.btnBinPath.Name = "btnBinPath";
             this.btnBinPath.Size = new System.Drawing.Size(75, 23);
             this.btnBinPath.TabIndex = 3;
@@ -219,7 +217,7 @@
             this.groupBox1.Controls.Add(this.cmbBaudrate);
             this.groupBox1.Controls.Add(this.btnWrite);
             this.groupBox1.Controls.Add(this.txtCOMPort);
-            this.groupBox1.Location = new System.Drawing.Point(9, 154);
+            this.groupBox1.Location = new System.Drawing.Point(9, 101);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(150, 166);
             this.groupBox1.TabIndex = 4;
@@ -280,7 +278,7 @@
             this.groupBox3.Controls.Add(this.txtVIN);
             this.groupBox3.Controls.Add(this.label5);
             this.groupBox3.Controls.Add(this.txtSKC);
-            this.groupBox3.Location = new System.Drawing.Point(165, 154);
+            this.groupBox3.Location = new System.Drawing.Point(165, 101);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(380, 166);
             this.groupBox3.TabIndex = 5;
@@ -377,7 +375,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(7, 95);
+            this.label8.Location = new System.Drawing.Point(7, 93);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(75, 13);
             this.label8.TabIndex = 14;
@@ -425,7 +423,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(552, 483);
+            this.ClientSize = new System.Drawing.Size(552, 443);
             this.ControlBox = false;
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox1);
