@@ -85,15 +85,14 @@ namespace VisualME7Logger
             this.txtVIN.Text = EEProm.GetVIN();
             this.txtSKC.Text = EEProm.GetSKC();
             this.txtImmoID.Text = EEProm.GetImmoID();
-            byte[] immoData = EEProm.GetImmoData();
+            string immoData = EEProm.GetImmoData();
             bool? immoOn = EEProm.ImmoEnabled();
             bool? deathCodeOn = EEProm.DeathCodeOn();
 
-            this.txtImmoData.Text = immoData != null ? string.Format("Loaded from \"{0}\"", Path.GetFileName(this.txtBinPath.Text)) : "Error";
-            this.txtImmoData.Tag = immoData;
+            this.txtImmoData.Text = immoData;
 
-            this.radImmoEnabled.Checked = immoOn.HasValue && immoOn.Value;
-            this.radImmoDisabled.Checked = immoOn.HasValue && !immoOn.Value;
+            this.chkImmoEnabled.Checked = immoOn.HasValue && immoOn.Value;
+            this.chkImmoDisabled.Checked = immoOn.HasValue && !immoOn.Value;
 
             chkFixDeathCode.Checked = false;
             chkFixDeathCode.Enabled = false;
@@ -197,11 +196,27 @@ namespace VisualME7Logger
                     this.txtVIN.Text,
                     this.txtSKC.Text,
                     this.txtImmoID.Text,
-                    this.txtImmoData.Tag as byte[],
-                    !this.radImmoEnabled.Checked && !radImmoDisabled.Checked ? new bool?() : new bool?(radImmoEnabled.Checked),
+                    this.txtImmoData.Text,
+                    !this.chkImmoEnabled.Checked && !chkImmoDisabled.Checked ? new bool?() : new bool?(chkImmoEnabled.Checked),
                     this.chkFixDeathCode.Checked,
                     this.chkCorrectChecksums.Checked);
                 this.txtOutput.Text = result.Output;
+            }
+        }
+
+        private void chkImmoEnabled_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkImmoEnabled.Checked)
+            {
+                chkImmoDisabled.Checked = false;
+            }
+        }
+
+        private void chkImmoDisabled_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkImmoDisabled.Checked)
+            {
+                chkImmoEnabled.Checked = false;
             }
         }
     }
