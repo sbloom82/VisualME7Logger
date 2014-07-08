@@ -54,8 +54,8 @@
             this.label9 = new System.Windows.Forms.Label();
             this.txtImmoData = new System.Windows.Forms.TextBox();
             this.txtImmoID = new System.Windows.Forms.TextBox();
-            this.radImmoDisabled = new System.Windows.Forms.RadioButton();
-            this.radImmoEnabled = new System.Windows.Forms.RadioButton();
+            this.chkImmoDisabled = new System.Windows.Forms.CheckBox();
+            this.chkImmoEnabled = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
@@ -270,8 +270,8 @@
             this.groupBox3.Controls.Add(this.label9);
             this.groupBox3.Controls.Add(this.txtImmoData);
             this.groupBox3.Controls.Add(this.txtImmoID);
-            this.groupBox3.Controls.Add(this.radImmoDisabled);
-            this.groupBox3.Controls.Add(this.radImmoEnabled);
+            this.groupBox3.Controls.Add(this.chkImmoDisabled);
+            this.groupBox3.Controls.Add(this.chkImmoEnabled);
             this.groupBox3.Controls.Add(this.label6);
             this.groupBox3.Controls.Add(this.label8);
             this.groupBox3.Controls.Add(this.label7);
@@ -327,8 +327,8 @@
             // txtImmoData
             // 
             this.txtImmoData.Location = new System.Drawing.Point(84, 115);
+            this.txtImmoData.MaxLength = 20;
             this.txtImmoData.Name = "txtImmoData";
-            this.txtImmoData.ReadOnly = true;
             this.txtImmoData.Size = new System.Drawing.Size(163, 20);
             this.txtImmoData.TabIndex = 7;
             // 
@@ -341,27 +341,27 @@
             this.txtImmoID.Size = new System.Drawing.Size(163, 20);
             this.txtImmoID.TabIndex = 5;
             // 
-            // radImmoDisabled
+            // chkImmoDisabled
             // 
-            this.radImmoDisabled.AutoSize = true;
-            this.radImmoDisabled.Location = new System.Drawing.Point(154, 66);
-            this.radImmoDisabled.Name = "radImmoDisabled";
-            this.radImmoDisabled.Size = new System.Drawing.Size(66, 17);
-            this.radImmoDisabled.TabIndex = 4;
-            this.radImmoDisabled.TabStop = true;
-            this.radImmoDisabled.Text = "Disabled";
-            this.radImmoDisabled.UseVisualStyleBackColor = true;
+            this.chkImmoDisabled.AutoSize = true;
+            this.chkImmoDisabled.Location = new System.Drawing.Point(154, 66);
+            this.chkImmoDisabled.Name = "chkImmoDisabled";
+            this.chkImmoDisabled.Size = new System.Drawing.Size(67, 17);
+            this.chkImmoDisabled.TabIndex = 4;
+            this.chkImmoDisabled.Text = "Disabled";
+            this.chkImmoDisabled.UseVisualStyleBackColor = true;
+            this.chkImmoDisabled.CheckedChanged += new System.EventHandler(this.chkImmoDisabled_CheckedChanged);
             // 
-            // radImmoEnabled
+            // chkImmoEnabled
             // 
-            this.radImmoEnabled.AutoSize = true;
-            this.radImmoEnabled.Location = new System.Drawing.Point(84, 66);
-            this.radImmoEnabled.Name = "radImmoEnabled";
-            this.radImmoEnabled.Size = new System.Drawing.Size(64, 17);
-            this.radImmoEnabled.TabIndex = 3;
-            this.radImmoEnabled.TabStop = true;
-            this.radImmoEnabled.Text = "Enabled";
-            this.radImmoEnabled.UseVisualStyleBackColor = true;
+            this.chkImmoEnabled.AutoSize = true;
+            this.chkImmoEnabled.Location = new System.Drawing.Point(84, 66);
+            this.chkImmoEnabled.Name = "chkImmoEnabled";
+            this.chkImmoEnabled.Size = new System.Drawing.Size(65, 17);
+            this.chkImmoEnabled.TabIndex = 3;
+            this.chkImmoEnabled.Text = "Enabled";
+            this.chkImmoEnabled.UseVisualStyleBackColor = true;
+            this.chkImmoEnabled.CheckedChanged += new System.EventHandler(this.chkImmoEnabled_CheckedChanged);
             // 
             // label6
             // 
@@ -475,8 +475,8 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox txtVIN;
         private System.Windows.Forms.TextBox txtImmoID;
-        private System.Windows.Forms.RadioButton radImmoDisabled;
-        private System.Windows.Forms.RadioButton radImmoEnabled;
+        private System.Windows.Forms.CheckBox chkImmoDisabled;
+        private System.Windows.Forms.CheckBox chkImmoEnabled;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;

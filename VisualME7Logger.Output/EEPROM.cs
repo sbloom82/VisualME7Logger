@@ -351,7 +351,7 @@ change to
             return new EEPromResult();
         }
 
-        public byte[] GetImmoData()
+        public string GetImmoData()
         {
             //IMMO Key (key shared w/ cluster) = 0x34-0x3A && 0x44-0x4A
             try
@@ -372,7 +372,7 @@ change to
                                 return null;
                             }
                         }
-                        return immoDataBytes;
+                        return BitConverter.ToString(immoDataBytes).Replace("-", " ");
                     }
                 }
             }
@@ -383,22 +383,26 @@ change to
             return null;
         }
 
-        public EEPromResult SetImmoData(byte[] fileBytes, byte[] immoData)
+        public EEPromResult SetImmoData(byte[] fileBytes, string immoData)
         {
-            if (immoData != null)
+            if (!string.IsNullOrEmpty(immoData))
             {
                 int[] immoDataBytes = new int[] { 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3A };
                 int[] immoDataBytes2 = new int[] { 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A };
 
-                if (immoData.Length != 7)
+                if (immoData.Length != 20)
                 {
-                    return new EEPromResult() { Success = false, Output = "IMMO Data must be 7 bytes in length" };
+                    return new EEPromResult() { Success = false, Output = "IMMO Data must be 20 characters in length (7 hex bytes seperated by spaces)" };
                 }
 
-                for (int i = 0; i < immoData.Length; ++i)
+                byte[] bytes = new byte[7];
+                for (int i = 0; i < 20; i += 3)
+                    bytes[i / 3] = Convert.ToByte(immoData.Substring(i, 2), 16);                
+
+                for (int i = 0; i < bytes.Length; ++i)
                 {
-                    fileBytes[immoDataBytes[i]] = immoData[i];
-                    fileBytes[immoDataBytes2[i]] = immoData[i];
+                    fileBytes[immoDataBytes[i]] = bytes[i];
+                    fileBytes[immoDataBytes2[i]] = bytes[i];
                 }
                 return new EEPromResult() { Success = true, Output = "Immo Data set" };
             }
@@ -562,7 +566,7 @@ change to
             }
         }
 
-        public EEPromResult WriteFile(string filePath, string vin, string skc, string immoID, byte[] immoData, bool? enableImmo, bool fixDeathCode, bool correctChecksum)
+        public EEPromResult WriteFile(string filePath, string vin, string skc, string immoID, string immoData, bool? enableImmo, bool fixDeathCode, bool correctChecksum)
         {
             try
             {
