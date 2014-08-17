@@ -139,12 +139,19 @@ namespace VisualME7Logger.Session
             {
                 logReady = false;
 
+                if (options.WriteLogFileWithVME7L)
+                {
+                    this.WriteOneSample();
+                    this.logWriter = new LogWriter(options.LogFile);
+                }
+
                 if (options.WriteOutputFile)
                 {
                     outputWriter = new StreamWriter(Path.Combine(ME7LoggerDirectory, "VisualME7LoggerOutput.txt"), false);
                     outputWriter.AutoFlush = true;
                 }
 
+                System.Threading.Thread.CurrentThread.Priority = System.Threading.ThreadPriority.Highest;
                 p = new Process();
                 p.StartInfo = new ProcessStartInfo(
                     Path.Combine(ME7LoggerDirectory, "bin", "ME7Logger.exe"),
@@ -166,6 +173,22 @@ namespace VisualME7Logger.Session
             else
             {
                 new System.Threading.Thread(new System.Threading.ThreadStart(OpenFromSessionOutput)).Start();
+            }
+        }
+
+        private void WriteOneSample()
+        {
+            Process p = new Process();
+            p.StartInfo = new ProcessStartInfo(
+                Path.Combine(ME7LoggerDirectory, "bin", "ME7Logger.exe"),
+                string.Format("{0} \"{1}\"", options.ToString(true), configFilePath));
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.CreateNoWindow = true;
+
+            if (p.Start())
+            {
+                p.WaitForExit();
+                System.Threading.Thread.Sleep(500);
             }
         }
 
@@ -333,6 +356,12 @@ namespace VisualME7Logger.Session
                             {
                                 WriteDebug("Open... reading line");
                             }
+
+                            if (options.WriteLogFileWithVME7L)
+                            {
+                                this.logWriter.Add(data);
+                            }
+
                             LogLine logLine = this.Log.ReadLine(data);
                             this.LineRead(logLine);
                         }
@@ -409,6 +438,12 @@ namespace VisualME7Logger.Session
                         outputWriter = null;
                     }
 
+                    if (this.logWriter != null)
+                    {
+                        this.logWriter.Close();
+                        this.logWriter = null;
+                    }
+
                     Status = Statuses.Closed;
                 }
             }
@@ -417,6 +452,7 @@ namespace VisualME7Logger.Session
         private string logConfigFile;
         private string ecuCharacteristicsFile;
         private string ecuDef;
+        private LogWriter logWriter;
         private bool ReadLine(string line)
         {
             if (line != null)
@@ -473,6 +509,57 @@ namespace VisualME7Logger.Session
                 }
             }
             return false;
+        }
+
+        class LogWriter
+        {
+            Queue<string> queue;
+            StreamWriter writer;
+            public LogWriter(string path)
+            {
+                queue = new Queue<string>();
+                writer = new StreamWriter(path, true);
+                new System.Threading.Thread(this.Run).Start();
+            }
+
+            public bool stop = false;
+            void Run()
+            {
+                while (!stop)
+                {
+                    int waits = 0;
+                    while (waits++ < 100 && !stop)
+                    {
+                        System.Threading.Thread.Sleep(100);
+                    }
+
+                    if (queue.Count > 0)
+                    {
+                        while (queue.Count > 0)
+                        {
+                            writer.WriteLine(queue.Dequeue());
+                        }
+                        writer.Flush();
+                    }
+                }
+
+                if (this.writer != null)
+                {
+                    writer.Close();
+                    writer.Dispose();
+                    writer = null;
+                }
+            }
+
+            public void Add(string data)
+            {
+                this.queue.Enqueue(data);
+            }
+
+            public void Close()
+            {
+                this.stop = true;
+            }
         }
     }
 
@@ -548,7 +635,7 @@ namespace VisualME7Logger.Session
         public string Expression
         {
             get { return _expression; }
-            set 
+            set
             {
                 _expression = value;
                 _exp = null;
@@ -763,6 +850,8 @@ namespace VisualME7Logger.Session
         public string LogFile { get; set; }
         public bool WriteOutputFile { get; set; }
 
+        public bool WriteLogFileWithVME7L { get; set; }
+
         public LoggerOptions(string ME7LoggerDirectory)
         {
             ConnectionType = ConnectionTypes.Default;
@@ -797,6 +886,12 @@ namespace VisualME7Logger.Session
                             break;
                         case "WriteOutputFile":
                             this.WriteOutputFile = bool.Parse(att.Value);
+                            break;
+                        case "DisableRealTimeOutput":
+                            this.RealTimeOutput = !bool.Parse(att.Value);
+                            break;
+                        case "WriteLogFileWithVME7L":
+                            this.WriteLogFileWithVME7L = bool.Parse(att.Value);
                             break;
                     }
                 }
@@ -870,6 +965,8 @@ namespace VisualME7Logger.Session
             root.Add(new XAttribute("WriteAbsoluteTimestamp", WriteAbsoluteTimestamp));
             root.Add(new XAttribute("ReadSingleMeasurement", ReadSingleMeasurement));
             root.Add(new XAttribute("WriteOutputFile", WriteOutputFile));
+            root.Add(new XAttribute("DisableRealTimeOutput", !this.RealTimeOutput));
+            root.Add(new XAttribute("WriteLogFileWithVME7L", this.WriteLogFileWithVME7L));
 
             return root;
         }
@@ -894,10 +991,16 @@ namespace VisualME7Logger.Session
             clone.WriteLogToFile = this.WriteLogToFile;
             clone.LogFile = LogFile;
             clone.WriteOutputFile = this.WriteOutputFile;
+            clone.WriteLogFileWithVME7L = this.WriteLogFileWithVME7L;
             return clone;
         }
 
         public override string ToString()
+        {
+            return this.ToString(false);
+        }
+
+        public string ToString(bool writeOneSample)
         {
             StringBuilder sb = new StringBuilder();
             if (this.ConnectionType == ConnectionTypes.COM)
@@ -944,7 +1047,7 @@ namespace VisualME7Logger.Session
             {
                 sb.Append(" - h");
             }
-            if (ReadSingleMeasurement)
+            if (ReadSingleMeasurement || writeOneSample)
             {
                 sb.Append(" -1");
             }
@@ -952,11 +1055,11 @@ namespace VisualME7Logger.Session
             {
                 sb.Append(" -r");
             }
-            if (RealTimeOutput)
+            if ((RealTimeOutput || WriteLogFileWithVME7L) && !writeOneSample)
             {
                 sb.Append(" -R");
             }
-            if (WriteLogToFile)
+            if ((WriteLogToFile && !WriteLogFileWithVME7L) || writeOneSample)
             {
                 sb.AppendFormat(" -o \"{0}\"", LogFile);
             }

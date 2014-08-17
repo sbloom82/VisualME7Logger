@@ -62,6 +62,7 @@
             this.txtVIN = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.txtSKC = new System.Windows.Forms.TextBox();
+            this.btnNewBinPath = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.SuspendLayout();
@@ -77,7 +78,7 @@
             this.txtOutput.ReadOnly = true;
             this.txtOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.txtOutput.Size = new System.Drawing.Size(535, 137);
-            this.txtOutput.TabIndex = 6;
+            this.txtOutput.TabIndex = 8;
             // 
             // btnOk
             // 
@@ -85,7 +86,7 @@
             this.btnOk.Location = new System.Drawing.Point(470, 416);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
-            this.btnOk.TabIndex = 8;
+            this.btnOk.TabIndex = 10;
             this.btnOk.Text = "OK";
             this.btnOk.UseVisualStyleBackColor = true;
             this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
@@ -97,7 +98,7 @@
             this.btnCancel.Location = new System.Drawing.Point(389, 416);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 7;
+            this.btnCancel.TabIndex = 9;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -137,7 +138,7 @@
             this.txtBinPath.Location = new System.Drawing.Point(9, 76);
             this.txtBinPath.Name = "txtBinPath";
             this.txtBinPath.Size = new System.Drawing.Size(535, 20);
-            this.txtBinPath.TabIndex = 2;
+            this.txtBinPath.TabIndex = 5;
             this.txtBinPath.TextChanged += new System.EventHandler(this.txtBinPath_TextChanged);
             // 
             // btnAppPath
@@ -157,7 +158,7 @@
             this.btnBinPath.Location = new System.Drawing.Point(469, 51);
             this.btnBinPath.Name = "btnBinPath";
             this.btnBinPath.Size = new System.Drawing.Size(75, 23);
-            this.btnBinPath.TabIndex = 3;
+            this.btnBinPath.TabIndex = 4;
             this.btnBinPath.Text = "Choose";
             this.btnBinPath.UseVisualStyleBackColor = true;
             this.btnBinPath.Click += new System.EventHandler(this.btnBinPath_Click);
@@ -220,7 +221,7 @@
             this.groupBox1.Location = new System.Drawing.Point(9, 101);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(150, 166);
-            this.groupBox1.TabIndex = 4;
+            this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Read/Write";
             // 
@@ -281,7 +282,7 @@
             this.groupBox3.Location = new System.Drawing.Point(165, 101);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(380, 166);
-            this.groupBox3.TabIndex = 5;
+            this.groupBox3.TabIndex = 7;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "EEProm Data";
             // 
@@ -417,6 +418,17 @@
             this.txtSKC.Size = new System.Drawing.Size(163, 20);
             this.txtSKC.TabIndex = 2;
             // 
+            // btnNewBinPath
+            // 
+            this.btnNewBinPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnNewBinPath.Location = new System.Drawing.Point(389, 51);
+            this.btnNewBinPath.Name = "btnNewBinPath";
+            this.btnNewBinPath.Size = new System.Drawing.Size(75, 23);
+            this.btnNewBinPath.TabIndex = 3;
+            this.btnNewBinPath.Text = "New";
+            this.btnNewBinPath.UseVisualStyleBackColor = true;
+            this.btnNewBinPath.Click += new System.EventHandler(this.btnNewBinPath_Click);
+            // 
             // EEPromForm
             // 
             this.AcceptButton = this.btnOk;
@@ -425,6 +437,7 @@
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(552, 443);
             this.ControlBox = false;
+            this.Controls.Add(this.btnNewBinPath);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnBinPath);
@@ -484,5 +497,6 @@
         private System.Windows.Forms.CheckBox chkFixDeathCode;
         private System.Windows.Forms.CheckBox chkCorrectChecksums;
         private System.Windows.Forms.Button btnSaveToFile;
+        private System.Windows.Forms.Button btnNewBinPath;
     }
 }

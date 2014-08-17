@@ -216,6 +216,8 @@ email: agv.tuning@gmail.com
         }
 
         #region immo notes
+        //Bytes 1E9h & 1F9h = Flash Programming Counter (Succesfull)
+        //Bytes 1EAh & 1FAh = Flash Programming Counter (Attempts)
         //pin-skc = 0x32-0x33 & 0x42-0x43. To decode flip bytes, convert to dec, add leading zero
         //VIN = 0xB5-0xB9, 0xD0-0xDB & 0xC5-0xC9, 0xE0-0xEB
         //IMMO Key (key shared w/ cluster) = 0x34-0x3A && 0x44-0x4A

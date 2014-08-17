@@ -157,15 +157,27 @@ namespace VisualME7Logger
             this.cmbGraphVariableVariable.DataSource =
                 this.CurrentProfile.ECUFile.Measurements.Values.Select(m => m.Name).ToList();
 
+            if (this.CurrentProfile.ECUFile.CommunicationInfo != null)
+            {
+                this.cmbCommunicate.DataSource = this.CurrentProfile.ECUFile.CommunicationInfo.CommunicatePossibleValues;
+                this.cmbCommunicate.SelectedItem = this.CurrentProfile.ECUFile.CommunicationInfo.Communicate;
+
+                this.cmbConnect.DataSource = this.CurrentProfile.ECUFile.CommunicationInfo.ConnectPossibleValues;
+                this.cmbConnect.SelectedItem = this.CurrentProfile.ECUFile.CommunicationInfo.Connect;
+
+                this.cmbLogSpeed.DataSource = this.CurrentProfile.ECUFile.CommunicationInfo.LogSpeedPossibleValues;
+                this.cmbLogSpeed.SelectedItem = this.CurrentProfile.ECUFile.CommunicationInfo.LogSpeed;
+            }
+
             LoadConfigFile();
         }
 
         private void SwitchUI()
         {
             this.lstGraphVariables.Enabled =
-                this.btnAddGraphVariable.Enabled  = this.GraphVariableEditMode == EditModes.View;            
+                this.btnAddGraphVariable.Enabled = this.GraphVariableEditMode == EditModes.View;
             this.btnEditGraphVariable.Enabled =
-                this.btnDeleteGraphVariable.Enabled  = this.GraphVariableEditMode == EditModes.View && lstGraphVariables.SelectedItem != null;
+                this.btnDeleteGraphVariable.Enabled = this.GraphVariableEditMode == EditModes.View && lstGraphVariables.SelectedItem != null;
             this.gbGraphVariables.Enabled = this.GraphVariableEditMode != EditModes.View;
 
             this.lstProfiles.Enabled =
@@ -269,7 +281,7 @@ namespace VisualME7Logger
         {
             txtConfigFile.Text = this.CurrentProfile.ConfigFile.FilePath;
             this.CurrentProfile.ConfigFile.Read();
-            
+
             foreach (Measurement m in this.CurrentProfile.ECUFile.Measurements.Values)
             {
                 m.Selected = false;
@@ -288,6 +300,24 @@ namespace VisualME7Logger
                 if (this.SaveConfigFile() == null)
                 {
                     return;
+                }
+
+                if (this.CurrentProfile.ECUFile.CommunicationInfo != null &&
+                    (this.CurrentProfile.ECUFile.CommunicationInfo.Connect != cmbConnect.Text ||
+                    this.CurrentProfile.ECUFile.CommunicationInfo.Communicate != cmbCommunicate.Text ||
+                    this.CurrentProfile.ECUFile.CommunicationInfo.LogSpeed != cmbLogSpeed.Text))
+                {
+                    try
+                    {
+                        this.CurrentProfile.ECUFile.UpdateCommunicationInfo(
+                            cmbConnect.Text,
+                            cmbCommunicate.Text,
+                            cmbLogSpeed.Text);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("An error occurred while updating communication info" + ex.ToString());
+                    }
                 }
             }
 
@@ -364,7 +394,7 @@ namespace VisualME7Logger
             this.CurrentProfile.DisplayOptions.RefreshInterval = (int)this.nudResfreshRate.Value;
             this.CurrentProfile.DisplayOptions.GraphHRes = (int)this.nudGraphResH.Value;
             this.CurrentProfile.DisplayOptions.GraphVRes = (int)this.nudGraphResV.Value;
-       
+
             try
             {
                 XElement root = new XElement("VisualME7LoggerSettings");
@@ -663,7 +693,7 @@ namespace VisualME7Logger
                 {
                     clone.Name += " Clone";
                 }
-                else 
+                else
                 {
                     break;
                 }
@@ -691,17 +721,17 @@ namespace VisualME7Logger
             this.Profiles.Remove(this.SelectedProfile);
             if (this.SelectedProfile == this.CurrentProfile)
             {
-                if(Profiles.Count > 0)
+                if (Profiles.Count > 0)
                 {
                     this.CurrentProfile = Profiles[0];
                 }
                 else
                 {
                     this.CurrentProfile = new Profile("Default Profile");
-                    this.Profiles.Add(this.CurrentProfile);                  
+                    this.Profiles.Add(this.CurrentProfile);
                 }
                 SelectedProfile = CurrentProfile;
-                this.LoadProfile(CurrentProfile);                          
+                this.LoadProfile(CurrentProfile);
             }
 
             this.lstProfiles.DataSource = null;
@@ -736,7 +766,7 @@ namespace VisualME7Logger
 
             lstProfiles.DataSource = null;
             lstProfiles.DataSource = this.Profiles;
-            lstProfiles.SelectedItem = this.SelectedProfile;           
+            lstProfiles.SelectedItem = this.SelectedProfile;
 
             this.ProfileEditMode = EditModes.View;
             SwitchUI();
@@ -745,11 +775,6 @@ namespace VisualME7Logger
         private void SettingsForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();
-        }
-
-        private void groupBox5_Enter(object sender, EventArgs e)
-        {
-
         }
 
         private void lstExpressions_SelectedIndexChanged(object sender, EventArgs e)
@@ -943,11 +968,11 @@ namespace VisualME7Logger
         public int GraphHRes = 1200;
         public List<GraphVariable> GraphVariables = new List<GraphVariable>();
         public List<Session.ExpressionVariable> Expressions = new List<Session.ExpressionVariable>();
-       
+
         public XElement Write()
         {
             XElement retval = new XElement("DisplayOptions");
-            
+
             retval.Add(new XAttribute("RefreshInterval", this.RefreshInterval));
             retval.Add(new XAttribute("GraphVRes", this.GraphVRes));
             retval.Add(new XAttribute("GraphHRes", this.GraphHRes));
@@ -965,7 +990,7 @@ namespace VisualME7Logger
                 graphVarsEle.Add(gv.Write());
             }
             retval.Add(graphVarsEle);
-           
+
             return retval;
         }
 

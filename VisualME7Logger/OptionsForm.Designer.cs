@@ -42,23 +42,27 @@
             this.radCommCOMPort = new System.Windows.Forms.RadioButton();
             this.radCommDefault = new System.Windows.Forms.RadioButton();
             this.gpOther = new System.Windows.Forms.GroupBox();
-            this.chkWriteOutputToFile = new System.Windows.Forms.CheckBox();
             this.chkReadSingleMeasurement = new System.Windows.Forms.CheckBox();
             this.chkWriteAbsoluteTimeStamp = new System.Windows.Forms.CheckBox();
             this.nudSampleRate = new System.Windows.Forms.NumericUpDown();
             this.chkTimeSync = new System.Windows.Forms.CheckBox();
             this.chkWriteToLogRealTime = new System.Windows.Forms.CheckBox();
             this.chkOverrideSampleRate = new System.Windows.Forms.CheckBox();
+            this.chkWriteOutputToFile = new System.Windows.Forms.CheckBox();
             this.txtLogFilePath = new System.Windows.Forms.TextBox();
             this.chkWriteToLog = new System.Windows.Forms.CheckBox();
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.btnChooseLogPath = new System.Windows.Forms.Button();
+            this.chkDisableRealTimeDisplay = new System.Windows.Forms.CheckBox();
+            this.gbTroubleshooting = new System.Windows.Forms.GroupBox();
+            this.chkWriteLogFileWithVME7L = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.gpOther.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudSampleRate)).BeginInit();
             this.groupBox3.SuspendLayout();
+            this.gbTroubleshooting.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -205,7 +209,6 @@
             // 
             // gpOther
             // 
-            this.gpOther.Controls.Add(this.chkWriteOutputToFile);
             this.gpOther.Controls.Add(this.chkReadSingleMeasurement);
             this.gpOther.Controls.Add(this.chkWriteAbsoluteTimeStamp);
             this.gpOther.Controls.Add(this.nudSampleRate);
@@ -214,20 +217,10 @@
             this.gpOther.Controls.Add(this.chkOverrideSampleRate);
             this.gpOther.Location = new System.Drawing.Point(3, 220);
             this.gpOther.Name = "gpOther";
-            this.gpOther.Size = new System.Drawing.Size(424, 154);
+            this.gpOther.Size = new System.Drawing.Size(424, 133);
             this.gpOther.TabIndex = 2;
             this.gpOther.TabStop = false;
             this.gpOther.Text = "Other";
-            // 
-            // chkWriteOutputToFile
-            // 
-            this.chkWriteOutputToFile.AutoSize = true;
-            this.chkWriteOutputToFile.Location = new System.Drawing.Point(6, 134);
-            this.chkWriteOutputToFile.Name = "chkWriteOutputToFile";
-            this.chkWriteOutputToFile.Size = new System.Drawing.Size(170, 17);
-            this.chkWriteOutputToFile.TabIndex = 6;
-            this.chkWriteOutputToFile.Text = "Write ME7Logger output to file";
-            this.chkWriteOutputToFile.UseVisualStyleBackColor = true;
             // 
             // chkReadSingleMeasurement
             // 
@@ -302,6 +295,16 @@
             this.chkOverrideSampleRate.UseVisualStyleBackColor = true;
             this.chkOverrideSampleRate.CheckedChanged += new System.EventHandler(this.chkOverrideSampleRate_CheckedChanged);
             // 
+            // chkWriteOutputToFile
+            // 
+            this.chkWriteOutputToFile.AutoSize = true;
+            this.chkWriteOutputToFile.Location = new System.Drawing.Point(6, 39);
+            this.chkWriteOutputToFile.Name = "chkWriteOutputToFile";
+            this.chkWriteOutputToFile.Size = new System.Drawing.Size(170, 17);
+            this.chkWriteOutputToFile.TabIndex = 2;
+            this.chkWriteOutputToFile.Text = "Write ME7Logger output to file";
+            this.chkWriteOutputToFile.UseVisualStyleBackColor = true;
+            // 
             // txtLogFilePath
             // 
             this.txtLogFilePath.Location = new System.Drawing.Point(6, 42);
@@ -325,10 +328,10 @@
             // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(352, 376);
+            this.btnOk.Location = new System.Drawing.Point(344, 422);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
-            this.btnOk.TabIndex = 4;
+            this.btnOk.TabIndex = 5;
             this.btnOk.Text = "OK";
             this.btnOk.UseVisualStyleBackColor = true;
             this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
@@ -336,10 +339,10 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(271, 376);
+            this.btnCancel.Location = new System.Drawing.Point(263, 422);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 3;
+            this.btnCancel.Size = new System.Drawing.Size(76, 23);
+            this.btnCancel.TabIndex = 4;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -358,7 +361,7 @@
             // 
             // btnChooseLogPath
             // 
-            this.btnChooseLogPath.Location = new System.Drawing.Point(341, 15);
+            this.btnChooseLogPath.Location = new System.Drawing.Point(341, 13);
             this.btnChooseLogPath.Name = "btnChooseLogPath";
             this.btnChooseLogPath.Size = new System.Drawing.Size(75, 23);
             this.btnChooseLogPath.TabIndex = 2;
@@ -366,14 +369,48 @@
             this.btnChooseLogPath.UseVisualStyleBackColor = true;
             this.btnChooseLogPath.Click += new System.EventHandler(this.btnChooseLogPath_Click);
             // 
+            // chkDisableRealTimeDisplay
+            // 
+            this.chkDisableRealTimeDisplay.AutoSize = true;
+            this.chkDisableRealTimeDisplay.Location = new System.Drawing.Point(6, 16);
+            this.chkDisableRealTimeDisplay.Name = "chkDisableRealTimeDisplay";
+            this.chkDisableRealTimeDisplay.Size = new System.Drawing.Size(149, 17);
+            this.chkDisableRealTimeDisplay.TabIndex = 0;
+            this.chkDisableRealTimeDisplay.Text = "Disable Real Time Display";
+            this.chkDisableRealTimeDisplay.UseVisualStyleBackColor = true;
+            // 
+            // gbTroubleshooting
+            // 
+            this.gbTroubleshooting.Controls.Add(this.chkWriteLogFileWithVME7L);
+            this.gbTroubleshooting.Controls.Add(this.chkDisableRealTimeDisplay);
+            this.gbTroubleshooting.Controls.Add(this.chkWriteOutputToFile);
+            this.gbTroubleshooting.Location = new System.Drawing.Point(3, 354);
+            this.gbTroubleshooting.Name = "gbTroubleshooting";
+            this.gbTroubleshooting.Size = new System.Drawing.Size(424, 62);
+            this.gbTroubleshooting.TabIndex = 3;
+            this.gbTroubleshooting.TabStop = false;
+            this.gbTroubleshooting.Text = "Troubleshooting";
+            // 
+            // chkWriteLogFileWithVME7L
+            // 
+            this.chkWriteLogFileWithVME7L.AutoSize = true;
+            this.chkWriteLogFileWithVME7L.Location = new System.Drawing.Point(192, 16);
+            this.chkWriteLogFileWithVME7L.Name = "chkWriteLogFileWithVME7L";
+            this.chkWriteLogFileWithVME7L.Size = new System.Drawing.Size(202, 17);
+            this.chkWriteLogFileWithVME7L.TabIndex = 1;
+            this.chkWriteLogFileWithVME7L.Text = "Write Log File With VisualME7Logger";
+            this.chkWriteLogFileWithVME7L.UseVisualStyleBackColor = true;
+            this.chkWriteLogFileWithVME7L.Visible = false;
+            // 
             // OptionsForm
             // 
             this.AcceptButton = this.btnOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(431, 401);
+            this.ClientSize = new System.Drawing.Size(431, 449);
             this.ControlBox = false;
+            this.Controls.Add(this.gbTroubleshooting);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
@@ -391,6 +428,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudSampleRate)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.gbTroubleshooting.ResumeLayout(false);
+            this.gbTroubleshooting.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -423,5 +462,8 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Button btnChooseLogPath;
         private System.Windows.Forms.CheckBox chkWriteOutputToFile;
+        private System.Windows.Forms.CheckBox chkDisableRealTimeDisplay;
+        private System.Windows.Forms.GroupBox gbTroubleshooting;
+        private System.Windows.Forms.CheckBox chkWriteLogFileWithVME7L;
     }
 }
