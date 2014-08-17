@@ -219,5 +219,20 @@ namespace VisualME7Logger
                 chkImmoEnabled.Checked = false;
             }
         }
+
+        private void btnNewBinPath_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog ofd = new SaveFileDialog();
+            ofd.InitialDirectory =
+                string.IsNullOrWhiteSpace(txtBinPath.Text) ?
+                System.IO.Path.Combine(Program.ME7LoggerDirectory, "images") :
+                System.IO.Path.GetDirectoryName(txtBinPath.Text);
+            ofd.FileName = System.IO.Path.GetFileName(txtBinPath.Text);
+            ofd.Title = "Save As";
+            if (ofd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+            {
+                this.txtBinPath.Text = ofd.FileName;
+            }
+        }
     }
 }

@@ -104,6 +104,12 @@
             this.btnProfileDelete = new System.Windows.Forms.Button();
             this.btnProfileAdd = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.label22 = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
+            this.label20 = new System.Windows.Forms.Label();
+            this.cmbLogSpeed = new System.Windows.Forms.ComboBox();
+            this.cmbCommunicate = new System.Windows.Forms.ComboBox();
+            this.cmbConnect = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.txtConfigFile = new System.Windows.Forms.TextBox();
@@ -123,11 +129,11 @@
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.mE7CheckToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createECUFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mE7CheckToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.eEPromToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.eEPromToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tpMeasurements.SuspendLayout();
@@ -159,7 +165,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 24);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(733, 341);
+            this.panel1.Size = new System.Drawing.Size(733, 349);
             this.panel1.TabIndex = 8;
             // 
             // tabControl1
@@ -172,7 +178,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(733, 341);
+            this.tabControl1.Size = new System.Drawing.Size(733, 349);
             this.tabControl1.TabIndex = 8;
             // 
             // tpMeasurements
@@ -183,7 +189,7 @@
             this.tpMeasurements.Location = new System.Drawing.Point(4, 22);
             this.tpMeasurements.Name = "tpMeasurements";
             this.tpMeasurements.Padding = new System.Windows.Forms.Padding(3);
-            this.tpMeasurements.Size = new System.Drawing.Size(725, 315);
+            this.tpMeasurements.Size = new System.Drawing.Size(725, 323);
             this.tpMeasurements.TabIndex = 0;
             this.tpMeasurements.Text = "Measurements";
             // 
@@ -204,7 +210,7 @@
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.ShowEditingIcon = false;
-            this.dataGridView1.Size = new System.Drawing.Size(719, 283);
+            this.dataGridView1.Size = new System.Drawing.Size(719, 291);
             this.dataGridView1.TabIndex = 11;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView1_KeyDown);
@@ -304,7 +310,7 @@
             this.tpExpressions.Controls.Add(this.groupBox4);
             this.tpExpressions.Location = new System.Drawing.Point(4, 22);
             this.tpExpressions.Name = "tpExpressions";
-            this.tpExpressions.Size = new System.Drawing.Size(725, 315);
+            this.tpExpressions.Size = new System.Drawing.Size(725, 323);
             this.tpExpressions.TabIndex = 3;
             this.tpExpressions.Text = "Expressions";
             // 
@@ -376,7 +382,6 @@
             this.gbExpressions.Size = new System.Drawing.Size(298, 125);
             this.gbExpressions.TabIndex = 1;
             this.gbExpressions.TabStop = false;
-            this.gbExpressions.Enter += new System.EventHandler(this.groupBox5_Enter);
             // 
             // label19
             // 
@@ -490,7 +495,7 @@
             this.tbGraphConfig.Location = new System.Drawing.Point(4, 22);
             this.tbGraphConfig.Name = "tbGraphConfig";
             this.tbGraphConfig.Padding = new System.Windows.Forms.Padding(3);
-            this.tbGraphConfig.Size = new System.Drawing.Size(725, 315);
+            this.tbGraphConfig.Size = new System.Drawing.Size(725, 323);
             this.tbGraphConfig.TabIndex = 1;
             this.tbGraphConfig.Text = "Graph Data";
             // 
@@ -875,7 +880,7 @@
             this.tpProfiles.Controls.Add(this.groupBox3);
             this.tpProfiles.Location = new System.Drawing.Point(4, 22);
             this.tpProfiles.Name = "tpProfiles";
-            this.tpProfiles.Size = new System.Drawing.Size(725, 315);
+            this.tpProfiles.Size = new System.Drawing.Size(725, 323);
             this.tpProfiles.TabIndex = 2;
             this.tpProfiles.Text = "Profiles";
             // 
@@ -1015,21 +1020,78 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.label22);
+            this.panel2.Controls.Add(this.label21);
+            this.panel2.Controls.Add(this.label20);
+            this.panel2.Controls.Add(this.cmbLogSpeed);
+            this.panel2.Controls.Add(this.cmbCommunicate);
+            this.panel2.Controls.Add(this.cmbConnect);
             this.panel2.Controls.Add(this.label4);
             this.panel2.Controls.Add(this.label3);
             this.panel2.Controls.Add(this.txtConfigFile);
             this.panel2.Controls.Add(this.txtECUFile);
             this.panel2.Controls.Add(this.btnStartLog);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 368);
+            this.panel2.Location = new System.Drawing.Point(0, 376);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(733, 89);
+            this.panel2.Size = new System.Drawing.Size(733, 115);
             this.panel2.TabIndex = 10;
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(423, 36);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(62, 13);
+            this.label22.TabIndex = 10;
+            this.label22.Text = "Log Speed:";
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(202, 36);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(74, 13);
+            this.label21.TabIndex = 9;
+            this.label21.Text = "Communicate:";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(17, 36);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(50, 13);
+            this.label20.TabIndex = 8;
+            this.label20.Text = "Connect:";
+            // 
+            // cmbLogSpeed
+            // 
+            this.cmbLogSpeed.FormattingEnabled = true;
+            this.cmbLogSpeed.Location = new System.Drawing.Point(487, 33);
+            this.cmbLogSpeed.Name = "cmbLogSpeed";
+            this.cmbLogSpeed.Size = new System.Drawing.Size(121, 21);
+            this.cmbLogSpeed.TabIndex = 4;
+            // 
+            // cmbCommunicate
+            // 
+            this.cmbCommunicate.FormattingEnabled = true;
+            this.cmbCommunicate.Location = new System.Drawing.Point(278, 33);
+            this.cmbCommunicate.Name = "cmbCommunicate";
+            this.cmbCommunicate.Size = new System.Drawing.Size(121, 21);
+            this.cmbCommunicate.TabIndex = 3;
+            // 
+            // cmbConnect
+            // 
+            this.cmbConnect.FormattingEnabled = true;
+            this.cmbConnect.Location = new System.Drawing.Point(69, 33);
+            this.cmbConnect.Name = "cmbConnect";
+            this.cmbConnect.Size = new System.Drawing.Size(121, 21);
+            this.cmbConnect.TabIndex = 2;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(7, 37);
+            this.label4.Location = new System.Drawing.Point(8, 63);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(59, 13);
             this.label4.TabIndex = 4;
@@ -1038,7 +1100,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(15, 11);
+            this.label3.Location = new System.Drawing.Point(16, 11);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(51, 13);
             this.label3.TabIndex = 3;
@@ -1048,11 +1110,11 @@
             // 
             this.txtConfigFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtConfigFile.Location = new System.Drawing.Point(69, 34);
+            this.txtConfigFile.Location = new System.Drawing.Point(69, 60);
             this.txtConfigFile.Name = "txtConfigFile";
             this.txtConfigFile.ReadOnly = true;
-            this.txtConfigFile.Size = new System.Drawing.Size(652, 20);
-            this.txtConfigFile.TabIndex = 2;
+            this.txtConfigFile.Size = new System.Drawing.Size(657, 20);
+            this.txtConfigFile.TabIndex = 5;
             // 
             // txtECUFile
             // 
@@ -1061,16 +1123,17 @@
             this.txtECUFile.Location = new System.Drawing.Point(69, 8);
             this.txtECUFile.Name = "txtECUFile";
             this.txtECUFile.ReadOnly = true;
-            this.txtECUFile.Size = new System.Drawing.Size(652, 20);
+            this.txtECUFile.Size = new System.Drawing.Size(657, 20);
             this.txtECUFile.TabIndex = 1;
             this.txtECUFile.Text = "   ";
             // 
             // btnStartLog
             // 
-            this.btnStartLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnStartLog.Location = new System.Drawing.Point(646, 60);
+            this.btnStartLog.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnStartLog.Location = new System.Drawing.Point(7, 86);
             this.btnStartLog.Name = "btnStartLog";
-            this.btnStartLog.Size = new System.Drawing.Size(75, 23);
+            this.btnStartLog.Size = new System.Drawing.Size(719, 23);
             this.btnStartLog.TabIndex = 0;
             this.btnStartLog.Text = "Start Log";
             this.btnStartLog.UseVisualStyleBackColor = true;
@@ -1079,7 +1142,7 @@
             // splitter1
             // 
             this.splitter1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.splitter1.Location = new System.Drawing.Point(0, 365);
+            this.splitter1.Location = new System.Drawing.Point(0, 373);
             this.splitter1.Name = "splitter1";
             this.splitter1.Size = new System.Drawing.Size(733, 3);
             this.splitter1.TabIndex = 11;
@@ -1185,6 +1248,13 @@
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
             // 
+            // createECUFileToolStripMenuItem
+            // 
+            this.createECUFileToolStripMenuItem.Name = "createECUFileToolStripMenuItem";
+            this.createECUFileToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.createECUFileToolStripMenuItem.Text = "Create ECU File";
+            this.createECUFileToolStripMenuItem.Click += new System.EventHandler(this.createECUFileToolStripMenuItem_Click);
+            // 
             // mE7CheckToolStripMenuItem
             // 
             this.mE7CheckToolStripMenuItem.Name = "mE7CheckToolStripMenuItem";
@@ -1192,12 +1262,12 @@
             this.mE7CheckToolStripMenuItem.Text = "Checksum Validation";
             this.mE7CheckToolStripMenuItem.Click += new System.EventHandler(this.mE7CheckToolStripMenuItem_Click);
             // 
-            // createECUFileToolStripMenuItem
+            // eEPromToolStripMenuItem
             // 
-            this.createECUFileToolStripMenuItem.Name = "createECUFileToolStripMenuItem";
-            this.createECUFileToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-            this.createECUFileToolStripMenuItem.Text = "Create ECU File";
-            this.createECUFileToolStripMenuItem.Click += new System.EventHandler(this.createECUFileToolStripMenuItem_Click);
+            this.eEPromToolStripMenuItem.Name = "eEPromToolStripMenuItem";
+            this.eEPromToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.eEPromToolStripMenuItem.Text = "EEProm";
+            this.eEPromToolStripMenuItem.Click += new System.EventHandler(this.eEPromToolStripMenuItem_Click);
             // 
             // menuStrip1
             // 
@@ -1211,18 +1281,12 @@
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // eEPromToolStripMenuItem
-            // 
-            this.eEPromToolStripMenuItem.Name = "eEPromToolStripMenuItem";
-            this.eEPromToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-            this.eEPromToolStripMenuItem.Text = "EEProm";
-            this.eEPromToolStripMenuItem.Click += new System.EventHandler(this.eEPromToolStripMenuItem_Click);
-            // 
             // SettingsForm
             // 
+            this.AcceptButton = this.btnStartLog;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(733, 457);
+            this.ClientSize = new System.Drawing.Size(733, 491);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.panel2);
@@ -1368,6 +1432,12 @@
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.ToolStripMenuItem eEPromToolStripMenuItem;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.ComboBox cmbLogSpeed;
+        private System.Windows.Forms.ComboBox cmbCommunicate;
+        private System.Windows.Forms.ComboBox cmbConnect;
 
 
     }

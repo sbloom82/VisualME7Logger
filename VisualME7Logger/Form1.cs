@@ -187,18 +187,6 @@ namespace VisualME7Logger
                 value.Tag = v;
                 value.MouseUp += flp_MouseUp;
 
-               /*
-                CheckBox graphed = new CheckBox();
-                graphed.Name = v.Name;
-                graphed.CheckAlign = ContentAlignment.TopCenter;
-                graphed.Height = 20;
-                graphed.Width = 13;
-                graphed.Checked = hasActiveGraphVariable;
-                graphed.RightToLeft = System.Windows.Forms.RightToLeft.No;
-                graphed.Tag = v;
-                graphed.Click += graphed_Click;
-
-                flp.Controls.Add(graphed);*/
                 flp.Controls.Add(value);
                 flp.Controls.Add(name);                
                 flpVariables.Controls.Add(flp);
@@ -406,16 +394,19 @@ namespace VisualME7Logger
                 {
                     Variable v = line[graphVariable.Variable];
                     Series s = chart1.Series[i++];
-                    decimal parse;
-                    if (decimal.TryParse(v.Value, out parse))
+                    lock (s)
                     {
-                        decimal percent = (parse - graphVariable.Min) / (graphVariable.Max - graphVariable.Min) * this.DisplayOptions.GraphVRes;
-                        DataPoint p = s.Points.Add((double)percent);
-                        p.AxisLabel = decimal.Round(line.TimeStamp, 1).ToString();
-                        p.ToolTip = string.Format("{0}: {1} {2}", graphVariable.Name, v.Value, v.SessionVariable.Unit);
-                        p.Tag = v;
+                        decimal parse;
+                        if (decimal.TryParse(v.Value, out parse))
+                        {
+                            decimal percent = (parse - graphVariable.Min) / (graphVariable.Max - graphVariable.Min) * this.DisplayOptions.GraphVRes;
+                            DataPoint p = s.Points.Add((double)percent);
+                            p.AxisLabel = decimal.Round(line.TimeStamp, 1).ToString();
+                            p.ToolTip = string.Format("{0}: {1} {2}", graphVariable.Name, v.Value, v.SessionVariable.Unit);
+                            p.Tag = v;
+                        }
+                        s.Points.RemoveAt(0);
                     }
-                    s.Points.RemoveAt(0);
                 }
             }
         }
@@ -573,43 +564,46 @@ namespace VisualME7Logger
 
             foreach (Series s in chart1.Series)
             {
-                double size = chart1.ChartAreas[0].AxisX.ScaleView.Size;
-                double pos = chart1.ChartAreas[0].AxisX.ScaleView.Position;
-                bool zoomed = chart1.ChartAreas[0].AxisX.ScaleView.IsZoomed;
-                DataPoint lowest = null;
-                DataPoint highest = null;
-                int currentPos = 0;
-                foreach (DataPoint p in s.Points)
+                lock (s)
                 {
-                    p.Label = null;
-
-                    if (!zoomed || (currentPos >= pos && currentPos <= pos + size))
+                    double size = chart1.ChartAreas[0].AxisX.ScaleView.Size;
+                    double pos = chart1.ChartAreas[0].AxisX.ScaleView.Position;
+                    bool zoomed = chart1.ChartAreas[0].AxisX.ScaleView.IsZoomed;
+                    DataPoint lowest = null;
+                    DataPoint highest = null;
+                    int currentPos = 0;
+                    foreach (DataPoint p in s.Points)
                     {
-                        if (p.YValues[0] > 0 && (lowest == null || p.YValues[0] <= lowest.YValues[0]))
-                        {
-                            lowest = p;
-                        }
+                        p.Label = null;
 
-                        if (highest == null || p.YValues[0] >= highest.YValues[0])
+                        if (!zoomed || (currentPos >= pos && currentPos <= pos + size))
                         {
-                            highest = p;
-                        }
-                    }
-                    currentPos++;
-                }
+                            if (p.YValues[0] > 0 && (lowest == null || p.YValues[0] <= lowest.YValues[0]))
+                            {
+                                lowest = p;
+                            }
 
-                if (highlight)
-                {
-                    if (lowest != null)
-                    {
-                        lowest.Label = lowest.ToolTip;
-                        lowest.LabelForeColor = Color.White;
+                            if (highest == null || p.YValues[0] >= highest.YValues[0])
+                            {
+                                highest = p;
+                            }
+                        }
+                        currentPos++;
                     }
 
-                    if (highest != null)
+                    if (highlight)
                     {
-                        highest.Label = highest.ToolTip;
-                        highest.LabelForeColor = Color.White;
+                        if (lowest != null)
+                        {
+                            lowest.Label = lowest.ToolTip;
+                            lowest.LabelForeColor = Color.White;
+                        }
+
+                        if (highest != null)
+                        {
+                            highest.Label = highest.ToolTip;
+                            highest.LabelForeColor = Color.White;
+                        }
                     }
                 }
             }
@@ -894,23 +888,26 @@ namespace VisualME7Logger
                 int pos = (int)chart1.ChartAreas[0].CursorX.Position;
                 if (pos >= 0 && pos < chart1.Series[0].Points.Count)
                 {
-                    DataPoint p = chart1.Series[0].Points[pos - 1];
-                    Variable var = p.Tag as Variable;
-                    if (var != null)
+                    lock (chart1.Series[0])
                     {
-                        DisplayLine(var.LogLine);
-
-                        if (dataGridView1.Visible)
+                        DataPoint p = chart1.Series[0].Points[pos - 1];
+                        Variable var = p.Tag as Variable;
+                        if (var != null)
                         {
-                            for (int i = 0; i < dataGridView1.Rows.Count; ++i)
+                            DisplayLine(var.LogLine);
+
+                            if (dataGridView1.Visible)
                             {
-                                if (dataGridView1.Rows[i].Tag == var.LogLine)
+                                for (int i = 0; i < dataGridView1.Rows.Count; ++i)
                                 {
-                                    dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-                                    dataGridView1.ClearSelection();
-                                    dataGridView1.FirstDisplayedScrollingRowIndex = i;
-                                    dataGridView1.Rows[i].Selected = true;
-                                    break;                                    
+                                    if (dataGridView1.Rows[i].Tag == var.LogLine)
+                                    {
+                                        dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+                                        dataGridView1.ClearSelection();
+                                        dataGridView1.FirstDisplayedScrollingRowIndex = i;
+                                        dataGridView1.Rows[i].Selected = true;
+                                        break;
+                                    }
                                 }
                             }
                         }

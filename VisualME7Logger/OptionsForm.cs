@@ -49,6 +49,9 @@ namespace VisualME7Logger
             txtLogFilePath.Text = Options.LogFile;
 
             chkWriteOutputToFile.Checked = Options.WriteOutputFile;
+            
+            chkDisableRealTimeDisplay.Checked = !Options.RealTimeOutput;
+            chkWriteLogFileWithVME7L.Checked = Options.WriteLogFileWithVME7L;
         }
 
         private void SaveOptions()
@@ -100,6 +103,8 @@ namespace VisualME7Logger
             Options.LogFile = txtLogFilePath.Text;
 
             Options.WriteOutputFile = chkWriteOutputToFile.Checked;
+            Options.RealTimeOutput = !chkDisableRealTimeDisplay.Checked;
+            Options.WriteLogFileWithVME7L = chkWriteLogFileWithVME7L.Checked;
         }
 
         private void SwitchUI()
@@ -113,6 +118,7 @@ namespace VisualME7Logger
             this.nudSampleRate.Enabled = this.chkOverrideSampleRate.Checked;
             this.txtLogFilePath.Enabled = this.chkWriteToLog.Checked || radLogFile.Checked;
             this.gpOther.Enabled =
+                this.gbTroubleshooting.Enabled =
                 this.chkWriteToLog.Enabled =
                 this.chkOverrideBaudRate.Enabled = !this.radLogFile.Checked;
         }
@@ -191,16 +197,31 @@ namespace VisualME7Logger
 
         private void btnChooseLogPath_Click(object sender, EventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.InitialDirectory =
-                string.IsNullOrWhiteSpace(txtLogFilePath.Text) ?
-                System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs") :
-                System.IO.Path.GetDirectoryName(txtLogFilePath.Text);
-            ofd.FileName = System.IO.Path.GetFileName(txtLogFilePath.Text);
-            ofd.Title = "Select a log file";
-            if (ofd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+            FileDialog dialog = null;
+            if (radLogFile.Checked)
             {
-                this.txtLogFilePath.Text = ofd.FileName;
+                dialog = new OpenFileDialog();
+                dialog.Title = "Open a log file"; 
+            }
+            else
+            {
+                SaveFileDialog sfd = new SaveFileDialog();
+                dialog = sfd;
+                dialog.Title = "Save log file as...";
+                sfd.Filter = "Log Files (*.csv)|*.csv|All Files (*.*)|*.*";
+                sfd.OverwritePrompt = false;
+            }
+
+            dialog.DefaultExt = ".csv";
+            dialog.InitialDirectory =
+                    string.IsNullOrWhiteSpace(txtLogFilePath.Text) ?
+                    System.IO.Path.Combine(Program.ME7LoggerDirectory, "logs") :
+                    System.IO.Path.GetDirectoryName(txtLogFilePath.Text);
+            dialog.FileName = System.IO.Path.GetFileName(txtLogFilePath.Text);
+            
+            if (dialog.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+            {
+                this.txtLogFilePath.Text = dialog.FileName;
             }
         }
 

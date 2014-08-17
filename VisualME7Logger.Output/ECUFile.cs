@@ -26,7 +26,7 @@ namespace VisualME7Logger.Configuration
             IdentificationInfo = new IdentificationInfo();
             Measurements = new Measurements();
         }
-        
+
         public void Open()
         {
             VersionInfo = null;
@@ -96,6 +96,84 @@ namespace VisualME7Logger.Configuration
             }
         }
 
+        public void UpdateCommunicationInfo(string connect, string communicate, string logSpeed)
+        {
+            bool communicateUpdated = false;
+            bool connectUpdated = false;
+            bool logSpeedUpdated = false;
+
+            byte[] bytes;
+            using (FileStream reader = new FileStream(this.FilePath, FileMode.Open))
+            {
+                bytes = new byte[(int)reader.Length];
+                reader.Read(bytes, 0, (int)reader.Length);
+            }
+
+            byte[] writeBytes = new byte[bytes.Length];
+            Array.Copy(bytes, writeBytes, bytes.Length);
+
+            for (int i = 0; i < bytes.Length; ++i)
+            {
+                byte[] compare = new byte[28];
+                for (int j = 0; j < compare.Length; ++j)
+                {
+                    if (bytes.Length > i + j)
+                    {
+                        compare[j] = bytes[i + j];
+                    }
+                }
+
+                if (ArraysEqual(compare, this.CommunicationInfo.ConnectBytes))
+                {
+                    this.CommunicationInfo.Connect = connect;
+                    Array.Copy(this.CommunicationInfo.ConnectBytes, 0, writeBytes, i, this.CommunicationInfo.ConnectBytes.Length);
+                    connectUpdated = true;   
+                }
+                else if (ArraysEqual(compare, this.CommunicationInfo.CommunicateBytes))
+                {
+                    this.CommunicationInfo.Communicate = communicate;
+                    Array.Copy(this.CommunicationInfo.CommunicateBytes, 0, writeBytes, i, this.CommunicationInfo.CommunicateBytes.Length);
+                    communicateUpdated = true;
+                }
+                else if (ArraysEqual(compare, this.CommunicationInfo.LogSpeedBytes))
+                {
+                    this.CommunicationInfo.LogSpeed = logSpeed;
+                    Array.Copy(this.CommunicationInfo.LogSpeedBytes, 0, writeBytes, i, this.CommunicationInfo.LogSpeedBytes.Length);
+                    logSpeedUpdated = true;
+                    break;
+                }
+            }
+
+            using (FileStream writer = new FileStream(this.FilePath, FileMode.Create, FileAccess.Write))
+            {
+                writer.Write(writeBytes, 0, writeBytes.Length);
+            }
+
+            if (!connectUpdated || !communicateUpdated || !logSpeedUpdated)
+            {
+                throw new InvalidDataException("[Communication] settings failed to update properly in ecu file.");
+            }
+        }
+
+        static bool ArraysEqual(byte[] a1, byte[] a2)
+        {
+            if (a1 == a2)
+                return true;
+
+            if (a1 == null || a2 == null)
+                return false;
+
+            if (a1.Length != a2.Length)
+                return false;
+
+            for (int i = 0; i < a1.Length; i++)
+            {
+                if (a1[i] != a2[i])
+                    return false;
+            }
+            return true;
+        }
+
         public static ECUFile Create(string ME7LoggerDirectory, string imageFilePath)
         {
             using (Process p = new Process())
@@ -135,13 +213,14 @@ namespace VisualME7Logger.Configuration
         public string ECUCharacteristics { get; private set; }
         public short SamplesPerSecond { get; private set; }
         public string FilePath { get; set; }
-        
+
         public ConfigFile(string filePath)
         {
             this.FilePath = filePath;
             this.Measurements = new Measurements();
         }
-        public ConfigFile(string filePath, string ecuCharacteristics) : this(filePath)
+        public ConfigFile(string filePath, string ecuCharacteristics)
+            : this(filePath)
         {
             this.ECUCharacteristics = ecuCharacteristics;
         }
@@ -178,7 +257,7 @@ namespace VisualME7Logger.Configuration
             try
             {
                 using (StreamReader reader = new StreamReader(this.FilePath, Encoding.UTF7))
-                {                   
+                {
                     string line;
                     while ((line = reader.ReadLine()) != null)
                     {
