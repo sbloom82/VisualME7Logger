@@ -378,7 +378,7 @@ namespace VisualME7Logger.Session
         {
             foreach (Variable v in logLine.Variables.Where(v => v.SessionVariable.Type == SessionVariable.Types.Expression))
             {
-                v.Value = ((ExpressionVariable)v.SessionVariable).Compute(Variables, logLine);
+                v.Value = ((ExpressionVariable)v.SessionVariable).Compute(logLine);
             }
 
             if (LogLineRead != null)
@@ -616,9 +616,9 @@ namespace VisualME7Logger.Session
             this.BitMask = parts[4].Trim();
             this.Signed = parts[5].Trim() == "1";
             this.Inverse = parts[6].Trim() == "1";
-            try { Factor = decimal.Parse(parts[7].Trim()); }
+            try { Factor = decimal.Parse(parts[7].Trim(), VisualME7Logger.Log.ME7LoggerLog.CultureInfo); }
             catch { }
-            this.Offset = decimal.Parse(parts[8].Trim());
+            this.Offset = decimal.Parse(parts[8].Trim(), VisualME7Logger.Log.ME7LoggerLog.CultureInfo);
             this.Unit = parts[9].Trim();
             this.Unit = Unit.Substring(1, Unit.Length - 2);
         }
@@ -654,7 +654,7 @@ namespace VisualME7Logger.Session
 
         NCalc.Expression _exp = null;
         LogLine curLL = null;
-        public string Compute(SessionVariables variables, LogLine logLine)
+        public string Compute(LogLine logLine)
         {
             if (_exp == null)
             {
@@ -858,7 +858,7 @@ namespace VisualME7Logger.Session
             COMPort = "COM1";
             FTDIInfo = string.Empty;
             WriteLogToFile = true;
-            LogFile = System.IO.Path.Combine(ME7LoggerDirectory, "logs", "VisualME7Logger.log");
+            LogFile = System.IO.Path.Combine(ME7LoggerDirectory, "logs", "VisualME7Logger.csv");
             RealTimeOutput = true;
             BaudRate = 56000;
             SampleRate = 20;

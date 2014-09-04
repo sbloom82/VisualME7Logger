@@ -371,9 +371,9 @@ namespace VisualME7Logger.Configuration
                 Unit = parts[5].Trim().Replace("{", "").Replace("}", "");
                 Signed = parts[6].Trim() == "1";
                 Inverse = parts[7].Trim() == "1";
-                try { Factor = decimal.Parse(parts[8].Trim()); }
+                try { Factor = decimal.Parse(parts[8].Trim(), VisualME7Logger.Log.ME7LoggerLog.CultureInfo); }
                 catch { }
-                try { Offset = decimal.Parse(parts[9].Trim()); }
+                try { Offset = decimal.Parse(parts[9].Trim(), VisualME7Logger.Log.ME7LoggerLog.CultureInfo); }
                 catch { }
                 Comment = parts[10].Trim().Replace("{", "").Replace("}", "");
                 return true;

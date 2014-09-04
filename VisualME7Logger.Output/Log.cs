@@ -10,6 +10,8 @@ namespace VisualME7Logger.Log
 {
     public class ME7LoggerLog
     {
+        public static System.Globalization.CultureInfo CultureInfo = new System.Globalization.CultureInfo("en-US");
+       
         public ME7LoggerSession Session { get; private set; }
 
         internal ME7LoggerLog(ME7LoggerSession session)
@@ -187,7 +189,7 @@ namespace VisualME7Logger.Log
         private void Parse(string line)
         {
             string[] values = line.Split(LogLine.COLUMN_SEP);
-            TimeStamp = decimal.Parse(values[0]);
+            TimeStamp = decimal.Parse(values[0], VisualME7Logger.Log.ME7LoggerLog.CultureInfo);
             int i = 1;
             foreach (SessionVariable sv in Log.Session.Variables.Values)
             {
