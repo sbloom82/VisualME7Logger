@@ -75,7 +75,7 @@ namespace VisualME7Logger
                     delegate() { SessionStatusChanged(status); }));
                 return;
             }
-            
+
             txtSessionData.AppendText(string.Format("VISUALME7LOGGER STATUS: {0}\r\n", status));
             if (status == ME7LoggerSession.Statuses.Closed)
             {
@@ -86,7 +86,7 @@ namespace VisualME7Logger
                 status,
                 session.SamplesPerSecond,
                 session.CurrentSamplesPerSecond != session.SamplesPerSecond ? string.Format(" - Displaying: {0}/sec", session.CurrentSamplesPerSecond) : "");
-            
+
             this.btnOpenCloseSession.Enabled = false;
             this.showDataGridViewToolStripMenuItem.Enabled = true;
             if (status == ME7LoggerSession.Statuses.Initialized)
@@ -99,8 +99,8 @@ namespace VisualME7Logger
                 flpVariables_Resize(null, null);
                 this.btnOpenCloseSession.Enabled = true;
                 this.btnOpenCloseSession.Text = "Close Session";
-                
-                this.showDataGridViewToolStripMenuItem.Enabled = 
+
+                this.showDataGridViewToolStripMenuItem.Enabled =
                     this.spDataGrid.Visible =
                     this.dataGridView1.Visible =
                     this.showDataGridViewToolStripMenuItem.Checked = false;
@@ -117,7 +117,7 @@ namespace VisualME7Logger
             }
             else if (status == ME7LoggerSession.Statuses.Paused)
             {
-                refreshTimer.Stop();                
+                refreshTimer.Stop();
             }
         }
 
@@ -188,14 +188,14 @@ namespace VisualME7Logger
                 value.MouseUp += flp_MouseUp;
 
                 flp.Controls.Add(value);
-                flp.Controls.Add(name);                
+                flp.Controls.Add(name);
                 flpVariables.Controls.Add(flp);
             }
 
             this.BuildChart();
 
             start = DateTime.Now;
-        }       
+        }
 
         void refreshTimer_Tick(object sender, EventArgs e)
         {
@@ -300,7 +300,7 @@ namespace VisualME7Logger
                     {
                         panel = ((Control)sender).Parent;
                     }
-                    this.AddGraphVariable(graphVariable, panel, newVar);                    
+                    this.AddGraphVariable(graphVariable, panel, newVar);
                 }
             }
         }
@@ -324,7 +324,7 @@ namespace VisualME7Logger
                 }
                 graphVariable.Active = c.Checked;
 
-                this.AddGraphVariable(graphVariable, c.Parent, newVar);                
+                this.AddGraphVariable(graphVariable, c.Parent, newVar);
             }
         }
 
@@ -394,19 +394,17 @@ namespace VisualME7Logger
                 {
                     Variable v = line[graphVariable.Variable];
                     Series s = chart1.Series[i++];
-                    lock (s)
-                    {
-                        decimal parse;
-                        if (decimal.TryParse(v.Value, out parse))
-                        {
-                            decimal percent = (parse - graphVariable.Min) / (graphVariable.Max - graphVariable.Min) * this.DisplayOptions.GraphVRes;
-                            DataPoint p = s.Points.Add((double)percent);
-                            p.AxisLabel = decimal.Round(line.TimeStamp, 1).ToString();
-                            p.ToolTip = string.Format("{0}: {1} {2}", graphVariable.Name, v.Value, v.SessionVariable.Unit);
-                            p.Tag = v;
-                        }
-                        s.Points.RemoveAt(0);
-                    }
+
+                    decimal parse;
+                    decimal.TryParse(v.Value, System.Globalization.NumberStyles.Any, VisualME7Logger.Log.ME7LoggerLog.CultureInfo, out parse);
+
+                    decimal percent = (parse - graphVariable.Min) / (graphVariable.Max - graphVariable.Min) * this.DisplayOptions.GraphVRes;
+                    DataPoint p = s.Points.Add((double)percent);
+                    p.AxisLabel = decimal.Round(line.TimeStamp, 1).ToString();
+                    p.ToolTip = string.Format("{0}: {1} {2}", graphVariable.Name, v.Value, v.SessionVariable.Unit);
+                    p.Tag = v;
+
+                    s.Points.RemoveAt(0);
                 }
             }
         }
@@ -564,46 +562,44 @@ namespace VisualME7Logger
 
             foreach (Series s in chart1.Series)
             {
-                lock (s)
+
+                double size = chart1.ChartAreas[0].AxisX.ScaleView.Size;
+                double pos = chart1.ChartAreas[0].AxisX.ScaleView.Position;
+                bool zoomed = chart1.ChartAreas[0].AxisX.ScaleView.IsZoomed;
+                DataPoint lowest = null;
+                DataPoint highest = null;
+                int currentPos = 0;
+                foreach (DataPoint p in s.Points)
                 {
-                    double size = chart1.ChartAreas[0].AxisX.ScaleView.Size;
-                    double pos = chart1.ChartAreas[0].AxisX.ScaleView.Position;
-                    bool zoomed = chart1.ChartAreas[0].AxisX.ScaleView.IsZoomed;
-                    DataPoint lowest = null;
-                    DataPoint highest = null;
-                    int currentPos = 0;
-                    foreach (DataPoint p in s.Points)
+                    p.Label = null;
+
+                    if (!zoomed || (currentPos >= pos && currentPos <= pos + size))
                     {
-                        p.Label = null;
-
-                        if (!zoomed || (currentPos >= pos && currentPos <= pos + size))
+                        if (p.YValues[0] > 0 && (lowest == null || p.YValues[0] <= lowest.YValues[0]))
                         {
-                            if (p.YValues[0] > 0 && (lowest == null || p.YValues[0] <= lowest.YValues[0]))
-                            {
-                                lowest = p;
-                            }
-
-                            if (highest == null || p.YValues[0] >= highest.YValues[0])
-                            {
-                                highest = p;
-                            }
+                            lowest = p;
                         }
-                        currentPos++;
+
+                        if (highest == null || p.YValues[0] >= highest.YValues[0])
+                        {
+                            highest = p;
+                        }
+                    }
+                    currentPos++;
+                }
+
+                if (highlight)
+                {
+                    if (lowest != null)
+                    {
+                        lowest.Label = lowest.ToolTip;
+                        lowest.LabelForeColor = Color.White;
                     }
 
-                    if (highlight)
+                    if (highest != null)
                     {
-                        if (lowest != null)
-                        {
-                            lowest.Label = lowest.ToolTip;
-                            lowest.LabelForeColor = Color.White;
-                        }
-
-                        if (highest != null)
-                        {
-                            highest.Label = highest.ToolTip;
-                            highest.LabelForeColor = Color.White;
-                        }
+                        highest.Label = highest.ToolTip;
+                        highest.LabelForeColor = Color.White;
                     }
                 }
             }
@@ -888,26 +884,24 @@ namespace VisualME7Logger
                 int pos = (int)chart1.ChartAreas[0].CursorX.Position;
                 if (pos >= 0 && pos < chart1.Series[0].Points.Count)
                 {
-                    lock (chart1.Series[0])
-                    {
-                        DataPoint p = chart1.Series[0].Points[pos - 1];
-                        Variable var = p.Tag as Variable;
-                        if (var != null)
-                        {
-                            DisplayLine(var.LogLine);
 
-                            if (dataGridView1.Visible)
+                    DataPoint p = chart1.Series[0].Points[pos - 1];
+                    Variable var = p.Tag as Variable;
+                    if (var != null)
+                    {
+                        DisplayLine(var.LogLine);
+
+                        if (dataGridView1.Visible)
+                        {
+                            for (int i = 0; i < dataGridView1.Rows.Count; ++i)
                             {
-                                for (int i = 0; i < dataGridView1.Rows.Count; ++i)
+                                if (dataGridView1.Rows[i].Tag == var.LogLine)
                                 {
-                                    if (dataGridView1.Rows[i].Tag == var.LogLine)
-                                    {
-                                        dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-                                        dataGridView1.ClearSelection();
-                                        dataGridView1.FirstDisplayedScrollingRowIndex = i;
-                                        dataGridView1.Rows[i].Selected = true;
-                                        break;
-                                    }
+                                    dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+                                    dataGridView1.ClearSelection();
+                                    dataGridView1.FirstDisplayedScrollingRowIndex = i;
+                                    dataGridView1.Rows[i].Selected = true;
+                                    break;
                                 }
                             }
                         }
@@ -958,7 +952,7 @@ namespace VisualME7Logger
         }
     }
 
-    public class DataGridViewCSVCopy : DataGridView 
+    public class DataGridViewCSVCopy : DataGridView
     {
         public override DataObject GetClipboardContent()
         {
@@ -971,5 +965,5 @@ namespace VisualME7Logger
             }
             return obj;
         }
-    } 
+    }
 }
