@@ -1121,10 +1121,10 @@ namespace VisualME7Logger
                         Name = att.Value;
                         break;
                     case "Min":
-                        Min = decimal.Parse(att.Value, VisualME7Logger.Log.ME7LoggerLog.CultureInfo);
+                        Min = decimal.Parse(att.Value);
                         break;
                     case "Max":
-                        Max = decimal.Parse(att.Value, VisualME7Logger.Log.ME7LoggerLog.CultureInfo);
+                        Max = decimal.Parse(att.Value);
                         break;
                     case "LineColor":
                         LineColor = Color.FromArgb(int.Parse(att.Value));

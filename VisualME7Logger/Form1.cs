@@ -395,13 +395,10 @@ namespace VisualME7Logger
                     Variable v = line[graphVariable.Variable];
                     Series s = chart1.Series[i++];
 
-                    decimal parse;
-                    decimal.TryParse(v.Value, System.Globalization.NumberStyles.Any, VisualME7Logger.Log.ME7LoggerLog.CultureInfo, out parse);
-
-                    decimal percent = (parse - graphVariable.Min) / (graphVariable.Max - graphVariable.Min) * this.DisplayOptions.GraphVRes;
+                    decimal percent = (v.Value - graphVariable.Min) / (graphVariable.Max - graphVariable.Min) * this.DisplayOptions.GraphVRes;
                     DataPoint p = s.Points.Add((double)percent);
                     p.AxisLabel = decimal.Round(line.TimeStamp, 1).ToString();
-                    p.ToolTip = string.Format("{0}: {1} {2}", graphVariable.Name, v.Value, v.SessionVariable.Unit);
+                    p.ToolTip = string.Format("{0}: {1} {2}\r\nMin: {3} {2}\r\nMax: {4} {2}", graphVariable.Name, v.Value, v.SessionVariable.Unit, v.CurrentMinValue, v.CurrentMaxValue);
                     p.Tag = v;
 
                     s.Points.RemoveAt(0);
@@ -592,14 +589,24 @@ namespace VisualME7Logger
                 {
                     if (lowest != null)
                     {
-                        lowest.Label = lowest.ToolTip;
-                        lowest.LabelForeColor = Color.White;
+                        Variable v = lowest.Tag as Variable;
+                        if (v != null)
+                        {
+                            GraphVariable graphVar = this.DisplayOptions.GraphVariables.FirstOrDefault(gv => gv.Variable.Equals(v.SessionVariable.Name, StringComparison.InvariantCultureIgnoreCase));
+                            lowest.Label = string.Format("{0}: {1} {2}", graphVar != null ? graphVar.Name : v.SessionVariable.Name, v.Value, v.SessionVariable.Unit);
+                            lowest.LabelForeColor = Color.White;
+                        }
                     }
 
                     if (highest != null)
                     {
-                        highest.Label = highest.ToolTip;
-                        highest.LabelForeColor = Color.White;
+                        Variable v = highest.Tag as Variable;
+                        if (v != null)
+                        {
+                            GraphVariable graphVar = this.DisplayOptions.GraphVariables.FirstOrDefault(gv => gv.Variable.Equals(v.SessionVariable.Name, StringComparison.InvariantCultureIgnoreCase));
+                            highest.Label = string.Format("{0}: {1} {2}", graphVar != null ? graphVar.Name : v.SessionVariable.Name, v.Value, v.SessionVariable.Unit);
+                            highest.LabelForeColor = Color.White;
+                        }
                     }
                 }
             }

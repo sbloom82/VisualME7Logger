@@ -10,7 +10,7 @@ namespace VisualME7Logger.Log
 {
     public class ME7LoggerLog
     {
-        public static System.Globalization.CultureInfo CultureInfo = new System.Globalization.CultureInfo("en-US");
+        internal static System.Globalization.CultureInfo CultureInfo = new System.Globalization.CultureInfo("en-US");
        
         public ME7LoggerSession Session { get; private set; }
 
@@ -217,13 +217,20 @@ namespace VisualME7Logger.Log
     {
         public LogLine LogLine { get; private set; }
         public SessionVariable SessionVariable { get; private set; }
-        public string Value { get; internal set; }
-
+        public decimal Value { get; internal set; }
+        public decimal CurrentMinValue { get; internal set; }
+        public decimal CurrentMaxValue { get; internal set; }
+        
         public Variable(LogLine logLine, SessionVariable sessionVariable, string value)
         {
             this.LogLine = logLine;
             this.SessionVariable = sessionVariable;
-            this.Value = value;
+            this.CurrentMinValue = decimal.MaxValue;
+            this.CurrentMaxValue = decimal.MinValue;
+
+            decimal tryParse;
+            if (decimal.TryParse(value, System.Globalization.NumberStyles.Any, ME7LoggerLog.CultureInfo, out tryParse))
+                this.Value = tryParse;
         }
 
         public override string ToString()

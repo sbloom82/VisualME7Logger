@@ -374,11 +374,25 @@ namespace VisualME7Logger.Session
             }
         }
 
+        LogLine lastLogLine = null;
         internal void LineRead(LogLine logLine)
         {
-            foreach (Variable v in logLine.Variables.Where(v => v.SessionVariable.Type == SessionVariable.Types.Expression))
+            foreach (Variable v in logLine.Variables)
             {
-                v.Value = ((ExpressionVariable)v.SessionVariable).Compute(logLine);
+                if (v.SessionVariable.Type == SessionVariable.Types.Expression)
+                {
+                    v.Value = Convert.ToDecimal(((ExpressionVariable)v.SessionVariable).Compute(logLine), ME7LoggerLog.CultureInfo);
+                }
+
+                if (lastLogLine != null)
+                {
+                    Variable lastLogLineVar = lastLogLine.GetVariableByName(v.SessionVariable.Name);
+                    if (lastLogLineVar != null)
+                    {
+                        v.CurrentMinValue = v.Value < lastLogLineVar.CurrentMinValue ? v.Value : lastLogLineVar.CurrentMinValue;
+                        v.CurrentMaxValue = v.Value > lastLogLineVar.CurrentMaxValue ? v.Value : lastLogLineVar.CurrentMaxValue;
+                    }
+                }
             }
 
             if (LogLineRead != null)
@@ -389,6 +403,8 @@ namespace VisualME7Logger.Session
                 }
                 LogLineRead(logLine);
             }
+
+            lastLogLine = logLine;
         }
 
         private static object DebugLock = new object();
@@ -654,7 +670,8 @@ namespace VisualME7Logger.Session
 
         NCalc.Expression _exp = null;
         LogLine curLL = null;
-        public string Compute(LogLine logLine)
+        int errorCount = 0;
+        public object Compute(LogLine logLine)
         {
             if (_exp == null)
             {
@@ -672,21 +689,25 @@ namespace VisualME7Logger.Session
                     }
                 };
             }
-            object obj = "ERR";
+            object obj = 0m;
             if (!Error)
             {
                 curLL = logLine;
                 _exp.Parameters.Clear();
                 try
                 {
-                    obj = _exp.Evaluate().ToString();
+                    obj = _exp.Evaluate();
+                    errorCount = 0;
                 }
                 catch
                 {
-                    Error = true;
+                    if (++errorCount > 5)
+                    {
+                        Error = true;
+                    }
                 }
             }
-            return obj.ToString();
+            return obj;
         }
 
         public override string ToString()
