@@ -378,7 +378,7 @@ change to
                     }
                 }
             }
-            catch (Exception e)
+            catch
             {
 
             }
@@ -444,7 +444,7 @@ change to
                     }
                 }
             }
-            catch (Exception e)
+            catch
             {
 
             }
@@ -475,7 +475,7 @@ change to
                     }
                 }
             }
-            catch (Exception e)
+            catch
             {
 
             }

@@ -109,6 +109,7 @@
             // 
             // txtAppPath
             // 
+            this.txtAppPath.AllowDrop = true;
             this.txtAppPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAppPath.Location = new System.Drawing.Point(9, 29);
@@ -118,6 +119,7 @@
             // 
             // txtBinPath
             // 
+            this.txtBinPath.AllowDrop = true;
             this.txtBinPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBinPath.Location = new System.Drawing.Point(9, 76);

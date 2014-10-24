@@ -11,7 +11,7 @@ namespace VisualME7Logger.Log
     public class ME7LoggerLog
     {
         internal static System.Globalization.CultureInfo CultureInfo = new System.Globalization.CultureInfo("en-US");
-       
+
         public ME7LoggerSession Session { get; private set; }
 
         internal ME7LoggerLog(ME7LoggerSession session)
@@ -23,17 +23,20 @@ namespace VisualME7Logger.Log
         public ME7LoggerLog(ME7LoggerSession session, string logFilePath)
             : this(session)
         {
-            this.logFilePath = logFilePath;
+            this.LogFilePath = logFilePath;
         }
 
         private int lineNumber;
-        private string logFilePath;
+
+        public string LogFilePath { get; private set; }
+        public long TotalFileSize { get; private set; }
+        public long CurrentPosition { get; private set; }
         internal void InitializeSession(IdentificationInfo identificationInfo, CommunicationInfo communicationInfo, SessionVariables variables)
         {
             bool idinfostarted = false,
                 commInfoStarted = false,
                 variablesStarted = false;
-            using (StreamReader sr = new StreamReader(logFilePath, Encoding.UTF7))
+            using (StreamReader sr = new StreamReader(LogFilePath, Encoding.UTF7))
             {
                 string line = null;
                 while ((line = sr.ReadLine()) != null)
@@ -79,88 +82,224 @@ namespace VisualME7Logger.Log
                 }
             }
         }
-        internal void Open()
+        internal void Open(bool tailFile)
         {
             lineNumber = 0;
-            if (this.Session.SessionType == ME7LoggerSession.SessionTypes.LogFile)
+            if (this.Session.SessionType == ME7LoggerSession.SessionTypes.LogFile || tailFile)
             {
                 stop = false;
 
-                if (!File.Exists(logFilePath))
+                if (!File.Exists(LogFilePath) && !tailFile)
                 {
-                    throw new FileNotFoundException("Log File not found at {0}", logFilePath);
+                    throw new FileNotFoundException("Log File not found at {0}", LogFilePath);
                 }
-                new System.Threading.Thread(new System.Threading.ParameterizedThreadStart(OpenFromLogFile)).Start(logFilePath);
+                new System.Threading.Thread(new System.Threading.ParameterizedThreadStart(OpenFromLogFile)).Start(new object[] { LogFilePath, tailFile });
             }
         }
 
         private bool stop = false;
         public void Close() { stop = true; }
 
-        private bool paused = false;
         public void Pause()
         {
-            paused = true;
+            controlQueue.Enqueue("pause");
         }
         public void Resume()
         {
-            paused = false;
+            controlQueue.Enqueue("resume");
+        }
+        public void ForwardLarge()
+        {
+            controlQueue.Enqueue("forwardLarge");
         }
 
+        public void Forward()
+        {
+            controlQueue.Enqueue("forward");
+        }
+
+        public void ReverseLarge()
+        {
+            controlQueue.Enqueue("reverseLarge");
+        }
+
+        public void Reverse()
+        {
+            controlQueue.Enqueue("reverse");
+        }
+
+        public void SetPostion(long position)
+        {
+            controlQueue.Enqueue("setPosition:" + position);
+        }
+
+        public Queue<string> controlQueue = new Queue<string>();
         private void OpenFromLogFile(object parameter)
         {
-            string logFilePath = (string)parameter;
-            using (StreamReader sr = new StreamReader(logFilePath, Encoding.UTF7))
+            string logFilePath = (string)((object[])parameter)[0];
+            bool tailFile = (bool)((object[])parameter)[1];
+
+            if (tailFile)
+            {
+                while (true)
+                {
+                    if (File.Exists(logFilePath))
+                    {
+                        break;
+                    }
+                    if (stop)
+                    {
+                        return;
+                    }
+                    System.Threading.Thread.Sleep(250);
+                }
+            }
+
+            using (StreamReader sr = new StreamReader(
+                new FileStream(logFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite),
+                Encoding.UTF7))
             {
                 bool ready = false;
                 string line;
                 DateTime time = DateTime.Now;
-                while ((line = sr.ReadLine()) != null && !stop)
+
+                this.CurrentPosition = 0;
+                this.TotalFileSize = sr.BaseStream.Length;
+
+                if (tailFile && this.TotalFileSize > 0)
                 {
-                    if (!ready)
+                    this.CurrentPosition = this.TotalFileSize;
+                    sr.BaseStream.Position = this.TotalFileSize;
+                    ready = true;
+                }
+
+                while (!stop)
+                {
+                    while ((line = sr.ReadLine()) != null && !stop)
                     {
-                        if (this.Session.DataRead != null)
+                        if (tailFile && ready && Session.Variables != null &&
+                            line.Split(',').Length != Session.Variables.LogVariablesCount + 1)
                         {
-                            this.Session.DataRead(line);
+                            break;
+                        }
+                        this.CurrentPosition = sr.BaseStream.Position;
+
+                        if (!ready)
+                        {
+                            if (this.Session.DataRead != null && !tailFile)
+                            {
+                                this.Session.DataRead(line);
+                            }
+
+                            if (line.StartsWith("\"TIME"))
+                            {
+                                ready = true;
+                            }
+                        }
+                        else
+                        {
+                            if (string.IsNullOrWhiteSpace(line) || line[0] == '#')
+                            {
+                                //handles multiple logs in the same file
+                                ready = false;
+                                continue;
+                            }
+                            try
+                            {
+                                LogLine logLine = this.ReadLine(line);
+                                Session.LineRead(logLine);
+
+                                if (!tailFile)
+                                {
+                                    int waitTime =
+                                        (int)((1 / (double)Session.CurrentSamplesPerSecond) * 1000) -
+                                        (int)DateTime.Now.Subtract(time).TotalMilliseconds;
+
+                                    if (waitTime > 0)
+                                        System.Threading.Thread.Sleep(waitTime);
+                                }
+                            }
+                            catch { }
                         }
 
-                        if (line.StartsWith("\"TIME"))
+                        #region Control
+                        if (!tailFile)
                         {
-                            ready = true;
+                            while (this.controlQueue.Count > 0)
+                            {
+                                string control = controlQueue.Dequeue();
+                                switch (control)
+                                {
+                                    case "pause":
+                                        while (!stop && controlQueue.Count == 0)
+                                        {
+                                            System.Threading.Thread.Sleep(25);
+                                        }
+                                        break;
+                                    case "reverse":
+                                        try
+                                        {
+                                            sr.BaseStream.Seek(-SmallStep, SeekOrigin.Current);
+                                        }
+                                        catch { }
+                                        break;
+                                    case "reverseLarge":
+                                        try
+                                        {
+                                            sr.BaseStream.Seek(-LargeStep, SeekOrigin.Current);
+                                        }
+                                        catch { }
+                                        break;
+                                    case "forward":
+                                        try
+                                        {
+                                            sr.BaseStream.Seek(SmallStep, SeekOrigin.Current);
+                                        }
+                                        catch { }
+                                        break;
+                                    case "forwardLarge":
+                                        try
+                                        {
+                                            sr.BaseStream.Seek(LargeStep, SeekOrigin.Current);
+                                        }
+                                        catch { }
+                                        break;
+                                    default:
+                                        if (control.StartsWith("setPosition:"))
+                                        {
+                                            try
+                                            {
+                                                sr.BaseStream.Seek(long.Parse(control.Split(':')[1]), SeekOrigin.Begin);
+                                            }
+                                            catch { }
+                                        }
+                                        break;
+                                }
+                            }
+                        }
+                        #endregion
+
+                        time = DateTime.Now;
+                    }
+
+                    if (tailFile)
+                    {
+                        if (sr.BaseStream.Length == this.CurrentPosition)
+                        {
+                            System.Threading.Thread.Sleep(25);
                         }
                     }
-                    else
+                    else if (line == null)
                     {
-                        if (string.IsNullOrWhiteSpace(line) || line[0] == '#')
-                        {
-                            //handles multiple logs in the same file
-                            ready = false;
-                            continue;
-                        }
-                        try
-                        {
-                            LogLine logLine = this.ReadLine(line);
-                            Session.LineRead(logLine);
-
-                            int waitTime =
-                                (int)((1 / (double)Session.CurrentSamplesPerSecond) * 1000) -
-                                (int)DateTime.Now.Subtract(time).TotalMilliseconds;
-
-                            if (waitTime > 0)
-                                System.Threading.Thread.Sleep(waitTime);
-                        }
-                        catch { }
+                        stop = true;
                     }
-
-                    while (paused && !stop)
-                    {
-                        System.Threading.Thread.Sleep(25);
-                    }
-                    time = DateTime.Now;
                 }
             }
             Session.Close();
         }
+        private long LargeStep { get { return this.TotalFileSize / 50; } }
+        private long SmallStep { get { return this.TotalFileSize / 250; } }
+
 
         internal LogLine ReadLine(string line)
         {
@@ -220,7 +359,7 @@ namespace VisualME7Logger.Log
         public decimal Value { get; internal set; }
         public decimal CurrentMinValue { get; internal set; }
         public decimal CurrentMaxValue { get; internal set; }
-        
+
         public Variable(LogLine logLine, SessionVariable sessionVariable, string value)
         {
             this.LogLine = logLine;

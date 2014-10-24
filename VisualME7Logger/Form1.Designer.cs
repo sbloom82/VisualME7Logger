@@ -44,6 +44,9 @@
             this.increasePlaybackSpeedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.decreasePlaybackSpeedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetPlaybackSpeedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripSeparator();
+            this.forwardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reverseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.infoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
@@ -64,6 +67,7 @@
             this.flpVariables = new System.Windows.Forms.FlowLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.scrollbar = new System.Windows.Forms.HScrollBar();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.spDataGrid = new System.Windows.Forms.Splitter();
             this.dataGridView1 = new VisualME7Logger.DataGridViewCSVCopy();
@@ -129,6 +133,9 @@
             this.increasePlaybackSpeedToolStripMenuItem,
             this.decreasePlaybackSpeedToolStripMenuItem,
             this.resetPlaybackSpeedToolStripMenuItem,
+            this.toolStripMenuItem7,
+            this.forwardToolStripMenuItem,
+            this.reverseToolStripMenuItem,
             this.toolStripMenuItem2,
             this.infoToolStripMenuItem,
             this.toolStripMenuItem4,
@@ -185,10 +192,30 @@
             // resetPlaybackSpeedToolStripMenuItem
             // 
             this.resetPlaybackSpeedToolStripMenuItem.Name = "resetPlaybackSpeedToolStripMenuItem";
-            this.resetPlaybackSpeedToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
             this.resetPlaybackSpeedToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.resetPlaybackSpeedToolStripMenuItem.Text = "Reset Playback Speed";
             this.resetPlaybackSpeedToolStripMenuItem.Click += new System.EventHandler(this.resetPlaybackSpeedToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem7
+            // 
+            this.toolStripMenuItem7.Name = "toolStripMenuItem7";
+            this.toolStripMenuItem7.Size = new System.Drawing.Size(234, 6);
+            // 
+            // forwardToolStripMenuItem
+            // 
+            this.forwardToolStripMenuItem.Name = "forwardToolStripMenuItem";
+            this.forwardToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
+            this.forwardToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.forwardToolStripMenuItem.Text = "Forward";
+            this.forwardToolStripMenuItem.Click += new System.EventHandler(this.forwardToolStripMenuItem_Click);
+            // 
+            // reverseToolStripMenuItem
+            // 
+            this.reverseToolStripMenuItem.Name = "reverseToolStripMenuItem";
+            this.reverseToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+            this.reverseToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.reverseToolStripMenuItem.Text = "Reverse";
+            this.reverseToolStripMenuItem.Click += new System.EventHandler(this.reverseToolStripMenuItem_Click);
             // 
             // toolStripMenuItem2
             // 
@@ -346,6 +373,7 @@
             // 
             // panel3
             // 
+            this.panel3.Controls.Add(this.scrollbar);
             this.panel3.Controls.Add(this.chart1);
             this.panel3.Controls.Add(this.spDataGrid);
             this.panel3.Controls.Add(this.dataGridView1);
@@ -356,6 +384,16 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(697, 665);
             this.panel3.TabIndex = 47;
+            // 
+            // scrollbar
+            // 
+            this.scrollbar.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.scrollbar.Location = new System.Drawing.Point(0, 389);
+            this.scrollbar.Name = "scrollbar";
+            this.scrollbar.Size = new System.Drawing.Size(697, 20);
+            this.scrollbar.TabIndex = 54;
+            this.scrollbar.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar1_Scroll);
+            this.scrollbar.KeyUp += new System.Windows.Forms.KeyEventHandler(this.scrollbar_KeyUp);
             // 
             // chart1
             // 
@@ -586,6 +624,10 @@
         private DataGridViewCSVCopy dataGridView1;
         private System.Windows.Forms.Panel pnlSessionData;
         private System.Windows.Forms.TextBox txtSessionData;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem7;
+        private System.Windows.Forms.ToolStripMenuItem forwardToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem reverseToolStripMenuItem;
+        private System.Windows.Forms.HScrollBar scrollbar;
     }
 }
 
