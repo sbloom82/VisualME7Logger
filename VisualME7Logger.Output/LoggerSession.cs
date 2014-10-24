@@ -79,11 +79,12 @@ namespace VisualME7Logger.Session
         private LoggerOptions options;
         private string configFilePath;
         private string ME7LoggerDirectory;
-        public ME7LoggerSession(string ME7LoggerDirectory, LoggerOptions options, string configFilePath)
+        public ME7LoggerSession(string ME7LoggerDirectory, string logFilePath, LoggerOptions options, string configFilePath)
         {
             this.Status = Statuses.New;
             this.SessionType = SessionTypes.RealTime;
-            this.Log = new ME7LoggerLog(this);
+            this.filePath = logFilePath;
+            this.Log = new ME7LoggerLog(this, this.filePath);
             this.ME7LoggerDirectory = ME7LoggerDirectory;
             this.options = options;
             this.configFilePath = configFilePath;
@@ -121,29 +122,28 @@ namespace VisualME7Logger.Session
         {
             this.Status = Statuses.Opening;
             this.errorTextBuilder = new StringBuilder();
+            bool tailFile = options != null && options.TailLogFileWithVME7L;
 
-            if (this.SessionType == SessionTypes.LogFile)
+            if (this.SessionType == SessionTypes.LogFile || tailFile)
             {
-                this.IdentificationInfo = new IdentificationInfo();
-                this.CommunicationInfo = new CommunicationInfo();
-                this.Variables = new SessionVariables();
-                this.Log.InitializeSession(IdentificationInfo, CommunicationInfo, Variables);
-                this.AddExpressions();
-                this.SamplesPerSecond = CommunicationInfo.SamplesPerSecond;
-                this.Status = Statuses.Initialized;
-                this.LogStarted = CommunicationInfo.LogStarted;
-                this.Status = Statuses.Open;
-                this.Log.Open();
+                if (!tailFile)
+                {
+                    this.IdentificationInfo = new IdentificationInfo();
+                    this.CommunicationInfo = new CommunicationInfo();
+                    this.Variables = new SessionVariables();
+                    this.Log.InitializeSession(IdentificationInfo, CommunicationInfo, Variables);
+                    this.AddExpressions();
+                    this.SamplesPerSecond = CommunicationInfo.SamplesPerSecond;
+                    this.Status = Statuses.Initialized;
+                    this.LogStarted = CommunicationInfo.LogStarted;
+                    this.Status = Statuses.Open;
+                }
+                this.Log.Open(tailFile);
             }
-            else if (this.SessionType == SessionTypes.RealTime)
+            
+            if (this.SessionType == SessionTypes.RealTime)
             {
                 logReady = false;
-
-                if (options.WriteLogFileWithVME7L)
-                {
-                    this.WriteOneSample();
-                    this.logWriter = new LogWriter(options.LogFile);
-                }
 
                 if (options.WriteOutputFile)
                 {
@@ -155,7 +155,7 @@ namespace VisualME7Logger.Session
                 p = new Process();
                 p.StartInfo = new ProcessStartInfo(
                     Path.Combine(ME7LoggerDirectory, "bin", "ME7Logger.exe"),
-                    string.Format("{0} \"{1}\"", options, configFilePath));
+                    string.Format("{0} \"{1}\"", options.ToString(configFilePath), configFilePath));
                 p.StartInfo.UseShellExecute = false;
                 p.StartInfo.CreateNoWindow = true;
                 p.StartInfo.RedirectStandardOutput = true;
@@ -170,25 +170,10 @@ namespace VisualME7Logger.Session
                 p.BeginOutputReadLine();
                 p.BeginErrorReadLine();
             }
-            else
+            
+            if(this.SessionType == SessionTypes.SessionOutput)
             {
                 new System.Threading.Thread(new System.Threading.ThreadStart(OpenFromSessionOutput)).Start();
-            }
-        }
-
-        private void WriteOneSample()
-        {
-            Process p = new Process();
-            p.StartInfo = new ProcessStartInfo(
-                Path.Combine(ME7LoggerDirectory, "bin", "ME7Logger.exe"),
-                string.Format("{0} \"{1}\"", options.ToString(true), configFilePath));
-            p.StartInfo.UseShellExecute = false;
-            p.StartInfo.CreateNoWindow = true;
-
-            if (p.Start())
-            {
-                p.WaitForExit();
-                System.Threading.Thread.Sleep(500);
             }
         }
 
@@ -311,57 +296,28 @@ namespace VisualME7Logger.Session
                     outputWriter.WriteLine(data);
                 }
 
-                if (Debug)
-                {
-                    WriteDebug("line read: " + data);
-                }
-
                 try
                 {
                     if (this.Status == Statuses.Opening)
                     {
-                        if (Debug)
-                        {
-                            WriteDebug("Opening...before readline");
-                        }
                         if (this.ReadLine(data))
                         {
-                            if (Debug)
-                            {
-                                WriteDebug("Opening...readline true, var count:" + (this.Variables == null ? 0 : this.Variables.Count));
-                            }
-
                             this.AddExpressions();
 
                             this.Status = Statuses.Initialized;
                             this.Status = Statuses.Open;
-                            this.Log.Open();
+                            
                             this.LogStarted = DateTime.Now;
                         }
                     }
                     else if (this.Status == Statuses.Open)
                     {
-                        if (Debug)
-                        {
-                            WriteDebug("Open... logready:" + logReady.ToString());
-                        }
-
                         if (!logReady && data == "Press ^C to stop logging")
                         {
                             logReady = true;
                         }
                         else if (logReady)
                         {
-                            if (Debug)
-                            {
-                                WriteDebug("Open... reading line");
-                            }
-
-                            if (options.WriteLogFileWithVME7L)
-                            {
-                                this.logWriter.Add(data);
-                            }
-
                             LogLine logLine = this.Log.ReadLine(data);
                             this.LineRead(logLine);
                         }
@@ -397,30 +353,10 @@ namespace VisualME7Logger.Session
 
             if (LogLineRead != null)
             {
-                if (Debug)
-                {
-                    WriteDebug("Open.... Line Read!");
-                }
                 LogLineRead(logLine);
             }
 
             lastLogLine = logLine;
-        }
-
-        private static object DebugLock = new object();
-        public static bool Debug;
-        public void WriteDebug(string line)
-        {
-            if (Debug)
-            {
-                lock (DebugLock)
-                {
-                    using (StreamWriter sw = new StreamWriter(System.IO.Path.Combine(ME7LoggerDirectory, "DEBUG1.TXT"), true))
-                    {
-                        sw.WriteLine("{0:HH:mm:ss.ffff}:  {1}", DateTime.Now, line);
-                    }
-                }
-            }
         }
 
         public void Close()
@@ -599,6 +535,15 @@ namespace VisualME7Logger.Session
             this.Unit = unit;
             this.Alias = alias;
         }
+
+        public override string ToString()
+        {
+            if (!string.IsNullOrEmpty(this.Alias))
+            {
+                return string.Format("{0} ({1})", this.Alias, this.Name);
+            }
+            return this.Name;
+        }
     }
 
     public class LogVariable : SessionVariable
@@ -769,6 +714,10 @@ namespace VisualME7Logger.Session
 
         internal void Add(SessionVariable loggedVariable)
         {
+            if (loggedVariable is LogVariable)
+            {
+                LogVariablesCount++;
+            }
             list.Add(loggedVariable);
             byName[loggedVariable.Name] = loggedVariable;
         }
@@ -778,6 +727,7 @@ namespace VisualME7Logger.Session
             get { return this.list; }
         }
 
+        public int LogVariablesCount;
         public int Count
         {
             get { return this.list.Count; }
@@ -869,9 +819,10 @@ namespace VisualME7Logger.Session
 
         public bool WriteLogToFile { get; set; }
         public string LogFile { get; set; }
+        public bool UseDefaultLogFile { get; set; }
         public bool WriteOutputFile { get; set; }
 
-        public bool WriteLogFileWithVME7L { get; set; }
+        public bool TailLogFileWithVME7L { get; set; }
 
         public LoggerOptions(string ME7LoggerDirectory)
         {
@@ -911,8 +862,8 @@ namespace VisualME7Logger.Session
                         case "DisableRealTimeOutput":
                             this.RealTimeOutput = !bool.Parse(att.Value);
                             break;
-                        case "WriteLogFileWithVME7L":
-                            this.WriteLogFileWithVME7L = bool.Parse(att.Value);
+                        case "TailLogFileWithVME7L":
+                            this.TailLogFileWithVME7L = bool.Parse(att.Value);
                             break;
                     }
                 }
@@ -922,7 +873,6 @@ namespace VisualME7Logger.Session
                     switch (ele.Name.LocalName)
                     {
                         case "Communication":
-
                             foreach (XAttribute att in ele.Attributes())
                             {
                                 switch (att.Name.LocalName)
@@ -950,7 +900,18 @@ namespace VisualME7Logger.Session
                             this.SampleRate = int.Parse(ele.Value);
                             break;
                         case "LogFile":
-                            this.WriteLogToFile = bool.Parse(ele.Attributes().First().Value);
+                            foreach (XAttribute att in ele.Attributes())
+                            {
+                                switch (att.Name.LocalName)
+                                {
+                                    case "WriteToFile":
+                                        this.WriteLogToFile = bool.Parse(att.Value);
+                                        break;
+                                    case "UseDefaultLogFile":
+                                        this.UseDefaultLogFile = bool.Parse(att.Value);
+                                        break;
+                                }
+                            }
                             this.LogFile = ele.Value;
                             break;
                     }
@@ -979,6 +940,7 @@ namespace VisualME7Logger.Session
 
             XElement logFile = new XElement("LogFile", this.LogFile);
             logFile.Add(new XAttribute("WriteToFile", this.WriteLogToFile));
+            logFile.Add(new XAttribute("UseDefaultLogFile", this.UseDefaultLogFile));
             root.Add(logFile);
 
             root.Add(new XAttribute("WriteLogRealTime", WriteLogRealTime));
@@ -987,7 +949,7 @@ namespace VisualME7Logger.Session
             root.Add(new XAttribute("ReadSingleMeasurement", ReadSingleMeasurement));
             root.Add(new XAttribute("WriteOutputFile", WriteOutputFile));
             root.Add(new XAttribute("DisableRealTimeOutput", !this.RealTimeOutput));
-            root.Add(new XAttribute("WriteLogFileWithVME7L", this.WriteLogFileWithVME7L));
+            root.Add(new XAttribute("TailLogFileWithVME7L", this.TailLogFileWithVME7L));
 
             return root;
         }
@@ -1010,18 +972,19 @@ namespace VisualME7Logger.Session
             clone.WriteLogRealTime = this.WriteLogRealTime;
             clone.RealTimeOutput = this.RealTimeOutput;
             clone.WriteLogToFile = this.WriteLogToFile;
+            clone.UseDefaultLogFile = this.UseDefaultLogFile;
             clone.LogFile = LogFile;
             clone.WriteOutputFile = this.WriteOutputFile;
-            clone.WriteLogFileWithVME7L = this.WriteLogFileWithVME7L;
+            clone.TailLogFileWithVME7L = this.TailLogFileWithVME7L;
             return clone;
         }
 
         public override string ToString()
         {
-            return this.ToString(false);
+            return this.ToString(string.Empty);
         }
 
-        public string ToString(bool writeOneSample)
+        public string ToString(string configFile)
         {
             StringBuilder sb = new StringBuilder();
             if (this.ConnectionType == ConnectionTypes.COM)
@@ -1068,7 +1031,7 @@ namespace VisualME7Logger.Session
             {
                 sb.Append(" - h");
             }
-            if (ReadSingleMeasurement || writeOneSample)
+            if (ReadSingleMeasurement)
             {
                 sb.Append(" -1");
             }
@@ -1076,13 +1039,23 @@ namespace VisualME7Logger.Session
             {
                 sb.Append(" -r");
             }
-            if ((RealTimeOutput || WriteLogFileWithVME7L) && !writeOneSample)
+            if (RealTimeOutput && !TailLogFileWithVME7L)
             {
                 sb.Append(" -R");
             }
-            if ((WriteLogToFile && !WriteLogFileWithVME7L) || writeOneSample)
+            if (WriteLogToFile || TailLogFileWithVME7L)
             {
-                sb.AppendFormat(" -o \"{0}\"", LogFile);
+                sb.AppendFormat(" -o");
+
+                if (UseDefaultLogFile || string.IsNullOrEmpty(LogFile))
+                {
+                    sb.AppendFormat(" \"{0}_{1:yyyyMMdd_HHmmss}.csv\"",
+                        System.IO.Path.GetFileNameWithoutExtension(configFile), DateTime.Now);
+                }
+                else
+                {
+                    sb.AppendFormat(" \"{0}\"", LogFile);
+                }               
             }
             return sb.ToString();
         }

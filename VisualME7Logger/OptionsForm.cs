@@ -46,12 +46,13 @@ namespace VisualME7Logger
             chkReadSingleMeasurement.Checked = Options.ReadSingleMeasurement;
 
             chkWriteToLog.Checked = Options.WriteLogToFile;
+            chkUseDefaultLogFile.Checked = Options.UseDefaultLogFile;
             txtLogFilePath.Text = Options.LogFile;
 
             chkWriteOutputToFile.Checked = Options.WriteOutputFile;
             
             chkDisableRealTimeDisplay.Checked = !Options.RealTimeOutput;
-            chkWriteLogFileWithVME7L.Checked = Options.WriteLogFileWithVME7L;
+            chkTailLogWithME7L.Checked = Options.TailLogFileWithVME7L;
         }
 
         private void SaveOptions()
@@ -101,10 +102,11 @@ namespace VisualME7Logger
 
             Options.WriteLogToFile = chkWriteToLog.Checked;
             Options.LogFile = txtLogFilePath.Text;
+            Options.UseDefaultLogFile = chkUseDefaultLogFile.Checked;
 
             Options.WriteOutputFile = chkWriteOutputToFile.Checked;
             Options.RealTimeOutput = !chkDisableRealTimeDisplay.Checked;
-            Options.WriteLogFileWithVME7L = chkWriteLogFileWithVME7L.Checked;
+            Options.TailLogFileWithVME7L = chkTailLogWithME7L.Checked;
         }
 
         private void SwitchUI()
@@ -116,11 +118,14 @@ namespace VisualME7Logger
                 this.txtFTDIInfo.Enabled = radFTDI.Checked;
             this.cmbBaudRate.Enabled = this.chkOverrideBaudRate.Checked;
             this.nudSampleRate.Enabled = this.chkOverrideSampleRate.Checked;
-            this.txtLogFilePath.Enabled = this.chkWriteToLog.Checked || radLogFile.Checked;
+            this.txtLogFilePath.Enabled = radLogFile.Checked || (this.chkWriteToLog.Checked && !chkUseDefaultLogFile.Checked);
             this.gpOther.Enabled =
                 this.gbTroubleshooting.Enabled =
                 this.chkWriteToLog.Enabled =
+                this.chkUseDefaultLogFile.Enabled = 
                 this.chkOverrideBaudRate.Enabled = !this.radLogFile.Checked;
+            this.chkTailLogWithME7L.Enabled = !this.chkUseDefaultLogFile.Checked;
+     
         }
                
         private void chkFTDISerial_CheckedChanged(object sender, EventArgs e)
@@ -228,6 +233,13 @@ namespace VisualME7Logger
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+        }
+
+        private void chkUseDefaultLogFile_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkUseDefaultLogFile.Checked)
+                chkTailLogWithME7L.Checked = false;
+            SwitchUI();
         }
     }
 }

@@ -115,6 +115,12 @@
     <Compile Include="ChecksumForm.Designer.cs">
       <DependentUpon>ChecksumForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="GaugeWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GaugeWindow.Designer.cs">
+      <DependentUpon>GaugeWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="GraphVariableForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -143,6 +149,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ChecksumForm.resx">
       <DependentUpon>ChecksumForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GaugeWindow.resx">
+      <DependentUpon>GaugeWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GraphVariableForm.resx">
       <DependentUpon>GraphVariableForm.cs</DependentUpon>

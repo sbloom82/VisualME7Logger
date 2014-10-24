@@ -54,10 +54,11 @@
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.chkUseDefaultLogFile = new System.Windows.Forms.CheckBox();
             this.btnChooseLogPath = new System.Windows.Forms.Button();
             this.chkDisableRealTimeDisplay = new System.Windows.Forms.CheckBox();
             this.gbTroubleshooting = new System.Windows.Forms.GroupBox();
-            this.chkWriteLogFileWithVME7L = new System.Windows.Forms.CheckBox();
+            this.chkTailLogWithME7L = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.gpOther.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudSampleRate)).BeginInit();
@@ -307,11 +308,10 @@
             // 
             // txtLogFilePath
             // 
-            this.txtLogFilePath.Location = new System.Drawing.Point(6, 42);
-            this.txtLogFilePath.Multiline = true;
+            this.txtLogFilePath.Location = new System.Drawing.Point(6, 64);
             this.txtLogFilePath.Name = "txtLogFilePath";
-            this.txtLogFilePath.Size = new System.Drawing.Size(410, 44);
-            this.txtLogFilePath.TabIndex = 1;
+            this.txtLogFilePath.Size = new System.Drawing.Size(329, 20);
+            this.txtLogFilePath.TabIndex = 2;
             // 
             // chkWriteToLog
             // 
@@ -320,9 +320,9 @@
             this.chkWriteToLog.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkWriteToLog.Location = new System.Drawing.Point(6, 19);
             this.chkWriteToLog.Name = "chkWriteToLog";
-            this.chkWriteToLog.Size = new System.Drawing.Size(99, 17);
+            this.chkWriteToLog.Size = new System.Drawing.Size(96, 17);
             this.chkWriteToLog.TabIndex = 0;
-            this.chkWriteToLog.Text = "Write log to file:";
+            this.chkWriteToLog.Text = "Write log to file";
             this.chkWriteToLog.UseVisualStyleBackColor = true;
             this.chkWriteToLog.CheckedChanged += new System.EventHandler(this.chkWriteToLog_CheckedChanged);
             // 
@@ -349,6 +349,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.chkUseDefaultLogFile);
             this.groupBox3.Controls.Add(this.btnChooseLogPath);
             this.groupBox3.Controls.Add(this.chkWriteToLog);
             this.groupBox3.Controls.Add(this.txtLogFilePath);
@@ -359,12 +360,25 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Log File";
             // 
+            // chkUseDefaultLogFile
+            // 
+            this.chkUseDefaultLogFile.AutoSize = true;
+            this.chkUseDefaultLogFile.Checked = true;
+            this.chkUseDefaultLogFile.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkUseDefaultLogFile.Location = new System.Drawing.Point(6, 41);
+            this.chkUseDefaultLogFile.Name = "chkUseDefaultLogFile";
+            this.chkUseDefaultLogFile.Size = new System.Drawing.Size(201, 17);
+            this.chkUseDefaultLogFile.TabIndex = 1;
+            this.chkUseDefaultLogFile.Text = "Use default log file \'config_date_time\'";
+            this.chkUseDefaultLogFile.UseVisualStyleBackColor = true;
+            this.chkUseDefaultLogFile.CheckedChanged += new System.EventHandler(this.chkUseDefaultLogFile_CheckedChanged);
+            // 
             // btnChooseLogPath
             // 
-            this.btnChooseLogPath.Location = new System.Drawing.Point(341, 13);
+            this.btnChooseLogPath.Location = new System.Drawing.Point(341, 63);
             this.btnChooseLogPath.Name = "btnChooseLogPath";
             this.btnChooseLogPath.Size = new System.Drawing.Size(75, 23);
-            this.btnChooseLogPath.TabIndex = 2;
+            this.btnChooseLogPath.TabIndex = 3;
             this.btnChooseLogPath.Text = "Choose";
             this.btnChooseLogPath.UseVisualStyleBackColor = true;
             this.btnChooseLogPath.Click += new System.EventHandler(this.btnChooseLogPath_Click);
@@ -381,7 +395,7 @@
             // 
             // gbTroubleshooting
             // 
-            this.gbTroubleshooting.Controls.Add(this.chkWriteLogFileWithVME7L);
+            this.gbTroubleshooting.Controls.Add(this.chkTailLogWithME7L);
             this.gbTroubleshooting.Controls.Add(this.chkDisableRealTimeDisplay);
             this.gbTroubleshooting.Controls.Add(this.chkWriteOutputToFile);
             this.gbTroubleshooting.Location = new System.Drawing.Point(3, 354);
@@ -391,16 +405,15 @@
             this.gbTroubleshooting.TabStop = false;
             this.gbTroubleshooting.Text = "Troubleshooting";
             // 
-            // chkWriteLogFileWithVME7L
+            // chkTailLogWithME7L
             // 
-            this.chkWriteLogFileWithVME7L.AutoSize = true;
-            this.chkWriteLogFileWithVME7L.Location = new System.Drawing.Point(192, 16);
-            this.chkWriteLogFileWithVME7L.Name = "chkWriteLogFileWithVME7L";
-            this.chkWriteLogFileWithVME7L.Size = new System.Drawing.Size(202, 17);
-            this.chkWriteLogFileWithVME7L.TabIndex = 1;
-            this.chkWriteLogFileWithVME7L.Text = "Write Log File With VisualME7Logger";
-            this.chkWriteLogFileWithVME7L.UseVisualStyleBackColor = true;
-            this.chkWriteLogFileWithVME7L.Visible = false;
+            this.chkTailLogWithME7L.AutoSize = true;
+            this.chkTailLogWithME7L.Location = new System.Drawing.Point(192, 16);
+            this.chkTailLogWithME7L.Name = "chkTailLogWithME7L";
+            this.chkTailLogWithME7L.Size = new System.Drawing.Size(194, 17);
+            this.chkTailLogWithME7L.TabIndex = 1;
+            this.chkTailLogWithME7L.Text = "Tail Log File With VisualME7Logger";
+            this.chkTailLogWithME7L.UseVisualStyleBackColor = true;
             // 
             // OptionsForm
             // 
@@ -464,6 +477,7 @@
         private System.Windows.Forms.CheckBox chkWriteOutputToFile;
         private System.Windows.Forms.CheckBox chkDisableRealTimeDisplay;
         private System.Windows.Forms.GroupBox gbTroubleshooting;
-        private System.Windows.Forms.CheckBox chkWriteLogFileWithVME7L;
+        private System.Windows.Forms.CheckBox chkTailLogWithME7L;
+        private System.Windows.Forms.CheckBox chkUseDefaultLogFile;
     }
 }

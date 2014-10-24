@@ -37,8 +37,6 @@ namespace VisualME7Logger
 
         public SettingsForm()
         {
-            VisualME7Logger.Session.ME7LoggerSession.Debug = Program.Debug;
-
             InitializeComponent();
 
             SetupGrid();

@@ -51,7 +51,7 @@ namespace VisualME7Logger
             }
             else
             {
-                session = new ME7LoggerSession(Program.ME7LoggerDirectory, options, configFile);
+                session = new ME7LoggerSession(Program.ME7LoggerDirectory, options.LogFile, options, configFile);
             }
             session.ExpressionVariables = DisplayOptions.Expressions;
 
@@ -62,6 +62,9 @@ namespace VisualME7Logger
             this.OpenSession();
 
             pauseToolStripMenuItem.Enabled =
+            forwardToolStripMenuItem.Enabled = 
+            reverseToolStripMenuItem.Enabled =
+            scrollbar.Visible =
             increasePlaybackSpeedToolStripMenuItem.Enabled =
                 decreasePlaybackSpeedToolStripMenuItem.Enabled =
                 resetPlaybackSpeedToolStripMenuItem.Enabled = session.CanSetPlaybackSpeed;
@@ -131,13 +134,10 @@ namespace VisualME7Logger
             }
             this.txtSessionData.AppendText(string.Format("{0}{1}\r\n", error ? "***" : "", line));
         }
+
         void LogLineRead(LogLine line)
         {
-            if (Program.Debug)
-            {
-                Program.WriteDebug(string.Format("line at TS {0} read", line.TimeStamp));
-            }
-            queue.Enqueue(line);
+             queue.Enqueue(line);
         }
 
         void Initialize()
@@ -199,18 +199,14 @@ namespace VisualME7Logger
 
         void refreshTimer_Tick(object sender, EventArgs e)
         {
-            if (Program.Debug)
-            {
-                Program.WriteDebug("refresh timer tick session.lineread Null? " + (session.LogLineRead == null).ToString() + " Value " + (session.LogLineRead != null ? session.LogLineRead.ToString() : "null"));
-            }
-
             while (queue.Count() > 0)
             {
                 LogLine line = queue.Dequeue();
 
-                if (Program.Debug)
+                if (this.session.SessionType == ME7LoggerSession.SessionTypes.LogFile)
                 {
-                    Program.WriteDebug(string.Format("line with TS {0} dequeued", line.TimeStamp));
+                    this.scrollbar.Maximum = (int)this.session.Log.TotalFileSize;
+                    this.scrollbar.Value = (int)this.session.Log.CurrentPosition;                    
                 }
 
                 lock (buffer)
@@ -302,6 +298,12 @@ namespace VisualME7Logger
                     }
                     this.AddGraphVariable(graphVariable, panel, newVar);
                 }
+                
+                /*
+                GaugeWindow gw = new GaugeWindow(session, v);
+                session.LogLineRead += new ME7LoggerSession.LogLineReadDel(gw.Refresh);
+                gw.Show(this);
+                */
             }
         }
 
@@ -835,7 +837,9 @@ namespace VisualME7Logger
                 chart1.ChartAreas[0].CursorX.SelectionEnd = double.NaN;
             }
 
-            if (this.freezeToolStripMenuItem.Checked || session.Status == ME7LoggerSession.Statuses.Paused)
+            if (this.freezeToolStripMenuItem.Checked || 
+                session.Status == ME7LoggerSession.Statuses.Paused ||
+                session.Status == ME7LoggerSession.Statuses.Closed)
             {
                 HighlightPoints();
             }
@@ -843,7 +847,9 @@ namespace VisualME7Logger
 
         private void chart1_AxisViewChanged(object sender, ViewEventArgs e)
         {
-            if (this.freezeToolStripMenuItem.Checked || session.Status == ME7LoggerSession.Statuses.Paused)
+            if (this.freezeToolStripMenuItem.Checked || 
+                session.Status == ME7LoggerSession.Statuses.Paused ||
+                session.Status == ME7LoggerSession.Statuses.Closed)
             {
                 HighlightPoints();
             }
@@ -889,9 +895,8 @@ namespace VisualME7Logger
             if (chart1.Series.Count > 0)
             {
                 int pos = (int)chart1.ChartAreas[0].CursorX.Position;
-                if (pos >= 0 && pos < chart1.Series[0].Points.Count)
+                if (pos > 0 && pos < chart1.Series[0].Points.Count)
                 {
-
                     DataPoint p = chart1.Series[0].Points[pos - 1];
                     Variable var = p.Tag as Variable;
                     if (var != null)
@@ -956,6 +961,26 @@ namespace VisualME7Logger
                     }
                 }
             }
+        }
+
+        private void forwardToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            session.Log.ForwardLarge();
+        }
+
+        private void reverseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            session.Log.ReverseLarge();
+        }
+
+        private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
+        {
+            this.session.Log.SetPostion(scrollbar.Value);
+        }
+
+        private void scrollbar_KeyUp(object sender, KeyEventArgs e)
+        {
+            chart1_KeyUp(sender, e);
         }
     }
 
