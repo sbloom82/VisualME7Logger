@@ -62,7 +62,7 @@ namespace VisualME7Logger.Session
                 CurrentSamplesPerSecond = _samplesPerSecond;
             }
         }
-        public short CurrentSamplesPerSecond { get; private set; }
+        public short CurrentSamplesPerSecond { get; internal set; }
         public DateTime LogStarted { get; private set; }
         public LoggerSessionStatusChanged StatusChanged;
         public LogLineReadDel LogLineRead;
@@ -557,12 +557,20 @@ namespace VisualME7Logger.Session
         public decimal Factor { get; private set; }
         public decimal Offset { get; private set; }
 
+        public string Group { get; private set; }
+
         internal LogVariable(int number, string name, string unit, string alias)
             : base(Types.Log, name, unit, alias)
         {
             this.Number = number;
             this.Alias = alias;
         }
+
+        internal LogVariable(int number, string name, string unit, string alias, string group)
+            : this(number, name, unit, alias)
+        {
+            this.Group = group;
+        }        
 
         internal LogVariable(string line)
             : base(Types.Log, null, null, null)
@@ -742,47 +750,82 @@ namespace VisualME7Logger.Session
 
         private List<string> variableLines;
         internal bool Complete { get; private set; }
-        internal void ReadLine(string line, bool fromLog = false)
+        internal void ReadLine(string line, ME7LoggerLog.LogTypes logType = ME7LoggerLog.LogTypes.Unknown)
         {
-            if (fromLog)
+            switch (logType)
             {
-                if (line.StartsWith("TimeStamp,"))
-                {
-                    variableLines = new List<string>();
-                    variableLines.Add(line);
-                }
-                else if (variableLines.Count < 3)
-                {
-                    variableLines.Add(line);
-                    if (variableLines.Count == 3)
+                case ME7LoggerLog.LogTypes.VCDS:
+                    if (line.StartsWith(",Group A:"))
                     {
-                        string[] names = variableLines[0].Split(',');
-                        string[] units = variableLines[1].Split(',');
-                        string[] aliases = variableLines[2].Split(',');
-
-                        for (int i = 1; i < names.Length; ++i)
+                        variableLines = new List<string>();
+                        variableLines.Add(line);
+                    }
+                    else if(variableLines != null)
+                    {                        
+                        variableLines.Add(line);
+                        if (variableLines.Count == 4)
                         {
-                            this.Add(new LogVariable(i, names[i].Trim(), units[i].Trim(), aliases[i].Replace("\"", "").Trim()));
+                            string[] groups = variableLines[0].Split(',');
+                            string[] names1 = variableLines[1].Split(',');
+                            string[] names2 = variableLines[2].Split(',');
+                            string[] units = variableLines[3].Split(',');
+                            string currentGroup = "";
+
+                            for (int i = 1; i < names1.Length; ++i)
+                            {
+                                if (string.IsNullOrEmpty(names1[i]))
+                                {
+                                    currentGroup = groups[i].Substring(0, groups[i].Length - 1);
+                                }
+                                else
+                                {
+                                    string name = names1[i] + " " + names2[i];
+                                    this.Add(new LogVariable(this.Count + 1, name, units[i], name, currentGroup));
+                                }                              
+                            }
+                            this.Complete = true;
+                            break;
                         }
+                    }
+                    break;
+                case ME7LoggerLog.LogTypes.ME7Logger:
+                    if (line.StartsWith("TimeStamp,"))
+                    {
+                        variableLines = new List<string>();
+                        variableLines.Add(line);
+                    }
+                    else if (variableLines.Count < 3)
+                    {
+                        variableLines.Add(line);
+                        if (variableLines.Count == 3)
+                        {
+                            string[] names = variableLines[0].Split(',');
+                            string[] units = variableLines[1].Split(',');
+                            string[] aliases = variableLines[2].Split(',');
+
+                            for (int i = 1; i < names.Length; ++i)
+                            {
+                                this.Add(new LogVariable(i, names[i].Trim(), units[i].Trim(), aliases[i].Replace("\"", "").Trim()));
+                            }
+                            Complete = true;
+                        }
+                    }
+                    break;
+                case ME7LoggerLog.LogTypes.Unknown:
+                    if (line.StartsWith("Really logged are"))
+                    {
                         Complete = true;
                     }
-                }
-            }
-            else
-            {
-                if (line.StartsWith("Really logged are"))
-                {
-                    Complete = true;
-                }
-                else if (line.Length > 1 && line[0] == '#' && line[1] != 'n' && line[1] != '-')
-                {
-                    this.Add(new LogVariable(line));
-                }
-                else if (line.StartsWith("Logged data size is"))
-                {
-                    try { LoggedDataSize = short.Parse(line.Replace("Logged data size is ", "").Replace(" bytes.", "").Trim()); }
-                    catch { }
-                }
+                    else if (line.Length > 1 && line[0] == '#' && line[1] != 'n' && line[1] != '-')
+                    {
+                        this.Add(new LogVariable(line));
+                    }
+                    else if (line.StartsWith("Logged data size is"))
+                    {
+                        try { LoggedDataSize = short.Parse(line.Replace("Logged data size is ", "").Replace(" bytes.", "").Trim()); }
+                        catch { }
+                    }
+                    break;
             }
         }
     }
