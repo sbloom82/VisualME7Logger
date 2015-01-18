@@ -10,6 +10,14 @@ namespace VisualME7Logger.Log
 {
     public class ME7LoggerLog
     {
+        public enum LogTypes
+        {
+            Unknown,
+            ME7Logger,
+            VCDS,
+            Eurodyne
+        }
+
         internal static System.Globalization.CultureInfo CultureInfo = new System.Globalization.CultureInfo("en-US");
 
         public ME7LoggerSession Session { get; private set; }
@@ -27,6 +35,7 @@ namespace VisualME7Logger.Log
         }
 
         private int lineNumber;
+        public LogTypes LogType;
 
         public string LogFilePath { get; private set; }
         public long TotalFileSize { get; private set; }
@@ -39,8 +48,38 @@ namespace VisualME7Logger.Log
             using (StreamReader sr = new StreamReader(LogFilePath, Encoding.UTF7))
             {
                 string line = null;
+
                 while ((line = sr.ReadLine()) != null)
                 {
+                    if (this.LogType == LogTypes.Unknown)
+                    {
+                        if (line.Contains("VCDS") || line.Contains("VAG-COM"))
+                        {
+                            this.LogType = LogTypes.VCDS;
+                        }
+                    }
+
+                    if (this.LogType == LogTypes.VCDS)
+                    {
+                        if (!variables.Complete)
+                        {
+                            if (!variablesStarted)
+                            {
+                                variablesStarted = line.StartsWith(",Group A:");
+                            }
+
+                            if (variablesStarted)
+                            {
+                                variables.ReadLine(line, this.LogType);
+                            }
+
+                            if (variables.Complete)
+                            {
+                                break;
+                            }
+                        }
+                    }
+
                     if (!identificationInfo.Complete)
                     {
                         if (!idinfostarted)
@@ -49,6 +88,7 @@ namespace VisualME7Logger.Log
                         }
                         else
                         {
+                            this.LogType = LogTypes.ME7Logger;
                             identificationInfo.ReadLine(line, true);
                         }
                     }
@@ -71,7 +111,7 @@ namespace VisualME7Logger.Log
                         }
                         else
                         {
-                            variables.ReadLine(line, true);
+                            variables.ReadLine(line);
                         }
 
                         if (variables.Complete)
@@ -173,6 +213,7 @@ namespace VisualME7Logger.Log
                     ready = true;
                 }
 
+                LogLine last = null;
                 while (!stop)
                 {
                     while ((line = sr.ReadLine()) != null && !stop)
@@ -191,7 +232,7 @@ namespace VisualME7Logger.Log
                                 this.Session.DataRead(line);
                             }
 
-                            if (line.StartsWith("\"TIME"))
+                            if (line.StartsWith("\"TIME") || line.StartsWith("Marker,STAMP"))
                             {
                                 ready = true;
                             }
@@ -206,8 +247,20 @@ namespace VisualME7Logger.Log
                             }
                             try
                             {
-                                LogLine logLine = this.ReadLine(line);
-                                Session.LineRead(logLine);
+                                if (this.LogType == LogTypes.VCDS)
+                                {
+                                    foreach (LogLine logLine in this.ReadVCDSLine(line, last))
+                                    {
+                                        Session.LineRead(logLine);
+                                        Session.CurrentSamplesPerSecond = (short)(((logLine.TimeStamp - (last == null ? 0 : last.TimeStamp)) * 100));
+                                        last = logLine;
+                                    }
+                                }
+                                else
+                                {
+                                    LogLine logLine = this.ReadLine(line);
+                                    Session.LineRead(logLine);
+                                }
 
                                 if (!tailFile)
                                 {
@@ -228,53 +281,37 @@ namespace VisualME7Logger.Log
                             while (this.controlQueue.Count > 0)
                             {
                                 string control = controlQueue.Dequeue();
-                                switch (control)
+                                try
                                 {
-                                    case "pause":
-                                        while (!stop && controlQueue.Count == 0)
-                                        {
-                                            System.Threading.Thread.Sleep(25);
-                                        }
-                                        break;
-                                    case "reverse":
-                                        try
-                                        {
+                                    switch (control)
+                                    {
+                                        case "pause":
+                                            while (!stop && controlQueue.Count == 0)
+                                            {
+                                                System.Threading.Thread.Sleep(25);
+                                            }
+                                            break;
+                                        case "reverse":
                                             sr.BaseStream.Seek(-SmallStep, SeekOrigin.Current);
-                                        }
-                                        catch { }
-                                        break;
-                                    case "reverseLarge":
-                                        try
-                                        {
+                                            break;
+                                        case "reverseLarge":
                                             sr.BaseStream.Seek(-LargeStep, SeekOrigin.Current);
-                                        }
-                                        catch { }
-                                        break;
-                                    case "forward":
-                                        try
-                                        {
+                                            break;
+                                        case "forward":
                                             sr.BaseStream.Seek(SmallStep, SeekOrigin.Current);
-                                        }
-                                        catch { }
-                                        break;
-                                    case "forwardLarge":
-                                        try
-                                        {
+                                            break;
+                                        case "forwardLarge":
                                             sr.BaseStream.Seek(LargeStep, SeekOrigin.Current);
-                                        }
-                                        catch { }
-                                        break;
-                                    default:
-                                        if (control.StartsWith("setPosition:"))
-                                        {
-                                            try
+                                            break;
+                                        default:
+                                            if (control.StartsWith("setPosition:"))
                                             {
                                                 sr.BaseStream.Seek(long.Parse(control.Split(':')[1]), SeekOrigin.Begin);
                                             }
-                                            catch { }
-                                        }
-                                        break;
+                                            break;
+                                    }
                                 }
+                                catch { }
                             }
                         }
                         #endregion
@@ -305,6 +342,42 @@ namespace VisualME7Logger.Log
         {
             return new LogLine(this, line, ++lineNumber);
         }
+
+        private IEnumerable<LogLine> ReadVCDSLine(string line, LogLine last)
+        {
+            string currentGroup = null;
+            List<LogLine> lines = new List<LogLine>();
+            string[] split = line.Split(',');
+            for (int i = 0; i < split.Length; ++i)
+            {
+                if ((i - 1) % 5 == 0)
+                {
+                    if (currentGroup == null)
+                    {
+                        currentGroup = "Group A";
+                    }
+                    else if (currentGroup == "Group A")
+                    {
+                        currentGroup = "Group B";
+                    }
+                    else if (currentGroup == "Group B")
+                    {
+                        currentGroup = "Group C";
+                    }
+
+                    List<string> values = new List<string>();
+                    for (int j = i; j < i + 5; ++j)
+                    {
+                        values.Add(split[j]);
+                    }
+
+                    LogLine groupLogLine = new LogLine(this, currentGroup, lineNumber++, last, values.ToArray());
+                    lines.Add(groupLogLine);
+                    last = groupLogLine;
+                }
+            }
+            return lines;
+        }
     }
 
     public class LogLine
@@ -322,6 +395,41 @@ namespace VisualME7Logger.Log
             this.Log = log;
             this.LineNumber = lineNumber;
             this.Parse(line);
+        }
+
+        public LogLine(ME7LoggerLog log, string group, int lineNumber, LogLine last, params string[] values)
+        {
+            this.Log = log;
+            this.LineNumber = lineNumber;
+            this.TimeStamp = decimal.Parse(values[0], VisualME7Logger.Log.ME7LoggerLog.CultureInfo);
+
+            int i = 1;
+            foreach (SessionVariable sv in Log.Session.Variables.Values)
+            {
+                string value = "";
+                LogVariable lv = sv as LogVariable;
+                
+                if (lv != null && lv.Group == group)
+                {
+                    //set value from log
+                    value = values[i++].Trim();
+                }
+                else if (last != null)
+                {
+                    value = last.variablesByName[sv.Name].Value.ToString();
+                    //set value from last log line
+                }
+                Variable v = new Variable(this, sv, value);
+                variables.Add(v);
+                if (!variablesByName.ContainsKey(v.SessionVariable.Name))
+                {
+                    variablesByName.Add(v.SessionVariable.Name, v);
+                }
+                else if (lv.Group == group)
+                {
+                    variablesByName[v.SessionVariable.Name] = v;
+                }
+            }
         }
 
         private const char COLUMN_SEP = ',';
