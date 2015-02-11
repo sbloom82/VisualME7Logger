@@ -318,8 +318,9 @@ namespace VisualME7Logger.Session
                         }
                         else if (logReady)
                         {
-                            LogLine logLine = this.Log.ReadLine(data);
+                            LogLine logLine = this.Log.ReadLine(data, lastLogLine);
                             this.LineRead(logLine);
+
                         }
                     }
                 }

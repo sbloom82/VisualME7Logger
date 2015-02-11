@@ -111,7 +111,7 @@ namespace VisualME7Logger.Log
                         }
                         else
                         {
-                            variables.ReadLine(line);
+                            variables.ReadLine(line, this.LogType);
                         }
 
                         if (variables.Complete)
@@ -258,8 +258,9 @@ namespace VisualME7Logger.Log
                                 }
                                 else
                                 {
-                                    LogLine logLine = this.ReadLine(line);
+                                    LogLine logLine = this.ReadLine(line, last);
                                     Session.LineRead(logLine);
+                                    last = logLine;
                                 }
 
                                 if (!tailFile)
@@ -338,9 +339,9 @@ namespace VisualME7Logger.Log
         private long SmallStep { get { return this.TotalFileSize / 250; } }
 
 
-        internal LogLine ReadLine(string line)
+        internal LogLine ReadLine(string line, LogLine last)
         {
-            return new LogLine(this, line, ++lineNumber);
+            return new LogLine(this, line, ++lineNumber, last);
         }
 
         private IEnumerable<LogLine> ReadVCDSLine(string line, LogLine last)
@@ -384,17 +385,18 @@ namespace VisualME7Logger.Log
     {
         public ME7LoggerLog Log { get; private set; }
         public decimal TimeStamp { get; private set; }
+        private DateTime? TimeStampDateTime { get; set; }
         public int LineNumber { get; private set; }
         private Dictionary<string, Variable> variablesByName = new Dictionary<string, Variable>(StringComparer.InvariantCultureIgnoreCase);
         public Variable this[string name] { get { return variablesByName[name]; } }
         public IEnumerable<Variable> Variables { get { return this.variables; } }
         private List<Variable> variables = new List<Variable>();
 
-        public LogLine(ME7LoggerLog log, string line, int lineNumber)
+        public LogLine(ME7LoggerLog log, string line, int lineNumber, LogLine last)
         {
             this.Log = log;
             this.LineNumber = lineNumber;
-            this.Parse(line);
+            this.Parse(line, last);
         }
 
         public LogLine(ME7LoggerLog log, string group, int lineNumber, LogLine last, params string[] values)
@@ -433,10 +435,31 @@ namespace VisualME7Logger.Log
         }
 
         private const char COLUMN_SEP = ',';
-        private void Parse(string line)
+        private void Parse(string line, LogLine last)
         {
             string[] values = line.Split(LogLine.COLUMN_SEP);
-            TimeStamp = decimal.Parse(values[0], VisualME7Logger.Log.ME7LoggerLog.CultureInfo);
+
+            if (last == null)
+            {
+                try
+                {
+                    TimeStamp = decimal.Parse(values[0], VisualME7Logger.Log.ME7LoggerLog.CultureInfo);
+                }
+                catch
+                {
+                    TimeStampDateTime = DateTime.Parse(values[0]);
+                    TimeStamp = 0;
+                }
+            }
+            else
+            {
+                if (last.TimeStampDateTime.HasValue)
+                {
+                    TimeStampDateTime = DateTime.Parse(values[0]);
+                    TimeStamp = last.TimeStamp + (decimal)TimeStampDateTime.Value.Subtract(last.TimeStampDateTime.Value).TotalSeconds;
+                }
+            }
+            
             int i = 1;
             foreach (SessionVariable sv in Log.Session.Variables.Values)
             {
