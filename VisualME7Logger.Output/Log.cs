@@ -453,7 +453,11 @@ namespace VisualME7Logger.Log
             }
             else
             {
-                if (last.TimeStampDateTime.HasValue)
+                if (!last.TimeStampDateTime.HasValue)
+                {
+                    TimeStamp = decimal.Parse(values[0], VisualME7Logger.Log.ME7LoggerLog.CultureInfo);
+                }
+                else
                 {
                     TimeStampDateTime = DateTime.Parse(values[0]);
                     TimeStamp = last.TimeStamp + (decimal)TimeStampDateTime.Value.Subtract(last.TimeStampDateTime.Value).TotalSeconds;
