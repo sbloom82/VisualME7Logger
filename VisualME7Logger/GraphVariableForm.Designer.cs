@@ -47,6 +47,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.txtGraphVariable = new System.Windows.Forms.TextBox();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.chkShowAxis = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudGraphVariableThickness)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGraphVariableMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGraphVariableMin)).BeginInit();
@@ -71,7 +72,6 @@
             this.btnCancel.TabIndex = 8;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // label9
             // 
@@ -232,6 +232,17 @@
             this.txtGraphVariable.Size = new System.Drawing.Size(241, 20);
             this.txtGraphVariable.TabIndex = 1;
             // 
+            // chkShowAxis
+            // 
+            this.chkShowAxis.AutoSize = true;
+            this.chkShowAxis.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkShowAxis.Location = new System.Drawing.Point(222, 9);
+            this.chkShowAxis.Name = "chkShowAxis";
+            this.chkShowAxis.Size = new System.Drawing.Size(78, 17);
+            this.chkShowAxis.TabIndex = 32;
+            this.chkShowAxis.Text = "Show Axis:";
+            this.chkShowAxis.UseVisualStyleBackColor = true;
+            // 
             // GraphVariableForm
             // 
             this.AcceptButton = this.btnOk;
@@ -240,6 +251,7 @@
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(306, 155);
             this.ControlBox = false;
+            this.Controls.Add(this.chkShowAxis);
             this.Controls.Add(this.txtGraphVariable);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.cmbGraphVariableStyle);
@@ -290,5 +302,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtGraphVariable;
         private System.Windows.Forms.ColorDialog colorDialog1;
+        private System.Windows.Forms.CheckBox chkShowAxis;
     }
 }

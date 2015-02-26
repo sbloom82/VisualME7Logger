@@ -1076,6 +1076,7 @@ namespace VisualME7Logger
         public Color LineColor { get; set; }
         public int LineThickness { get; set; }
         public ChartDashStyle LineStyle { get; set; }
+        public bool ShowAxis { get; set; }
 
         public GraphVariable()
         {
@@ -1100,6 +1101,7 @@ namespace VisualME7Logger
             retval.Add(new XAttribute("LineColor", this.LineColor.ToArgb()));
             retval.Add(new XAttribute("LineThickness", this.LineThickness));
             retval.Add(new XAttribute("LineStyle", (int)this.LineStyle));
+            retval.Add(new XAttribute("ShowAxis", this.ShowAxis));
             return retval;
         }
 
@@ -1133,6 +1135,9 @@ namespace VisualME7Logger
                     case "LineStyle":
                         LineStyle = (ChartDashStyle)int.Parse(att.Value);
                         break;
+                    case "ShowAxis":
+                        ShowAxis = bool.Parse(att.Value);
+                        break;
                 }
             }
         }
@@ -1148,6 +1153,7 @@ namespace VisualME7Logger
             clone.LineColor = this.LineColor;
             clone.LineThickness = this.LineThickness;
             clone.LineStyle = this.LineStyle;
+            clone.ShowAxis = this.ShowAxis;
             return clone;
         }
 
