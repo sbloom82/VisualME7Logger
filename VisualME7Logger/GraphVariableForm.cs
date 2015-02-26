@@ -31,7 +31,8 @@ namespace VisualME7Logger
             txtGraphVariableColor.BackColor = GraphVariable.LineColor;
             nudGraphVariableThickness.Value = GraphVariable.LineThickness;
             chkGraphVariableActive.Checked = true;// GraphVariable.Active;
-            cmbGraphVariableStyle.SelectedItem = GraphVariable.LineStyle;            
+            cmbGraphVariableStyle.SelectedItem = GraphVariable.LineStyle;
+            chkShowAxis.Checked = GraphVariable.ShowAxis;
         }
 
         private void SaveVariable()
@@ -43,6 +44,7 @@ namespace VisualME7Logger
             GraphVariable.LineThickness = (int)nudGraphVariableThickness.Value;
             GraphVariable.Active = chkGraphVariableActive.Checked;
             GraphVariable.LineStyle = (ChartDashStyle)cmbGraphVariableStyle.SelectedItem;
+            GraphVariable.ShowAxis = chkShowAxis.Checked;
         }
 
         private void SwitchUI()
@@ -54,7 +56,7 @@ namespace VisualME7Logger
             DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
-        private void btnCancel_Click(object sender, EventArgs e)
+        private void btnCl_Cancelick(object sender, EventArgs e)
         {
             this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
