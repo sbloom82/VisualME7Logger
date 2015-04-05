@@ -12,14 +12,33 @@ namespace VisualME7Logger
     public partial class ChecksumForm : Form
     {
         private VisualME7Logger.Output.ChecksumInfo ChecksumInfo { get; set; }
-        public ChecksumForm(VisualME7Logger.Output.ChecksumInfo checksumInfo )
+        public ChecksumForm(VisualME7Logger.Output.ChecksumInfo checksumInfo)
         {
             InitializeComponent();
             this.ChecksumInfo = checksumInfo;
             this.LoadOptions();
+
+            this.txtBinPath.AllowDrop = true;
+            this.txtBinPath.DragEnter += txtBinPath_DragEnter;
+            this.txtBinPath.DragDrop += txtBinPath_DragDrop;
         }
 
-        private void LoadOptions()
+        void txtBinPath_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            if (files.Length > 0)
+            {
+                txtBinPath.Text = files[0];
+            }
+        }
+
+        void txtBinPath_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop)) 
+                e.Effect = DragDropEffects.Copy;
+        }
+        
+        void LoadOptions()
         {
             this.txtAppPath.Text = this.ChecksumInfo.ApplicationPath;
             this.txtBinPath.Text = this.ChecksumInfo.BinPath;
@@ -30,7 +49,7 @@ namespace VisualME7Logger
             this.ChecksumInfo.ApplicationPath = this.txtAppPath.Text;
             this.ChecksumInfo.BinPath = this.txtBinPath.Text;
         }
-       
+
         private void btnOk_Click(object sender, EventArgs e)
         {
             SaveOptions();
@@ -80,8 +99,8 @@ namespace VisualME7Logger
             this.txtOutput.Text = result.Output;
             MessageBox.Show(
                 this,
-                string.Format("Checksum validation {0}successful", result.Success  ? "" : "not "),
-                result.Success ? "Success" :"Error",
+                string.Format("Checksum validation {0}successful", result.Success ? "" : "not "),
+                result.Success ? "Success" : "Error",
                 MessageBoxButtons.OK,
                 result.Success ? MessageBoxIcon.Information : MessageBoxIcon.Error);
         }
