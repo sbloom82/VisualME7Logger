@@ -135,9 +135,13 @@ namespace VisualME7Logger
             this.txtSessionData.AppendText(string.Format("{0}{1}\r\n", error ? "***" : "", line));
         }
 
+        const int MAX_QUEUE_DEPTH = 10;
         void LogLineRead(LogLine line)
         {
-             queue.Enqueue(line);
+            lock (this.queue)
+            {
+                queue.Enqueue(line);
+            }
         }
 
         void Initialize()
@@ -199,29 +203,32 @@ namespace VisualME7Logger
 
         void refreshTimer_Tick(object sender, EventArgs e)
         {
-            while (queue.Count() > 0)
+            lock (this.queue)
             {
-                LogLine line = queue.Dequeue();
-
-                if (this.session.SessionType == ME7LoggerSession.SessionTypes.LogFile)
+                while (queue.Count() > 0)
                 {
-                    this.scrollbar.Maximum = (int)this.session.Log.TotalFileSize;
-                    this.scrollbar.Value = (int)this.session.Log.CurrentPosition;                    
-                }
+                    LogLine line = queue.Dequeue();
 
-                lock (buffer)
-                {
-                    buffer.Add(line);
-                    if (buffer.Count > this.DisplayOptions.GraphHRes)
+                    if (this.session.SessionType == ME7LoggerSession.SessionTypes.LogFile)
                     {
-                        buffer.RemoveAt(0);
+                        this.scrollbar.Maximum = (int)this.session.Log.TotalFileSize;
+                        this.scrollbar.Value = (int)this.session.Log.CurrentPosition;
                     }
-                }
 
-                this.AddLineToGrid(line);
-                this.DisplayLine(line);
-                this.PlotLineOnChart(line);
-            }
+                    lock (buffer)
+                    {
+                        buffer.Add(line);
+                        if (buffer.Count > this.DisplayOptions.GraphHRes)
+                        {
+                            buffer.RemoveAt(0);
+                        }
+                    }
+
+                    this.AddLineToGrid(line);
+                    this.DisplayLine(line);
+                    this.PlotLineOnChart(line);
+                }
+            } 
         }
 
         void AddLineToGrid(LogLine line)
