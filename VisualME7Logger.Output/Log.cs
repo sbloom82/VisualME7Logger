@@ -133,6 +133,22 @@ namespace VisualME7Logger.Log
                 {
                     throw new FileNotFoundException("Log File not found at {0}", LogFilePath);
                 }
+                else if (tailFile)
+                {
+                    if (File.Exists(LogFilePath))
+                    {
+                        try
+                        {
+                            string copyToName = LogFilePath;
+                            while (File.Exists(copyToName))
+                            {
+                                copyToName += ".bak";
+                            }
+                            File.Move(LogFilePath, copyToName);
+                        }
+                        catch { }                       
+                    }
+                }
                 new System.Threading.Thread(new System.Threading.ParameterizedThreadStart(OpenFromLogFile)).Start(new object[] { LogFilePath, tailFile });
             }
         }

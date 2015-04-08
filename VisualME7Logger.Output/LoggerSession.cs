@@ -137,7 +137,7 @@ namespace VisualME7Logger.Session
                     this.Status = Statuses.Initialized;
                     this.LogStarted = CommunicationInfo.LogStarted;
                     this.Status = Statuses.Open;
-                }
+                }                
                 this.Log.Open(tailFile);
             }
             
