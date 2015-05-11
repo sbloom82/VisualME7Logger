@@ -57,6 +57,10 @@ namespace VisualME7Logger.Log
                         {
                             this.LogType = LogTypes.VCDS;
                         }
+                        else if (line.StartsWith("Time,"))
+                        {
+                            this.LogType = LogTypes.Eurodyne;
+                        }
                     }
 
                     if (this.LogType == LogTypes.VCDS)
@@ -66,6 +70,26 @@ namespace VisualME7Logger.Log
                             if (!variablesStarted)
                             {
                                 variablesStarted = line.StartsWith(",Group A:");
+                            }
+
+                            if (variablesStarted)
+                            {
+                                variables.ReadLine(line, this.LogType);
+                            }
+
+                            if (variables.Complete)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    else if (this.LogType == LogTypes.Eurodyne)
+                    {
+                        if (!variables.Complete)
+                        {
+                            if (!variablesStarted)
+                            {
+                                variablesStarted = line.StartsWith("Time,");
                             }
 
                             if (variablesStarted)
@@ -146,7 +170,7 @@ namespace VisualME7Logger.Log
                             }
                             File.Move(LogFilePath, copyToName);
                         }
-                        catch { }                       
+                        catch { }
                     }
                 }
                 new System.Threading.Thread(new System.Threading.ParameterizedThreadStart(OpenFromLogFile)).Start(new object[] { LogFilePath, tailFile });
@@ -248,7 +272,7 @@ namespace VisualME7Logger.Log
                                 this.Session.DataRead(line);
                             }
 
-                            if (line.StartsWith("\"TIME") || line.StartsWith("Marker,STAMP"))
+                            if (line.StartsWith("\"TIME") || line.StartsWith("Marker,STAMP") || line.StartsWith("Time,"))
                             {
                                 ready = true;
                             }
@@ -276,6 +300,10 @@ namespace VisualME7Logger.Log
                                 {
                                     LogLine logLine = this.ReadLine(line, last);
                                     Session.LineRead(logLine);
+                                    if (this.LogType == LogTypes.Eurodyne)
+                                    {
+                                        Session.CurrentSamplesPerSecond = (short)(((logLine.TimeStamp - (last == null ? 0 : last.TimeStamp)) * 100));
+                                    }
                                     last = logLine;
                                 }
 
@@ -285,7 +313,7 @@ namespace VisualME7Logger.Log
                                         (int)((1 / (double)Session.CurrentSamplesPerSecond) * 1000) -
                                         (int)DateTime.Now.Subtract(time).TotalMilliseconds;
 
-                                    if (waitTime > 0)
+                                    if (waitTime > 0 && waitTime < 2500)
                                         System.Threading.Thread.Sleep(waitTime);
                                 }
                             }
@@ -426,7 +454,7 @@ namespace VisualME7Logger.Log
             {
                 string value = "";
                 LogVariable lv = sv as LogVariable;
-                
+
                 if (lv != null && lv.Group == group)
                 {
                     //set value from log
@@ -450,6 +478,7 @@ namespace VisualME7Logger.Log
             }
         }
 
+        private bool timeOnly = false;
         private const char COLUMN_SEP = ',';
         private void Parse(string line, LogLine last)
         {
@@ -463,8 +492,17 @@ namespace VisualME7Logger.Log
                 }
                 catch
                 {
-                    TimeStampDateTime = DateTime.Parse(values[0]);
-                    TimeStamp = 0;
+                    try
+                    {
+                        TimeStampDateTime = DateTime.Parse(values[0]);
+                        TimeStamp = 0;
+                    }
+                    catch
+                    {
+                        TimeStampDateTime = DateTime.ParseExact(values[0], "HH:mm:ss:ffff", System.Globalization.CultureInfo.CurrentCulture);
+                        TimeStamp = 0;
+                        timeOnly = true;
+                    }
                 }
             }
             else
@@ -475,12 +513,21 @@ namespace VisualME7Logger.Log
                 }
                 else
                 {
-                    TimeStampDateTime = DateTime.Parse(values[0]);
+                    if (!last.timeOnly)
+                    {
+                        TimeStampDateTime = DateTime.Parse(values[0]);
+                    }
+                    else
+                    {
+                        TimeStampDateTime = DateTime.ParseExact(values[0], "HH:mm:ss:ffff", System.Globalization.CultureInfo.CurrentCulture);
+                        timeOnly = true;
+                    }
                     TimeStamp = last.TimeStamp + (decimal)TimeStampDateTime.Value.Subtract(last.TimeStampDateTime.Value).TotalSeconds;
                 }
             }
-            
+
             int i = 1;
+
             foreach (SessionVariable sv in Log.Session.Variables.Values)
             {
                 string value = string.Empty;
@@ -490,7 +537,10 @@ namespace VisualME7Logger.Log
                 }
                 Variable v = new Variable(this, sv, value);
                 variables.Add(v);
-                variablesByName.Add(v.SessionVariable.Name, v);
+                if (!variablesByName.ContainsKey(v.SessionVariable.Name))
+                {
+                    variablesByName.Add(v.SessionVariable.Name, v);
+                }
                 i++;
             }
         }
