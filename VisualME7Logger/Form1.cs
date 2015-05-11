@@ -48,6 +48,7 @@ namespace VisualME7Logger
                     Program.DebugOutput ?
                         ME7LoggerSession.SessionTypes.SessionOutput :
                         ME7LoggerSession.SessionTypes.LogFile);
+                this.Text += " - " + session.FileName;
             }
             else
             {
@@ -62,7 +63,7 @@ namespace VisualME7Logger
             this.OpenSession();
 
             pauseToolStripMenuItem.Enabled =
-            forwardToolStripMenuItem.Enabled = 
+            forwardToolStripMenuItem.Enabled =
             reverseToolStripMenuItem.Enabled =
             scrollbar.Visible =
             increasePlaybackSpeedToolStripMenuItem.Enabled =
@@ -99,7 +100,7 @@ namespace VisualME7Logger
             else if (status == ME7LoggerSession.Statuses.Open)
             {
                 refreshTimer.Start();
-                flpVariables_Resize(null, null);
+
                 this.btnOpenCloseSession.Enabled = true;
                 this.btnOpenCloseSession.Text = "Close Session";
 
@@ -144,11 +145,21 @@ namespace VisualME7Logger
             }
         }
 
+        bool doInit = false;
         void Initialize()
         {
             queue = new Queue<LogLine>();
             buffer = new List<LogLine>();
 
+            this.doInit = true;
+
+            start = DateTime.Now;
+        }
+
+        private void Init()
+        {
+            System.Threading.Thread.CurrentThread.Priority = System.Threading.ThreadPriority.Lowest;
+            doInit = false;
             flpVariables.Controls.Clear();
 
             dataGridView1.Rows.Clear();
@@ -198,37 +209,68 @@ namespace VisualME7Logger
 
             this.BuildChart();
 
-            start = DateTime.Now;
+            if (this.session.SessionType == ME7LoggerSession.SessionTypes.LogFile)
+            {
+                this.scrollbar.Minimum = 0;
+                this.scrollbar.Maximum = (int)this.session.Log.TotalFileSize;
+                this.scrollbar.Value = 0;
+            }
+
+            flpVariables_Resize(null, null);
         }
 
+        List<LogLine> refreshList = new List<LogLine>();
         void refreshTimer_Tick(object sender, EventArgs e)
         {
+            if (this.doInit)
+            {
+                this.Init();
+            }
+
+            refreshList.Clear();
             lock (this.queue)
             {
                 while (queue.Count() > 0)
                 {
-                    LogLine line = queue.Dequeue();
-
-                    if (this.session.SessionType == ME7LoggerSession.SessionTypes.LogFile)
-                    {
-                        this.scrollbar.Maximum = (int)this.session.Log.TotalFileSize;
-                        this.scrollbar.Value = (int)this.session.Log.CurrentPosition;
-                    }
-
-                    lock (buffer)
-                    {
-                        buffer.Add(line);
-                        if (buffer.Count > this.DisplayOptions.GraphHRes)
-                        {
-                            buffer.RemoveAt(0);
-                        }
-                    }
-
-                    this.AddLineToGrid(line);
-                    this.DisplayLine(line);
-                    this.PlotLineOnChart(line);
+                    refreshList.Add(queue.Dequeue());
                 }
-            } 
+
+                //real time do it out of the lock as to not slow down the logger
+                if (this.session.SessionType != ME7LoggerSession.SessionTypes.RealTime)
+                {
+                    this.AddLines();
+                }            
+            }
+
+            if (this.session.SessionType == ME7LoggerSession.SessionTypes.RealTime)
+            {
+                this.AddLines();
+            }
+        }
+
+        private void AddLines()
+        {
+            foreach (LogLine line in refreshList)
+            {
+                if (this.session.SessionType == ME7LoggerSession.SessionTypes.LogFile)
+                {
+                    this.scrollbar.Maximum = (int)this.session.Log.TotalFileSize;
+                    this.scrollbar.Value = (int)this.session.Log.CurrentPosition;
+                }
+
+                lock (buffer)
+                {
+                    buffer.Add(line);
+                    if (buffer.Count > this.DisplayOptions.GraphHRes)
+                    {
+                        buffer.RemoveAt(0);
+                    }
+                }
+
+                this.AddLineToGrid(line);
+                this.DisplayLine(line);
+                this.PlotLineOnChart(line);
+            }
         }
 
         void AddLineToGrid(LogLine line)
@@ -305,7 +347,7 @@ namespace VisualME7Logger
                     }
                     this.AddGraphVariable(graphVariable, panel, newVar);
                 }
-                
+
                 /*
                 GaugeWindow gw = new GaugeWindow(session, v);
                 session.LogLineRead += new ME7LoggerSession.LogLineReadDel(gw.Refresh);
@@ -361,7 +403,7 @@ namespace VisualME7Logger
         }
 
         void BuildChart()
-        {            
+        {
             chart1.ChartAreas["Default"].AxisY.Minimum = 0;
             chart1.ChartAreas["Default"].AxisY.Maximum = this.DisplayOptions.GraphVRes;
 
@@ -389,7 +431,7 @@ namespace VisualME7Logger
             }
 
             this.AddAxis();
-           
+
             foreach (LogLine line in buffer)
             {
                 this.PlotLineOnChart(line);
@@ -397,7 +439,7 @@ namespace VisualME7Logger
         }
 
         List<ChartArea> axis;
-        void ClearAxis() 
+        void ClearAxis()
         {
             if (axis != null)
             {
@@ -442,15 +484,15 @@ namespace VisualME7Logger
                 ca.AxisX.MajorTickMark.Enabled = false;
 
                 ca.Position.X = (i++ * 4);
-                ca.Position.Y = (this.DisplayOptions.GraphVariables.Count(v => v.Active) / 2) + 5; 
+                ca.Position.Y = (this.DisplayOptions.GraphVariables.Count(v => v.Active) / 2) + 5;
                 ca.Position.Width = 4f;
                 ca.Position.Height = 92 - (this.DisplayOptions.GraphVariables.Count(v => v.Active) / 2);
-                
+
                 Series s = new Series();
                 s.IsVisibleInLegend = false;
                 s.ChartArea = g.ToString();
                 s.Points.Add();
-               
+
                 chart1.Series.Add(s);
                 chart1.ChartAreas.Add(ca);
 
@@ -460,7 +502,7 @@ namespace VisualME7Logger
             ChartArea _default = chart1.ChartAreas["Default"];
             Legend l = chart1.Legends[0];
             l.Position.X = 2;
-            l.Position.Y  = 2;
+            l.Position.Y = 2;
             l.Position.Width = 100;
             l.Position.Height = this.DisplayOptions.GraphVariables.Count(v => v.Active) / 2;
 
@@ -470,9 +512,9 @@ namespace VisualME7Logger
             _default.InnerPlotPosition.Y = 0;
 
             _default.Position.X = (axis.Count * 4) - (axis.Count == 0 ? 0 : 2 - (axis.Count * .10f));
-            _default.Position.Y = (this.DisplayOptions.GraphVariables.Count(v => v.Active) / 2) + 5; 
+            _default.Position.Y = (this.DisplayOptions.GraphVariables.Count(v => v.Active) / 2) + 5;
             _default.Position.Width = 100 - (axis.Count * 4);
-            _default.Position.Height = 92 - (this.DisplayOptions.GraphVariables.Count(v => v.Active) / 2);        
+            _default.Position.Height = 92 - (this.DisplayOptions.GraphVariables.Count(v => v.Active) / 2);
         }
 
         void PlotLineOnChart(LogLine line)
@@ -925,7 +967,7 @@ namespace VisualME7Logger
                 chart1.ChartAreas["Default"].CursorX.SelectionEnd = double.NaN;
             }
 
-            if (this.freezeToolStripMenuItem.Checked || 
+            if (this.freezeToolStripMenuItem.Checked ||
                 session.Status == ME7LoggerSession.Statuses.Paused ||
                 session.Status == ME7LoggerSession.Statuses.Closed)
             {
@@ -935,7 +977,7 @@ namespace VisualME7Logger
 
         private void chart1_AxisViewChanged(object sender, ViewEventArgs e)
         {
-            if (this.freezeToolStripMenuItem.Checked || 
+            if (this.freezeToolStripMenuItem.Checked ||
                 session.Status == ME7LoggerSession.Statuses.Paused ||
                 session.Status == ME7LoggerSession.Statuses.Closed)
             {

@@ -79,27 +79,41 @@ namespace VisualME7Logger.Session
         private LoggerOptions options;
         private string configFilePath;
         private string ME7LoggerDirectory;
+
+        private string filePath;
+        public string FilePath
+        {
+            get { return filePath; }
+            private set { filePath = value; }
+        }
+        public string FileName
+        {
+            get
+            {
+                return string.IsNullOrEmpty(this.FilePath) ? string.Empty : Path.GetFileName(this.FilePath);
+            }
+        }
+
         public ME7LoggerSession(string ME7LoggerDirectory, string logFilePath, LoggerOptions options, string configFilePath)
         {
             this.Status = Statuses.New;
             this.SessionType = SessionTypes.RealTime;
-            this.filePath = logFilePath;
-            this.Log = new ME7LoggerLog(this, this.filePath);
+            this.FilePath = logFilePath;
+            this.Log = new ME7LoggerLog(this, this.FilePath);
             this.ME7LoggerDirectory = ME7LoggerDirectory;
             this.options = options;
             this.configFilePath = configFilePath;
         }
 
-        private string filePath;
         public ME7LoggerSession(string ME7LoggerDirectory, string filePath, SessionTypes sessionType = SessionTypes.LogFile)
         {
             this.Status = Statuses.New;
             this.SessionType = sessionType;
             this.ME7LoggerDirectory = ME7LoggerDirectory;
-            this.filePath = filePath;
+            this.FilePath = filePath;
             if (this.SessionType == SessionTypes.LogFile)
             {
-                this.Log = new ME7LoggerLog(this, this.filePath);
+                this.Log = new ME7LoggerLog(this, this.FilePath);
             }
             else if (this.SessionType == SessionTypes.SessionOutput)
             {
@@ -137,10 +151,10 @@ namespace VisualME7Logger.Session
                     this.Status = Statuses.Initialized;
                     this.LogStarted = CommunicationInfo.LogStarted;
                     this.Status = Statuses.Open;
-                }                
+                }
                 this.Log.Open(tailFile);
             }
-            
+
             if (this.SessionType == SessionTypes.RealTime)
             {
                 logReady = false;
@@ -161,7 +175,7 @@ namespace VisualME7Logger.Session
                 p.StartInfo.RedirectStandardOutput = true;
                 p.StartInfo.RedirectStandardError = true;
                 p.StartInfo.RedirectStandardInput = true;
-
+                
                 p.EnableRaisingEvents = true;
                 p.Exited += p_Exited;
                 p.OutputDataReceived += p_OutputDataReceived;
@@ -170,8 +184,8 @@ namespace VisualME7Logger.Session
                 p.BeginOutputReadLine();
                 p.BeginErrorReadLine();
             }
-            
-            if(this.SessionType == SessionTypes.SessionOutput)
+
+            if (this.SessionType == SessionTypes.SessionOutput)
             {
                 new System.Threading.Thread(new System.Threading.ThreadStart(OpenFromSessionOutput)).Start();
             }
@@ -190,7 +204,7 @@ namespace VisualME7Logger.Session
 
         private void OpenFromSessionOutput()
         {
-            using (StreamReader sr = new StreamReader(filePath))
+            using (StreamReader sr = new StreamReader(this.FilePath))
             {
                 string line = null;
                 while ((line = sr.ReadLine()) != null)
@@ -306,7 +320,7 @@ namespace VisualME7Logger.Session
 
                             this.Status = Statuses.Initialized;
                             this.Status = Statuses.Open;
-                            
+
                             this.LogStarted = DateTime.Now;
                         }
                     }
@@ -571,7 +585,7 @@ namespace VisualME7Logger.Session
             : this(number, name, unit, alias)
         {
             this.Group = group;
-        }        
+        }
 
         internal LogVariable(string line)
             : base(Types.Log, null, null, null)
@@ -761,8 +775,8 @@ namespace VisualME7Logger.Session
                         variableLines = new List<string>();
                         variableLines.Add(line);
                     }
-                    else if(variableLines != null)
-                    {                        
+                    else if (variableLines != null)
+                    {
                         variableLines.Add(line);
                         if (variableLines.Count == 4)
                         {
@@ -782,7 +796,7 @@ namespace VisualME7Logger.Session
                                 {
                                     string name = names1[i] + " " + names2[i];
                                     this.Add(new LogVariable(this.Count + 1, name, units[i], name, currentGroup));
-                                }                              
+                                }
                             }
                             this.Complete = true;
                             break;
@@ -810,6 +824,17 @@ namespace VisualME7Logger.Session
                             }
                             Complete = true;
                         }
+                    }
+                    break;
+                case ME7LoggerLog.LogTypes.Eurodyne:
+                    if(line.StartsWith("Time,"))
+                    {
+                        string[] names = line.Split(',');
+                        for (int i = 1; i < names.Length; ++i)
+                        {
+                            this.Add(new LogVariable(i, names[i], string.Empty, names[i]));
+                        }
+                        this.Complete = true;                        
                     }
                     break;
                 case ME7LoggerLog.LogTypes.Unknown:
@@ -1099,7 +1124,7 @@ namespace VisualME7Logger.Session
                 else
                 {
                     sb.AppendFormat(" \"{0}\"", LogFile);
-                }               
+                }
             }
             return sb.ToString();
         }
