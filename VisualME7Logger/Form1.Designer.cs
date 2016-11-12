@@ -63,6 +63,7 @@
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
             this.sessionOutputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showDataGridViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.writeDataToLogFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.flpVariables = new System.Windows.Forms.FlowLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -255,7 +256,8 @@
             this.snapImageToolStripMenuItem,
             this.toolStripMenuItem6,
             this.sessionOutputToolStripMenuItem,
-            this.showDataGridViewToolStripMenuItem});
+            this.showDataGridViewToolStripMenuItem,
+            this.writeDataToLogFileToolStripMenuItem});
             this.graphToolStripMenuItem.Name = "graphToolStripMenuItem";
             this.graphToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.graphToolStripMenuItem.Text = "&Options";
@@ -334,6 +336,15 @@
             this.showDataGridViewToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
             this.showDataGridViewToolStripMenuItem.Text = "Show Data Grid View";
             this.showDataGridViewToolStripMenuItem.Click += new System.EventHandler(this.showDataGridViewToolStripMenuItem_Click);
+            // 
+            // writeDataToLogFileToolStripMenuItem
+            // 
+            this.writeDataToLogFileToolStripMenuItem.Name = "writeDataToLogFileToolStripMenuItem";
+            this.writeDataToLogFileToolStripMenuItem.ShortcutKeyDisplayString = "Crtl+W";
+            this.writeDataToLogFileToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
+            this.writeDataToLogFileToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.writeDataToLogFileToolStripMenuItem.Text = "Write To Log";
+            this.writeDataToLogFileToolStripMenuItem.Click += new System.EventHandler(this.writeDataToLogFileToolStripMenuItem_Click);
             // 
             // menuStrip1
             // 
@@ -628,6 +639,7 @@
         private System.Windows.Forms.ToolStripMenuItem forwardToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reverseToolStripMenuItem;
         private System.Windows.Forms.HScrollBar scrollbar;
+        private System.Windows.Forms.ToolStripMenuItem writeDataToLogFileToolStripMenuItem;
     }
 }
 
