@@ -69,6 +69,9 @@ namespace VisualME7Logger
             increasePlaybackSpeedToolStripMenuItem.Enabled =
                 decreasePlaybackSpeedToolStripMenuItem.Enabled =
                 resetPlaybackSpeedToolStripMenuItem.Enabled = session.CanSetPlaybackSpeed;
+
+            this.writeDataToLogFileToolStripMenuItem.Enabled = options.ConnectionType != LoggerOptions.ConnectionTypes.LogFile;
+            this.writeDataToLogFileToolStripMenuItem.Checked = session.WriteLogToFileEnabled;
         }
 
         void SessionStatusChanged(ME7LoggerSession.Statuses status)
@@ -239,7 +242,7 @@ namespace VisualME7Logger
                 if (this.session.SessionType != ME7LoggerSession.SessionTypes.RealTime)
                 {
                     this.AddLines();
-                }            
+                }
             }
 
             if (this.session.SessionType == ME7LoggerSession.SessionTypes.RealTime)
@@ -1111,6 +1114,19 @@ namespace VisualME7Logger
         private void scrollbar_KeyUp(object sender, KeyEventArgs e)
         {
             chart1_KeyUp(sender, e);
+        }
+
+        private void writeDataToLogFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (session.Status == ME7LoggerSession.Statuses.Closed)
+            {
+                session.WriteLogToFileEnabled = !session.WriteLogToFileEnabled;
+                this.writeDataToLogFileToolStripMenuItem.Checked = session.WriteLogToFileEnabled;
+            }
+            else
+            {
+                MessageBox.Show("The session must be closed to toggle logging to a file");
+            }
         }
     }
 

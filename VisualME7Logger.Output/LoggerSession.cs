@@ -73,6 +73,11 @@ namespace VisualME7Logger.Session
         public SessionVariables Variables { get; private set; }
         public ME7LoggerLog Log { get; private set; }
         public List<ExpressionVariable> ExpressionVariables { get; set; }
+        public bool WriteLogToFileEnabled
+        {
+            get { return this.options.WriteLogToFile; }
+            set { this.options.WriteLogToFile = value; }
+        }
 
         public bool CanSetPlaybackSpeed { get { return this.SessionType != SessionTypes.RealTime; } }
 
@@ -175,7 +180,7 @@ namespace VisualME7Logger.Session
                 p.StartInfo.RedirectStandardOutput = true;
                 p.StartInfo.RedirectStandardError = true;
                 p.StartInfo.RedirectStandardInput = true;
-                
+
                 p.EnableRaisingEvents = true;
                 p.Exited += p_Exited;
                 p.OutputDataReceived += p_OutputDataReceived;
@@ -827,14 +832,14 @@ namespace VisualME7Logger.Session
                     }
                     break;
                 case ME7LoggerLog.LogTypes.Eurodyne:
-                    if(line.StartsWith("Time,"))
+                    if (line.StartsWith("Time,"))
                     {
                         string[] names = line.Split(',');
                         for (int i = 1; i < names.Length; ++i)
                         {
                             this.Add(new LogVariable(i, names[i], string.Empty, names[i]));
                         }
-                        this.Complete = true;                        
+                        this.Complete = true;
                     }
                     break;
                 case ME7LoggerLog.LogTypes.Unknown:
