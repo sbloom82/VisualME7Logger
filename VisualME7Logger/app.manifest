@@ -18,6 +18,7 @@
   
         <requestedExecutionLevel level="asInvoker" uiAccess="false" />      -->
       <requestedExecutionLevel  level="highestAvailable" uiAccess="false" />
+        
       </requestedPrivileges>
     </security>
   </trustInfo>

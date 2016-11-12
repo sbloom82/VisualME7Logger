@@ -60,6 +60,8 @@
             this.btnExpressionDelete = new System.Windows.Forms.Button();
             this.btnExpressionAdd = new System.Windows.Forms.Button();
             this.tbGraphConfig = new System.Windows.Forms.TabPage();
+            this.label23 = new System.Windows.Forms.Label();
+            this.cmbDisplayOrder = new System.Windows.Forms.ComboBox();
             this.nudResfreshRate = new System.Windows.Forms.NumericUpDown();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.nudGraphResV = new System.Windows.Forms.NumericUpDown();
@@ -163,9 +165,10 @@
             // 
             this.panel1.Controls.Add(this.tabControl1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 24);
+            this.panel1.Location = new System.Drawing.Point(0, 28);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(733, 349);
+            this.panel1.Size = new System.Drawing.Size(977, 430);
             this.panel1.TabIndex = 8;
             // 
             // tabControl1
@@ -176,9 +179,10 @@
             this.tabControl1.Controls.Add(this.tpProfiles);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(733, 349);
+            this.tabControl1.Size = new System.Drawing.Size(977, 430);
             this.tabControl1.TabIndex = 8;
             // 
             // tpMeasurements
@@ -186,10 +190,11 @@
             this.tpMeasurements.BackColor = System.Drawing.SystemColors.Control;
             this.tpMeasurements.Controls.Add(this.dataGridView1);
             this.tpMeasurements.Controls.Add(this.panel3);
-            this.tpMeasurements.Location = new System.Drawing.Point(4, 22);
+            this.tpMeasurements.Location = new System.Drawing.Point(4, 25);
+            this.tpMeasurements.Margin = new System.Windows.Forms.Padding(4);
             this.tpMeasurements.Name = "tpMeasurements";
-            this.tpMeasurements.Padding = new System.Windows.Forms.Padding(3);
-            this.tpMeasurements.Size = new System.Drawing.Size(725, 323);
+            this.tpMeasurements.Padding = new System.Windows.Forms.Padding(4);
+            this.tpMeasurements.Size = new System.Drawing.Size(969, 401);
             this.tpMeasurements.TabIndex = 0;
             this.tpMeasurements.Text = "Measurements";
             // 
@@ -204,13 +209,14 @@
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.ControlDark;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(3, 29);
+            this.dataGridView1.Location = new System.Drawing.Point(4, 36);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(4);
             this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.ShowEditingIcon = false;
-            this.dataGridView1.Size = new System.Drawing.Size(719, 291);
+            this.dataGridView1.Size = new System.Drawing.Size(961, 361);
             this.dataGridView1.TabIndex = 11;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView1_KeyDown);
@@ -227,37 +233,41 @@
             this.panel3.Controls.Add(this.txtFilter);
             this.panel3.Controls.Add(this.label13);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel3.Location = new System.Drawing.Point(3, 3);
+            this.panel3.Location = new System.Drawing.Point(4, 4);
+            this.panel3.Margin = new System.Windows.Forms.Padding(4);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(719, 26);
+            this.panel3.Size = new System.Drawing.Size(961, 32);
             this.panel3.TabIndex = 12;
             // 
             // label15
             // 
             this.label15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(823, 295);
+            this.label15.Location = new System.Drawing.Point(1100, 363);
+            this.label15.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label15.Name = "label15";
             this.label15.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.label15.Size = new System.Drawing.Size(48, 13);
+            this.label15.Size = new System.Drawing.Size(63, 17);
             this.label15.TabIndex = 5;
             this.label15.Text = "label14C";
             // 
             // lblMeasurementCount
             // 
             this.lblMeasurementCount.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblMeasurementCount.Location = new System.Drawing.Point(575, 0);
+            this.lblMeasurementCount.Location = new System.Drawing.Point(770, 0);
+            this.lblMeasurementCount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblMeasurementCount.Name = "lblMeasurementCount";
-            this.lblMeasurementCount.Size = new System.Drawing.Size(142, 24);
+            this.lblMeasurementCount.Size = new System.Drawing.Size(189, 30);
             this.lblMeasurementCount.TabIndex = 5;
             this.lblMeasurementCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // radFilterUnselected
             // 
             this.radFilterUnselected.AutoSize = true;
-            this.radFilterUnselected.Location = new System.Drawing.Point(382, 4);
+            this.radFilterUnselected.Location = new System.Drawing.Point(509, 5);
+            this.radFilterUnselected.Margin = new System.Windows.Forms.Padding(4);
             this.radFilterUnselected.Name = "radFilterUnselected";
-            this.radFilterUnselected.Size = new System.Drawing.Size(109, 17);
+            this.radFilterUnselected.Size = new System.Drawing.Size(138, 21);
             this.radFilterUnselected.TabIndex = 4;
             this.radFilterUnselected.Text = "Show &Unselected";
             this.radFilterUnselected.UseVisualStyleBackColor = true;
@@ -266,9 +276,10 @@
             // radFilterSelected
             // 
             this.radFilterSelected.AutoSize = true;
-            this.radFilterSelected.Location = new System.Drawing.Point(279, 4);
+            this.radFilterSelected.Location = new System.Drawing.Point(372, 5);
+            this.radFilterSelected.Margin = new System.Windows.Forms.Padding(4);
             this.radFilterSelected.Name = "radFilterSelected";
-            this.radFilterSelected.Size = new System.Drawing.Size(97, 17);
+            this.radFilterSelected.Size = new System.Drawing.Size(122, 21);
             this.radFilterSelected.TabIndex = 3;
             this.radFilterSelected.Text = "Show &Selected";
             this.radFilterSelected.UseVisualStyleBackColor = true;
@@ -278,9 +289,10 @@
             // 
             this.radFilterAll.AutoSize = true;
             this.radFilterAll.Checked = true;
-            this.radFilterAll.Location = new System.Drawing.Point(207, 4);
+            this.radFilterAll.Location = new System.Drawing.Point(276, 5);
+            this.radFilterAll.Margin = new System.Windows.Forms.Padding(4);
             this.radFilterAll.Name = "radFilterAll";
-            this.radFilterAll.Size = new System.Drawing.Size(66, 17);
+            this.radFilterAll.Size = new System.Drawing.Size(82, 21);
             this.radFilterAll.TabIndex = 2;
             this.radFilterAll.TabStop = true;
             this.radFilterAll.Text = "Show &All";
@@ -289,18 +301,20 @@
             // 
             // txtFilter
             // 
-            this.txtFilter.Location = new System.Drawing.Point(62, 2);
+            this.txtFilter.Location = new System.Drawing.Point(83, 2);
+            this.txtFilter.Margin = new System.Windows.Forms.Padding(4);
             this.txtFilter.Name = "txtFilter";
-            this.txtFilter.Size = new System.Drawing.Size(139, 20);
+            this.txtFilter.Size = new System.Drawing.Size(184, 22);
             this.txtFilter.TabIndex = 1;
             this.txtFilter.TextChanged += new System.EventHandler(this.txtFilter_TextChanged);
             // 
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(28, 6);
+            this.label13.Location = new System.Drawing.Point(37, 7);
+            this.label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(32, 13);
+            this.label13.Size = new System.Drawing.Size(43, 17);
             this.label13.TabIndex = 0;
             this.label13.Text = "Filter:";
             // 
@@ -308,9 +322,10 @@
             // 
             this.tpExpressions.BackColor = System.Drawing.SystemColors.Control;
             this.tpExpressions.Controls.Add(this.groupBox4);
-            this.tpExpressions.Location = new System.Drawing.Point(4, 22);
+            this.tpExpressions.Location = new System.Drawing.Point(4, 25);
+            this.tpExpressions.Margin = new System.Windows.Forms.Padding(4);
             this.tpExpressions.Name = "tpExpressions";
-            this.tpExpressions.Size = new System.Drawing.Size(725, 323);
+            this.tpExpressions.Size = new System.Drawing.Size(969, 401);
             this.tpExpressions.TabIndex = 3;
             this.tpExpressions.Text = "Expressions";
             // 
@@ -324,9 +339,11 @@
             this.groupBox4.Controls.Add(this.gbExpressions);
             this.groupBox4.Controls.Add(this.btnExpressionDelete);
             this.groupBox4.Controls.Add(this.btnExpressionAdd);
-            this.groupBox4.Location = new System.Drawing.Point(8, 6);
+            this.groupBox4.Location = new System.Drawing.Point(11, 7);
+            this.groupBox4.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(393, 303);
+            this.groupBox4.Padding = new System.Windows.Forms.Padding(4);
+            this.groupBox4.Size = new System.Drawing.Size(524, 373);
             this.groupBox4.TabIndex = 0;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Expressions";
@@ -334,9 +351,10 @@
             // btnExpressionClone
             // 
             this.btnExpressionClone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnExpressionClone.Location = new System.Drawing.Point(312, 19);
+            this.btnExpressionClone.Location = new System.Drawing.Point(416, 23);
+            this.btnExpressionClone.Margin = new System.Windows.Forms.Padding(4);
             this.btnExpressionClone.Name = "btnExpressionClone";
-            this.btnExpressionClone.Size = new System.Drawing.Size(75, 23);
+            this.btnExpressionClone.Size = new System.Drawing.Size(100, 28);
             this.btnExpressionClone.TabIndex = 2;
             this.btnExpressionClone.Text = "Clone";
             this.btnExpressionClone.UseVisualStyleBackColor = true;
@@ -348,18 +366,21 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstExpressions.FormattingEnabled = true;
-            this.lstExpressions.Location = new System.Drawing.Point(6, 19);
+            this.lstExpressions.ItemHeight = 16;
+            this.lstExpressions.Location = new System.Drawing.Point(8, 23);
+            this.lstExpressions.Margin = new System.Windows.Forms.Padding(4);
             this.lstExpressions.Name = "lstExpressions";
-            this.lstExpressions.Size = new System.Drawing.Size(300, 147);
+            this.lstExpressions.Size = new System.Drawing.Size(399, 180);
             this.lstExpressions.TabIndex = 0;
             this.lstExpressions.SelectedIndexChanged += new System.EventHandler(this.lstExpressions_SelectedIndexChanged);
             // 
             // btnExpressionEdit
             // 
             this.btnExpressionEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnExpressionEdit.Location = new System.Drawing.Point(312, 65);
+            this.btnExpressionEdit.Location = new System.Drawing.Point(416, 80);
+            this.btnExpressionEdit.Margin = new System.Windows.Forms.Padding(4);
             this.btnExpressionEdit.Name = "btnExpressionEdit";
-            this.btnExpressionEdit.Size = new System.Drawing.Size(75, 23);
+            this.btnExpressionEdit.Size = new System.Drawing.Size(100, 28);
             this.btnExpressionEdit.TabIndex = 4;
             this.btnExpressionEdit.Text = "Edit";
             this.btnExpressionEdit.UseVisualStyleBackColor = true;
@@ -377,9 +398,11 @@
             this.gbExpressions.Controls.Add(this.btnExpressionSave);
             this.gbExpressions.Controls.Add(this.txtExpressionName);
             this.gbExpressions.Controls.Add(this.label14);
-            this.gbExpressions.Location = new System.Drawing.Point(8, 172);
+            this.gbExpressions.Location = new System.Drawing.Point(11, 212);
+            this.gbExpressions.Margin = new System.Windows.Forms.Padding(4);
             this.gbExpressions.Name = "gbExpressions";
-            this.gbExpressions.Size = new System.Drawing.Size(298, 125);
+            this.gbExpressions.Padding = new System.Windows.Forms.Padding(4);
+            this.gbExpressions.Size = new System.Drawing.Size(397, 154);
             this.gbExpressions.TabIndex = 1;
             this.gbExpressions.TabStop = false;
             // 
@@ -387,51 +410,57 @@
             // 
             this.label19.AutoSize = true;
             this.label19.Font = new System.Drawing.Font("Courier New", 8F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label19.Location = new System.Drawing.Point(67, 39);
+            this.label19.Location = new System.Drawing.Point(89, 48);
+            this.label19.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(217, 15);
+            this.label19.Size = new System.Drawing.Size(248, 17);
             this.label19.TabIndex = 14;
             this.label19.Text = "ex. ([pvdks_w] - 1000) * .0145";
             // 
             // txtExpressionExpression
             // 
             this.txtExpressionExpression.Font = new System.Drawing.Font("Courier New", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtExpressionExpression.Location = new System.Drawing.Point(6, 57);
+            this.txtExpressionExpression.Location = new System.Drawing.Point(8, 70);
+            this.txtExpressionExpression.Margin = new System.Windows.Forms.Padding(4);
             this.txtExpressionExpression.Multiline = true;
             this.txtExpressionExpression.Name = "txtExpressionExpression";
-            this.txtExpressionExpression.Size = new System.Drawing.Size(286, 35);
+            this.txtExpressionExpression.Size = new System.Drawing.Size(380, 42);
             this.txtExpressionExpression.TabIndex = 2;
             // 
             // label18
             // 
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(4, 39);
+            this.label18.Location = new System.Drawing.Point(5, 48);
+            this.label18.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(61, 13);
+            this.label18.Size = new System.Drawing.Size(81, 17);
             this.label18.TabIndex = 13;
             this.label18.Text = "Expression:";
             // 
             // txtExpressionUnit
             // 
-            this.txtExpressionUnit.Location = new System.Drawing.Point(251, 14);
+            this.txtExpressionUnit.Location = new System.Drawing.Point(335, 17);
+            this.txtExpressionUnit.Margin = new System.Windows.Forms.Padding(4);
             this.txtExpressionUnit.Name = "txtExpressionUnit";
-            this.txtExpressionUnit.Size = new System.Drawing.Size(41, 20);
+            this.txtExpressionUnit.Size = new System.Drawing.Size(53, 22);
             this.txtExpressionUnit.TabIndex = 1;
             // 
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(220, 17);
+            this.label16.Location = new System.Drawing.Point(293, 21);
+            this.label16.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(29, 13);
+            this.label16.Size = new System.Drawing.Size(37, 17);
             this.label16.TabIndex = 11;
             this.label16.Text = "Unit:";
             // 
             // btnExpressionCancel
             // 
-            this.btnExpressionCancel.Location = new System.Drawing.Point(136, 96);
+            this.btnExpressionCancel.Location = new System.Drawing.Point(181, 118);
+            this.btnExpressionCancel.Margin = new System.Windows.Forms.Padding(4);
             this.btnExpressionCancel.Name = "btnExpressionCancel";
-            this.btnExpressionCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnExpressionCancel.Size = new System.Drawing.Size(100, 28);
             this.btnExpressionCancel.TabIndex = 3;
             this.btnExpressionCancel.Text = "Cancel";
             this.btnExpressionCancel.UseVisualStyleBackColor = true;
@@ -439,9 +468,10 @@
             // 
             // btnExpressionSave
             // 
-            this.btnExpressionSave.Location = new System.Drawing.Point(217, 96);
+            this.btnExpressionSave.Location = new System.Drawing.Point(289, 118);
+            this.btnExpressionSave.Margin = new System.Windows.Forms.Padding(4);
             this.btnExpressionSave.Name = "btnExpressionSave";
-            this.btnExpressionSave.Size = new System.Drawing.Size(75, 23);
+            this.btnExpressionSave.Size = new System.Drawing.Size(100, 28);
             this.btnExpressionSave.TabIndex = 4;
             this.btnExpressionSave.Text = "Save";
             this.btnExpressionSave.UseVisualStyleBackColor = true;
@@ -449,26 +479,29 @@
             // 
             // txtExpressionName
             // 
-            this.txtExpressionName.Location = new System.Drawing.Point(44, 14);
+            this.txtExpressionName.Location = new System.Drawing.Point(59, 17);
+            this.txtExpressionName.Margin = new System.Windows.Forms.Padding(4);
             this.txtExpressionName.Name = "txtExpressionName";
-            this.txtExpressionName.Size = new System.Drawing.Size(174, 20);
+            this.txtExpressionName.Size = new System.Drawing.Size(231, 22);
             this.txtExpressionName.TabIndex = 0;
             // 
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(4, 17);
+            this.label14.Location = new System.Drawing.Point(5, 21);
+            this.label14.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(38, 13);
+            this.label14.Size = new System.Drawing.Size(49, 17);
             this.label14.TabIndex = 9;
             this.label14.Text = "Name:";
             // 
             // btnExpressionDelete
             // 
             this.btnExpressionDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnExpressionDelete.Location = new System.Drawing.Point(312, 88);
+            this.btnExpressionDelete.Location = new System.Drawing.Point(416, 108);
+            this.btnExpressionDelete.Margin = new System.Windows.Forms.Padding(4);
             this.btnExpressionDelete.Name = "btnExpressionDelete";
-            this.btnExpressionDelete.Size = new System.Drawing.Size(75, 23);
+            this.btnExpressionDelete.Size = new System.Drawing.Size(100, 28);
             this.btnExpressionDelete.TabIndex = 5;
             this.btnExpressionDelete.Text = "Delete";
             this.btnExpressionDelete.UseVisualStyleBackColor = true;
@@ -477,9 +510,10 @@
             // btnExpressionAdd
             // 
             this.btnExpressionAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnExpressionAdd.Location = new System.Drawing.Point(312, 42);
+            this.btnExpressionAdd.Location = new System.Drawing.Point(416, 52);
+            this.btnExpressionAdd.Margin = new System.Windows.Forms.Padding(4);
             this.btnExpressionAdd.Name = "btnExpressionAdd";
-            this.btnExpressionAdd.Size = new System.Drawing.Size(75, 23);
+            this.btnExpressionAdd.Size = new System.Drawing.Size(100, 28);
             this.btnExpressionAdd.TabIndex = 3;
             this.btnExpressionAdd.Text = "Add";
             this.btnExpressionAdd.UseVisualStyleBackColor = true;
@@ -488,20 +522,44 @@
             // tbGraphConfig
             // 
             this.tbGraphConfig.BackColor = System.Drawing.Color.Transparent;
+            this.tbGraphConfig.Controls.Add(this.label23);
+            this.tbGraphConfig.Controls.Add(this.cmbDisplayOrder);
             this.tbGraphConfig.Controls.Add(this.nudResfreshRate);
             this.tbGraphConfig.Controls.Add(this.groupBox2);
             this.tbGraphConfig.Controls.Add(this.label10);
             this.tbGraphConfig.Controls.Add(this.groupBox1);
-            this.tbGraphConfig.Location = new System.Drawing.Point(4, 22);
+            this.tbGraphConfig.Location = new System.Drawing.Point(4, 25);
+            this.tbGraphConfig.Margin = new System.Windows.Forms.Padding(4);
             this.tbGraphConfig.Name = "tbGraphConfig";
-            this.tbGraphConfig.Padding = new System.Windows.Forms.Padding(3);
-            this.tbGraphConfig.Size = new System.Drawing.Size(725, 323);
+            this.tbGraphConfig.Padding = new System.Windows.Forms.Padding(4);
+            this.tbGraphConfig.Size = new System.Drawing.Size(969, 401);
             this.tbGraphConfig.TabIndex = 1;
             this.tbGraphConfig.Text = "Graph Data";
             // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(572, 126);
+            this.label23.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(99, 17);
+            this.label23.TabIndex = 18;
+            this.label23.Text = "Display Order:";
+            // 
+            // cmbDisplayOrder
+            // 
+            this.cmbDisplayOrder.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbDisplayOrder.FormattingEnabled = true;
+            this.cmbDisplayOrder.Location = new System.Drawing.Point(673, 123);
+            this.cmbDisplayOrder.Margin = new System.Windows.Forms.Padding(4);
+            this.cmbDisplayOrder.Name = "cmbDisplayOrder";
+            this.cmbDisplayOrder.Size = new System.Drawing.Size(149, 24);
+            this.cmbDisplayOrder.TabIndex = 12;
+            // 
             // nudResfreshRate
             // 
-            this.nudResfreshRate.Location = new System.Drawing.Point(505, 77);
+            this.nudResfreshRate.Location = new System.Drawing.Point(673, 95);
+            this.nudResfreshRate.Margin = new System.Windows.Forms.Padding(4);
             this.nudResfreshRate.Maximum = new decimal(new int[] {
             5000,
             0,
@@ -513,7 +571,7 @@
             0,
             0});
             this.nudResfreshRate.Name = "nudResfreshRate";
-            this.nudResfreshRate.Size = new System.Drawing.Size(94, 20);
+            this.nudResfreshRate.Size = new System.Drawing.Size(125, 22);
             this.nudResfreshRate.TabIndex = 11;
             this.nudResfreshRate.Value = new decimal(new int[] {
             25,
@@ -527,16 +585,19 @@
             this.groupBox2.Controls.Add(this.nudGraphResH);
             this.groupBox2.Controls.Add(this.label12);
             this.groupBox2.Controls.Add(this.label11);
-            this.groupBox2.Location = new System.Drawing.Point(407, 6);
+            this.groupBox2.Location = new System.Drawing.Point(543, 7);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(209, 65);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
+            this.groupBox2.Size = new System.Drawing.Size(279, 80);
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Graph Resolution (points)";
             // 
             // nudGraphResV
             // 
-            this.nudGraphResV.Location = new System.Drawing.Point(98, 41);
+            this.nudGraphResV.Location = new System.Drawing.Point(131, 50);
+            this.nudGraphResV.Margin = new System.Windows.Forms.Padding(4);
             this.nudGraphResV.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -548,7 +609,7 @@
             0,
             0});
             this.nudGraphResV.Name = "nudGraphResV";
-            this.nudGraphResV.Size = new System.Drawing.Size(94, 20);
+            this.nudGraphResV.Size = new System.Drawing.Size(125, 22);
             this.nudGraphResV.TabIndex = 10;
             this.nudGraphResV.Value = new decimal(new int[] {
             250,
@@ -558,7 +619,8 @@
             // 
             // nudGraphResH
             // 
-            this.nudGraphResH.Location = new System.Drawing.Point(98, 18);
+            this.nudGraphResH.Location = new System.Drawing.Point(131, 22);
+            this.nudGraphResH.Margin = new System.Windows.Forms.Padding(4);
             this.nudGraphResH.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -570,7 +632,7 @@
             0,
             0});
             this.nudGraphResH.Name = "nudGraphResH";
-            this.nudGraphResH.Size = new System.Drawing.Size(94, 20);
+            this.nudGraphResH.Size = new System.Drawing.Size(125, 22);
             this.nudGraphResH.TabIndex = 9;
             this.nudGraphResH.Value = new decimal(new int[] {
             500,
@@ -581,27 +643,30 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(51, 44);
+            this.label12.Location = new System.Drawing.Point(68, 54);
+            this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(45, 13);
+            this.label12.Size = new System.Drawing.Size(59, 17);
             this.label12.TabIndex = 8;
             this.label12.Text = "Vertical:";
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(39, 21);
+            this.label11.Location = new System.Drawing.Point(52, 26);
+            this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(57, 13);
+            this.label11.Size = new System.Drawing.Size(76, 17);
             this.label11.TabIndex = 7;
             this.label11.Text = "Horizontal:";
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(408, 80);
+            this.label10.Location = new System.Drawing.Point(544, 98);
+            this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(95, 13);
+            this.label10.Size = new System.Drawing.Size(128, 17);
             this.label10.TabIndex = 6;
             this.label10.Text = "Refresh Rate (ms):";
             // 
@@ -614,9 +679,11 @@
             this.groupBox1.Controls.Add(this.gbGraphVariables);
             this.groupBox1.Controls.Add(this.btnDeleteGraphVariable);
             this.groupBox1.Controls.Add(this.btnAddGraphVariable);
-            this.groupBox1.Location = new System.Drawing.Point(8, 6);
+            this.groupBox1.Location = new System.Drawing.Point(11, 7);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(393, 303);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
+            this.groupBox1.Size = new System.Drawing.Size(524, 373);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Variables";
@@ -627,18 +694,21 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstGraphVariables.FormattingEnabled = true;
-            this.lstGraphVariables.Location = new System.Drawing.Point(6, 19);
+            this.lstGraphVariables.ItemHeight = 16;
+            this.lstGraphVariables.Location = new System.Drawing.Point(8, 23);
+            this.lstGraphVariables.Margin = new System.Windows.Forms.Padding(4);
             this.lstGraphVariables.Name = "lstGraphVariables";
-            this.lstGraphVariables.Size = new System.Drawing.Size(300, 121);
+            this.lstGraphVariables.Size = new System.Drawing.Size(399, 148);
             this.lstGraphVariables.TabIndex = 0;
             this.lstGraphVariables.SelectedIndexChanged += new System.EventHandler(this.lstGraphVariables_SelectedIndexChanged);
             // 
             // btnEditGraphVariable
             // 
             this.btnEditGraphVariable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnEditGraphVariable.Location = new System.Drawing.Point(312, 42);
+            this.btnEditGraphVariable.Location = new System.Drawing.Point(416, 52);
+            this.btnEditGraphVariable.Margin = new System.Windows.Forms.Padding(4);
             this.btnEditGraphVariable.Name = "btnEditGraphVariable";
-            this.btnEditGraphVariable.Size = new System.Drawing.Size(75, 23);
+            this.btnEditGraphVariable.Size = new System.Drawing.Size(100, 28);
             this.btnEditGraphVariable.TabIndex = 4;
             this.btnEditGraphVariable.Text = "Edit";
             this.btnEditGraphVariable.UseVisualStyleBackColor = true;
@@ -664,9 +734,11 @@
             this.gbGraphVariables.Controls.Add(this.nudGraphVariableMax);
             this.gbGraphVariables.Controls.Add(this.nudGraphVariableMin);
             this.gbGraphVariables.Controls.Add(this.label1);
-            this.gbGraphVariables.Location = new System.Drawing.Point(8, 142);
+            this.gbGraphVariables.Location = new System.Drawing.Point(11, 175);
+            this.gbGraphVariables.Margin = new System.Windows.Forms.Padding(4);
             this.gbGraphVariables.Name = "gbGraphVariables";
-            this.gbGraphVariables.Size = new System.Drawing.Size(298, 155);
+            this.gbGraphVariables.Padding = new System.Windows.Forms.Padding(4);
+            this.gbGraphVariables.Size = new System.Drawing.Size(397, 191);
             this.gbGraphVariables.TabIndex = 1;
             this.gbGraphVariables.TabStop = false;
             // 
@@ -675,50 +747,56 @@
             this.cmbGraphVariableVariable.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.cmbGraphVariableVariable.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cmbGraphVariableVariable.FormattingEnabled = true;
-            this.cmbGraphVariableVariable.Location = new System.Drawing.Point(51, 29);
+            this.cmbGraphVariableVariable.Location = new System.Drawing.Point(68, 36);
+            this.cmbGraphVariableVariable.Margin = new System.Windows.Forms.Padding(4);
             this.cmbGraphVariableVariable.Name = "cmbGraphVariableVariable";
-            this.cmbGraphVariableVariable.Size = new System.Drawing.Size(241, 21);
+            this.cmbGraphVariableVariable.Size = new System.Drawing.Size(320, 24);
             this.cmbGraphVariableVariable.TabIndex = 1;
             this.cmbGraphVariableVariable.SelectedValueChanged += new System.EventHandler(this.cmbGraphVariableVariable_SelectedValueChanged);
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(76, 102);
+            this.label9.Location = new System.Drawing.Point(102, 125);
+            this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(33, 13);
+            this.label9.Size = new System.Drawing.Size(43, 17);
             this.label9.TabIndex = 16;
             this.label9.Text = "Style:";
             // 
             // cmbGraphVariableStyle
             // 
+            this.cmbGraphVariableStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbGraphVariableStyle.FormattingEnabled = true;
-            this.cmbGraphVariableStyle.Location = new System.Drawing.Point(111, 99);
+            this.cmbGraphVariableStyle.Location = new System.Drawing.Point(148, 122);
+            this.cmbGraphVariableStyle.Margin = new System.Windows.Forms.Padding(4);
             this.cmbGraphVariableStyle.Name = "cmbGraphVariableStyle";
-            this.cmbGraphVariableStyle.Size = new System.Drawing.Size(80, 21);
+            this.cmbGraphVariableStyle.Size = new System.Drawing.Size(105, 24);
             this.cmbGraphVariableStyle.TabIndex = 6;
             // 
             // chkGraphVariableActive
             // 
             this.chkGraphVariableActive.AutoSize = true;
             this.chkGraphVariableActive.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkGraphVariableActive.Location = new System.Drawing.Point(6, 10);
+            this.chkGraphVariableActive.Location = new System.Drawing.Point(8, 12);
+            this.chkGraphVariableActive.Margin = new System.Windows.Forms.Padding(4);
             this.chkGraphVariableActive.Name = "chkGraphVariableActive";
-            this.chkGraphVariableActive.Size = new System.Drawing.Size(59, 17);
+            this.chkGraphVariableActive.Size = new System.Drawing.Size(72, 21);
             this.chkGraphVariableActive.TabIndex = 0;
             this.chkGraphVariableActive.Text = "Active:";
             this.chkGraphVariableActive.UseVisualStyleBackColor = true;
             // 
             // nudGraphVariableThickness
             // 
-            this.nudGraphVariableThickness.Location = new System.Drawing.Point(254, 99);
+            this.nudGraphVariableThickness.Location = new System.Drawing.Point(339, 122);
+            this.nudGraphVariableThickness.Margin = new System.Windows.Forms.Padding(4);
             this.nudGraphVariableThickness.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
             this.nudGraphVariableThickness.Name = "nudGraphVariableThickness";
-            this.nudGraphVariableThickness.Size = new System.Drawing.Size(38, 20);
+            this.nudGraphVariableThickness.Size = new System.Drawing.Size(51, 22);
             this.nudGraphVariableThickness.TabIndex = 7;
             this.nudGraphVariableThickness.Value = new decimal(new int[] {
             1,
@@ -729,17 +807,19 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(193, 102);
+            this.label8.Location = new System.Drawing.Point(257, 125);
+            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(59, 13);
+            this.label8.Size = new System.Drawing.Size(76, 17);
             this.label8.TabIndex = 14;
             this.label8.Text = "Thickness:";
             // 
             // btnCancelGraphVariable
             // 
-            this.btnCancelGraphVariable.Location = new System.Drawing.Point(136, 125);
+            this.btnCancelGraphVariable.Location = new System.Drawing.Point(181, 154);
+            this.btnCancelGraphVariable.Margin = new System.Windows.Forms.Padding(4);
             this.btnCancelGraphVariable.Name = "btnCancelGraphVariable";
-            this.btnCancelGraphVariable.Size = new System.Drawing.Size(75, 23);
+            this.btnCancelGraphVariable.Size = new System.Drawing.Size(100, 28);
             this.btnCancelGraphVariable.TabIndex = 10;
             this.btnCancelGraphVariable.Text = "Cancel";
             this.btnCancelGraphVariable.UseVisualStyleBackColor = true;
@@ -747,9 +827,10 @@
             // 
             // btnSaveGraphVariable
             // 
-            this.btnSaveGraphVariable.Location = new System.Drawing.Point(217, 125);
+            this.btnSaveGraphVariable.Location = new System.Drawing.Point(289, 154);
+            this.btnSaveGraphVariable.Margin = new System.Windows.Forms.Padding(4);
             this.btnSaveGraphVariable.Name = "btnSaveGraphVariable";
-            this.btnSaveGraphVariable.Size = new System.Drawing.Size(75, 23);
+            this.btnSaveGraphVariable.Size = new System.Drawing.Size(100, 28);
             this.btnSaveGraphVariable.TabIndex = 11;
             this.btnSaveGraphVariable.Text = "Save";
             this.btnSaveGraphVariable.UseVisualStyleBackColor = true;
@@ -757,60 +838,67 @@
             // 
             // txtGraphVariableName
             // 
-            this.txtGraphVariableName.Location = new System.Drawing.Point(51, 53);
+            this.txtGraphVariableName.Location = new System.Drawing.Point(68, 65);
+            this.txtGraphVariableName.Margin = new System.Windows.Forms.Padding(4);
             this.txtGraphVariableName.Name = "txtGraphVariableName";
-            this.txtGraphVariableName.Size = new System.Drawing.Size(241, 20);
+            this.txtGraphVariableName.Size = new System.Drawing.Size(320, 22);
             this.txtGraphVariableName.TabIndex = 2;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(11, 56);
+            this.label7.Location = new System.Drawing.Point(15, 69);
+            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(38, 13);
+            this.label7.Size = new System.Drawing.Size(49, 17);
             this.label7.TabIndex = 9;
             this.label7.Text = "Name:";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(15, 102);
+            this.label6.Location = new System.Drawing.Point(20, 125);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(34, 13);
+            this.label6.Size = new System.Drawing.Size(45, 17);
             this.label6.TabIndex = 8;
             this.label6.Text = "Color:";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(171, 79);
+            this.label5.Location = new System.Drawing.Point(228, 97);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(30, 13);
+            this.label5.Size = new System.Drawing.Size(37, 17);
             this.label5.TabIndex = 7;
             this.label5.Text = "Max:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(22, 79);
+            this.label2.Location = new System.Drawing.Point(29, 97);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(27, 13);
+            this.label2.Size = new System.Drawing.Size(34, 17);
             this.label2.TabIndex = 6;
             this.label2.Text = "Min:";
             // 
             // txtGraphVariableColor
             // 
-            this.txtGraphVariableColor.Location = new System.Drawing.Point(51, 99);
+            this.txtGraphVariableColor.Location = new System.Drawing.Point(68, 123);
+            this.txtGraphVariableColor.Margin = new System.Windows.Forms.Padding(4);
             this.txtGraphVariableColor.Name = "txtGraphVariableColor";
             this.txtGraphVariableColor.ReadOnly = true;
-            this.txtGraphVariableColor.Size = new System.Drawing.Size(20, 20);
+            this.txtGraphVariableColor.Size = new System.Drawing.Size(25, 22);
             this.txtGraphVariableColor.TabIndex = 5;
             this.txtGraphVariableColor.Click += new System.EventHandler(this.txtGraphVariableColor_Click);
             // 
             // nudGraphVariableMax
             // 
             this.nudGraphVariableMax.DecimalPlaces = 2;
-            this.nudGraphVariableMax.Location = new System.Drawing.Point(203, 76);
+            this.nudGraphVariableMax.Location = new System.Drawing.Point(271, 94);
+            this.nudGraphVariableMax.Margin = new System.Windows.Forms.Padding(4);
             this.nudGraphVariableMax.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -822,13 +910,14 @@
             0,
             -2147483648});
             this.nudGraphVariableMax.Name = "nudGraphVariableMax";
-            this.nudGraphVariableMax.Size = new System.Drawing.Size(89, 20);
+            this.nudGraphVariableMax.Size = new System.Drawing.Size(119, 22);
             this.nudGraphVariableMax.TabIndex = 4;
             // 
             // nudGraphVariableMin
             // 
             this.nudGraphVariableMin.DecimalPlaces = 2;
-            this.nudGraphVariableMin.Location = new System.Drawing.Point(51, 76);
+            this.nudGraphVariableMin.Location = new System.Drawing.Point(68, 94);
+            this.nudGraphVariableMin.Margin = new System.Windows.Forms.Padding(4);
             this.nudGraphVariableMin.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -840,24 +929,26 @@
             0,
             -2147483648});
             this.nudGraphVariableMin.Name = "nudGraphVariableMin";
-            this.nudGraphVariableMin.Size = new System.Drawing.Size(89, 20);
+            this.nudGraphVariableMin.Size = new System.Drawing.Size(119, 22);
             this.nudGraphVariableMin.TabIndex = 3;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(1, 32);
+            this.label1.Location = new System.Drawing.Point(1, 39);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(48, 13);
+            this.label1.Size = new System.Drawing.Size(64, 17);
             this.label1.TabIndex = 0;
             this.label1.Text = "Variable:";
             // 
             // btnDeleteGraphVariable
             // 
             this.btnDeleteGraphVariable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDeleteGraphVariable.Location = new System.Drawing.Point(312, 65);
+            this.btnDeleteGraphVariable.Location = new System.Drawing.Point(416, 80);
+            this.btnDeleteGraphVariable.Margin = new System.Windows.Forms.Padding(4);
             this.btnDeleteGraphVariable.Name = "btnDeleteGraphVariable";
-            this.btnDeleteGraphVariable.Size = new System.Drawing.Size(75, 23);
+            this.btnDeleteGraphVariable.Size = new System.Drawing.Size(100, 28);
             this.btnDeleteGraphVariable.TabIndex = 3;
             this.btnDeleteGraphVariable.Text = "Delete";
             this.btnDeleteGraphVariable.UseVisualStyleBackColor = true;
@@ -866,9 +957,10 @@
             // btnAddGraphVariable
             // 
             this.btnAddGraphVariable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAddGraphVariable.Location = new System.Drawing.Point(312, 19);
+            this.btnAddGraphVariable.Location = new System.Drawing.Point(416, 23);
+            this.btnAddGraphVariable.Margin = new System.Windows.Forms.Padding(4);
             this.btnAddGraphVariable.Name = "btnAddGraphVariable";
-            this.btnAddGraphVariable.Size = new System.Drawing.Size(75, 23);
+            this.btnAddGraphVariable.Size = new System.Drawing.Size(100, 28);
             this.btnAddGraphVariable.TabIndex = 2;
             this.btnAddGraphVariable.Text = "Add";
             this.btnAddGraphVariable.UseVisualStyleBackColor = true;
@@ -878,9 +970,10 @@
             // 
             this.tpProfiles.BackColor = System.Drawing.SystemColors.Control;
             this.tpProfiles.Controls.Add(this.groupBox3);
-            this.tpProfiles.Location = new System.Drawing.Point(4, 22);
+            this.tpProfiles.Location = new System.Drawing.Point(4, 25);
+            this.tpProfiles.Margin = new System.Windows.Forms.Padding(4);
             this.tpProfiles.Name = "tpProfiles";
-            this.tpProfiles.Size = new System.Drawing.Size(725, 323);
+            this.tpProfiles.Size = new System.Drawing.Size(969, 401);
             this.tpProfiles.TabIndex = 2;
             this.tpProfiles.Text = "Profiles";
             // 
@@ -895,9 +988,11 @@
             this.groupBox3.Controls.Add(this.gbProfile);
             this.groupBox3.Controls.Add(this.btnProfileDelete);
             this.groupBox3.Controls.Add(this.btnProfileAdd);
-            this.groupBox3.Location = new System.Drawing.Point(8, 6);
+            this.groupBox3.Location = new System.Drawing.Point(11, 7);
+            this.groupBox3.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(393, 303);
+            this.groupBox3.Padding = new System.Windows.Forms.Padding(4);
+            this.groupBox3.Size = new System.Drawing.Size(524, 373);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Profiles";
@@ -905,9 +1000,10 @@
             // btnProfileSetCurrent
             // 
             this.btnProfileSetCurrent.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnProfileSetCurrent.Location = new System.Drawing.Point(312, 19);
+            this.btnProfileSetCurrent.Location = new System.Drawing.Point(416, 23);
+            this.btnProfileSetCurrent.Margin = new System.Windows.Forms.Padding(4);
             this.btnProfileSetCurrent.Name = "btnProfileSetCurrent";
-            this.btnProfileSetCurrent.Size = new System.Drawing.Size(75, 23);
+            this.btnProfileSetCurrent.Size = new System.Drawing.Size(100, 28);
             this.btnProfileSetCurrent.TabIndex = 1;
             this.btnProfileSetCurrent.Text = "Set Current";
             this.btnProfileSetCurrent.UseVisualStyleBackColor = true;
@@ -916,9 +1012,10 @@
             // btnProfileClone
             // 
             this.btnProfileClone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnProfileClone.Location = new System.Drawing.Point(312, 58);
+            this.btnProfileClone.Location = new System.Drawing.Point(416, 71);
+            this.btnProfileClone.Margin = new System.Windows.Forms.Padding(4);
             this.btnProfileClone.Name = "btnProfileClone";
-            this.btnProfileClone.Size = new System.Drawing.Size(75, 23);
+            this.btnProfileClone.Size = new System.Drawing.Size(100, 28);
             this.btnProfileClone.TabIndex = 2;
             this.btnProfileClone.Text = "Clone";
             this.btnProfileClone.UseVisualStyleBackColor = true;
@@ -930,18 +1027,21 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstProfiles.FormattingEnabled = true;
-            this.lstProfiles.Location = new System.Drawing.Point(6, 19);
+            this.lstProfiles.ItemHeight = 16;
+            this.lstProfiles.Location = new System.Drawing.Point(8, 23);
+            this.lstProfiles.Margin = new System.Windows.Forms.Padding(4);
             this.lstProfiles.Name = "lstProfiles";
-            this.lstProfiles.Size = new System.Drawing.Size(300, 199);
+            this.lstProfiles.Size = new System.Drawing.Size(399, 244);
             this.lstProfiles.TabIndex = 0;
             this.lstProfiles.SelectedIndexChanged += new System.EventHandler(this.lstProfiles_SelectedIndexChanged);
             // 
             // btnProfileEdit
             // 
             this.btnProfileEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnProfileEdit.Location = new System.Drawing.Point(312, 104);
+            this.btnProfileEdit.Location = new System.Drawing.Point(416, 128);
+            this.btnProfileEdit.Margin = new System.Windows.Forms.Padding(4);
             this.btnProfileEdit.Name = "btnProfileEdit";
-            this.btnProfileEdit.Size = new System.Drawing.Size(75, 23);
+            this.btnProfileEdit.Size = new System.Drawing.Size(100, 28);
             this.btnProfileEdit.TabIndex = 4;
             this.btnProfileEdit.Text = "Edit";
             this.btnProfileEdit.UseVisualStyleBackColor = true;
@@ -954,17 +1054,20 @@
             this.gbProfile.Controls.Add(this.btnProfileSave);
             this.gbProfile.Controls.Add(this.txtProfileName);
             this.gbProfile.Controls.Add(this.label17);
-            this.gbProfile.Location = new System.Drawing.Point(8, 224);
+            this.gbProfile.Location = new System.Drawing.Point(11, 276);
+            this.gbProfile.Margin = new System.Windows.Forms.Padding(4);
             this.gbProfile.Name = "gbProfile";
-            this.gbProfile.Size = new System.Drawing.Size(298, 73);
+            this.gbProfile.Padding = new System.Windows.Forms.Padding(4);
+            this.gbProfile.Size = new System.Drawing.Size(397, 90);
             this.gbProfile.TabIndex = 1;
             this.gbProfile.TabStop = false;
             // 
             // btnProfileCancel
             // 
-            this.btnProfileCancel.Location = new System.Drawing.Point(133, 45);
+            this.btnProfileCancel.Location = new System.Drawing.Point(177, 55);
+            this.btnProfileCancel.Margin = new System.Windows.Forms.Padding(4);
             this.btnProfileCancel.Name = "btnProfileCancel";
-            this.btnProfileCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnProfileCancel.Size = new System.Drawing.Size(100, 28);
             this.btnProfileCancel.TabIndex = 1;
             this.btnProfileCancel.Text = "Cancel";
             this.btnProfileCancel.UseVisualStyleBackColor = true;
@@ -972,9 +1075,10 @@
             // 
             // btnProfileSave
             // 
-            this.btnProfileSave.Location = new System.Drawing.Point(214, 45);
+            this.btnProfileSave.Location = new System.Drawing.Point(285, 55);
+            this.btnProfileSave.Margin = new System.Windows.Forms.Padding(4);
             this.btnProfileSave.Name = "btnProfileSave";
-            this.btnProfileSave.Size = new System.Drawing.Size(75, 23);
+            this.btnProfileSave.Size = new System.Drawing.Size(100, 28);
             this.btnProfileSave.TabIndex = 2;
             this.btnProfileSave.Text = "Save";
             this.btnProfileSave.UseVisualStyleBackColor = true;
@@ -982,26 +1086,29 @@
             // 
             // txtProfileName
             // 
-            this.txtProfileName.Location = new System.Drawing.Point(51, 19);
+            this.txtProfileName.Location = new System.Drawing.Point(68, 23);
+            this.txtProfileName.Margin = new System.Windows.Forms.Padding(4);
             this.txtProfileName.Name = "txtProfileName";
-            this.txtProfileName.Size = new System.Drawing.Size(241, 20);
+            this.txtProfileName.Size = new System.Drawing.Size(320, 22);
             this.txtProfileName.TabIndex = 0;
             // 
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(11, 22);
+            this.label17.Location = new System.Drawing.Point(15, 27);
+            this.label17.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(38, 13);
+            this.label17.Size = new System.Drawing.Size(49, 17);
             this.label17.TabIndex = 9;
             this.label17.Text = "Name:";
             // 
             // btnProfileDelete
             // 
             this.btnProfileDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnProfileDelete.Location = new System.Drawing.Point(312, 127);
+            this.btnProfileDelete.Location = new System.Drawing.Point(416, 156);
+            this.btnProfileDelete.Margin = new System.Windows.Forms.Padding(4);
             this.btnProfileDelete.Name = "btnProfileDelete";
-            this.btnProfileDelete.Size = new System.Drawing.Size(75, 23);
+            this.btnProfileDelete.Size = new System.Drawing.Size(100, 28);
             this.btnProfileDelete.TabIndex = 5;
             this.btnProfileDelete.Text = "Delete";
             this.btnProfileDelete.UseVisualStyleBackColor = true;
@@ -1010,9 +1117,10 @@
             // btnProfileAdd
             // 
             this.btnProfileAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnProfileAdd.Location = new System.Drawing.Point(312, 81);
+            this.btnProfileAdd.Location = new System.Drawing.Point(416, 100);
+            this.btnProfileAdd.Margin = new System.Windows.Forms.Padding(4);
             this.btnProfileAdd.Name = "btnProfileAdd";
-            this.btnProfileAdd.Size = new System.Drawing.Size(75, 23);
+            this.btnProfileAdd.Size = new System.Drawing.Size(100, 28);
             this.btnProfileAdd.TabIndex = 3;
             this.btnProfileAdd.Text = "Add";
             this.btnProfileAdd.UseVisualStyleBackColor = true;
@@ -1032,77 +1140,86 @@
             this.panel2.Controls.Add(this.txtECUFile);
             this.panel2.Controls.Add(this.btnStartLog);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 376);
+            this.panel2.Location = new System.Drawing.Point(0, 462);
+            this.panel2.Margin = new System.Windows.Forms.Padding(4);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(733, 115);
+            this.panel2.Size = new System.Drawing.Size(977, 142);
             this.panel2.TabIndex = 10;
             // 
             // label22
             // 
             this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(423, 36);
+            this.label22.Location = new System.Drawing.Point(564, 44);
+            this.label22.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(62, 13);
+            this.label22.Size = new System.Drawing.Size(81, 17);
             this.label22.TabIndex = 10;
             this.label22.Text = "Log Speed:";
             // 
             // label21
             // 
             this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(202, 36);
+            this.label21.Location = new System.Drawing.Point(269, 44);
+            this.label21.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(74, 13);
+            this.label21.Size = new System.Drawing.Size(97, 17);
             this.label21.TabIndex = 9;
             this.label21.Text = "Communicate:";
             // 
             // label20
             // 
             this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(17, 36);
+            this.label20.Location = new System.Drawing.Point(23, 44);
+            this.label20.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(50, 13);
+            this.label20.Size = new System.Drawing.Size(64, 17);
             this.label20.TabIndex = 8;
             this.label20.Text = "Connect:";
             // 
             // cmbLogSpeed
             // 
             this.cmbLogSpeed.FormattingEnabled = true;
-            this.cmbLogSpeed.Location = new System.Drawing.Point(487, 33);
+            this.cmbLogSpeed.Location = new System.Drawing.Point(649, 41);
+            this.cmbLogSpeed.Margin = new System.Windows.Forms.Padding(4);
             this.cmbLogSpeed.Name = "cmbLogSpeed";
-            this.cmbLogSpeed.Size = new System.Drawing.Size(121, 21);
+            this.cmbLogSpeed.Size = new System.Drawing.Size(160, 24);
             this.cmbLogSpeed.TabIndex = 4;
             // 
             // cmbCommunicate
             // 
             this.cmbCommunicate.FormattingEnabled = true;
-            this.cmbCommunicate.Location = new System.Drawing.Point(278, 33);
+            this.cmbCommunicate.Location = new System.Drawing.Point(371, 41);
+            this.cmbCommunicate.Margin = new System.Windows.Forms.Padding(4);
             this.cmbCommunicate.Name = "cmbCommunicate";
-            this.cmbCommunicate.Size = new System.Drawing.Size(121, 21);
+            this.cmbCommunicate.Size = new System.Drawing.Size(160, 24);
             this.cmbCommunicate.TabIndex = 3;
             // 
             // cmbConnect
             // 
             this.cmbConnect.FormattingEnabled = true;
-            this.cmbConnect.Location = new System.Drawing.Point(69, 33);
+            this.cmbConnect.Location = new System.Drawing.Point(92, 41);
+            this.cmbConnect.Margin = new System.Windows.Forms.Padding(4);
             this.cmbConnect.Name = "cmbConnect";
-            this.cmbConnect.Size = new System.Drawing.Size(121, 21);
+            this.cmbConnect.Size = new System.Drawing.Size(160, 24);
             this.cmbConnect.TabIndex = 2;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(8, 63);
+            this.label4.Location = new System.Drawing.Point(11, 78);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(59, 13);
+            this.label4.Size = new System.Drawing.Size(78, 17);
             this.label4.TabIndex = 4;
             this.label4.Text = "Config File:";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(16, 11);
+            this.label3.Location = new System.Drawing.Point(21, 14);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(51, 13);
+            this.label3.Size = new System.Drawing.Size(66, 17);
             this.label3.TabIndex = 3;
             this.label3.Text = "ECU File:";
             // 
@@ -1110,20 +1227,22 @@
             // 
             this.txtConfigFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtConfigFile.Location = new System.Drawing.Point(69, 60);
+            this.txtConfigFile.Location = new System.Drawing.Point(92, 74);
+            this.txtConfigFile.Margin = new System.Windows.Forms.Padding(4);
             this.txtConfigFile.Name = "txtConfigFile";
             this.txtConfigFile.ReadOnly = true;
-            this.txtConfigFile.Size = new System.Drawing.Size(657, 20);
+            this.txtConfigFile.Size = new System.Drawing.Size(875, 22);
             this.txtConfigFile.TabIndex = 5;
             // 
             // txtECUFile
             // 
             this.txtECUFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtECUFile.Location = new System.Drawing.Point(69, 8);
+            this.txtECUFile.Location = new System.Drawing.Point(92, 10);
+            this.txtECUFile.Margin = new System.Windows.Forms.Padding(4);
             this.txtECUFile.Name = "txtECUFile";
             this.txtECUFile.ReadOnly = true;
-            this.txtECUFile.Size = new System.Drawing.Size(657, 20);
+            this.txtECUFile.Size = new System.Drawing.Size(875, 22);
             this.txtECUFile.TabIndex = 1;
             this.txtECUFile.Text = "   ";
             // 
@@ -1131,9 +1250,10 @@
             // 
             this.btnStartLog.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnStartLog.Location = new System.Drawing.Point(7, 86);
+            this.btnStartLog.Location = new System.Drawing.Point(9, 106);
+            this.btnStartLog.Margin = new System.Windows.Forms.Padding(4);
             this.btnStartLog.Name = "btnStartLog";
-            this.btnStartLog.Size = new System.Drawing.Size(719, 23);
+            this.btnStartLog.Size = new System.Drawing.Size(959, 28);
             this.btnStartLog.TabIndex = 0;
             this.btnStartLog.Text = "Start Log";
             this.btnStartLog.UseVisualStyleBackColor = true;
@@ -1142,9 +1262,10 @@
             // splitter1
             // 
             this.splitter1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.splitter1.Location = new System.Drawing.Point(0, 373);
+            this.splitter1.Location = new System.Drawing.Point(0, 458);
+            this.splitter1.Margin = new System.Windows.Forms.Padding(4);
             this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(733, 3);
+            this.splitter1.Size = new System.Drawing.Size(977, 4);
             this.splitter1.TabIndex = 11;
             this.splitter1.TabStop = false;
             // 
@@ -1161,26 +1282,26 @@
             this.toolStripMenuItem5,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(44, 24);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // loadECUFileToolStripMenuItem
             // 
             this.loadECUFileToolStripMenuItem.Name = "loadECUFileToolStripMenuItem";
-            this.loadECUFileToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.loadECUFileToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
             this.loadECUFileToolStripMenuItem.Text = "Load ECU File";
             this.loadECUFileToolStripMenuItem.Click += new System.EventHandler(this.loadECUFileToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(180, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(216, 6);
             // 
             // loadConfigFileToolStripMenuItem
             // 
             this.loadConfigFileToolStripMenuItem.Enabled = false;
             this.loadConfigFileToolStripMenuItem.Name = "loadConfigFileToolStripMenuItem";
-            this.loadConfigFileToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.loadConfigFileToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
             this.loadConfigFileToolStripMenuItem.Text = "Load Config File";
             this.loadConfigFileToolStripMenuItem.Click += new System.EventHandler(this.loadConfigFileToolStripMenuItem_Click);
             // 
@@ -1188,38 +1309,38 @@
             // 
             this.saveConfigFileToolStripMenuItem.Enabled = false;
             this.saveConfigFileToolStripMenuItem.Name = "saveConfigFileToolStripMenuItem";
-            this.saveConfigFileToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.saveConfigFileToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
             this.saveConfigFileToolStripMenuItem.Text = "Save Config File";
             this.saveConfigFileToolStripMenuItem.Click += new System.EventHandler(this.saveConfigFileToolStripMenuItem_Click);
             // 
             // saveConfigFileAsToolStripMenuItem
             // 
             this.saveConfigFileAsToolStripMenuItem.Name = "saveConfigFileAsToolStripMenuItem";
-            this.saveConfigFileAsToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.saveConfigFileAsToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
             this.saveConfigFileAsToolStripMenuItem.Text = "Save Config File As...";
             this.saveConfigFileAsToolStripMenuItem.Click += new System.EventHandler(this.saveConfigFileAsToolStripMenuItem_Click);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(180, 6);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(216, 6);
             // 
             // saveSettingsToolStripMenuItem
             // 
             this.saveSettingsToolStripMenuItem.Name = "saveSettingsToolStripMenuItem";
-            this.saveSettingsToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.saveSettingsToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
             this.saveSettingsToolStripMenuItem.Text = "Save Settings";
             this.saveSettingsToolStripMenuItem.Click += new System.EventHandler(this.saveSettingsToolStripMenuItem_Click);
             // 
             // toolStripMenuItem5
             // 
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(180, 6);
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(216, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -1228,13 +1349,13 @@
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.settingToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(73, 24);
             this.optionsToolStripMenuItem.Text = "Options";
             // 
             // settingToolStripMenuItem
             // 
             this.settingToolStripMenuItem.Name = "settingToolStripMenuItem";
-            this.settingToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.settingToolStripMenuItem.Size = new System.Drawing.Size(137, 26);
             this.settingToolStripMenuItem.Text = "Settings";
             this.settingToolStripMenuItem.Click += new System.EventHandler(this.settingToolStripMenuItem_Click);
             // 
@@ -1245,54 +1366,57 @@
             this.mE7CheckToolStripMenuItem,
             this.eEPromToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(56, 24);
             this.toolsToolStripMenuItem.Text = "Tools";
             // 
             // createECUFileToolStripMenuItem
             // 
             this.createECUFileToolStripMenuItem.Name = "createECUFileToolStripMenuItem";
-            this.createECUFileToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.createECUFileToolStripMenuItem.Size = new System.Drawing.Size(221, 26);
             this.createECUFileToolStripMenuItem.Text = "Create ECU File";
             this.createECUFileToolStripMenuItem.Click += new System.EventHandler(this.createECUFileToolStripMenuItem_Click);
             // 
             // mE7CheckToolStripMenuItem
             // 
             this.mE7CheckToolStripMenuItem.Name = "mE7CheckToolStripMenuItem";
-            this.mE7CheckToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.mE7CheckToolStripMenuItem.Size = new System.Drawing.Size(221, 26);
             this.mE7CheckToolStripMenuItem.Text = "Checksum Validation";
             this.mE7CheckToolStripMenuItem.Click += new System.EventHandler(this.mE7CheckToolStripMenuItem_Click);
             // 
             // eEPromToolStripMenuItem
             // 
             this.eEPromToolStripMenuItem.Name = "eEPromToolStripMenuItem";
-            this.eEPromToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.eEPromToolStripMenuItem.Size = new System.Drawing.Size(221, 26);
             this.eEPromToolStripMenuItem.Text = "EEProm";
             this.eEPromToolStripMenuItem.Click += new System.EventHandler(this.eEPromToolStripMenuItem_Click);
             // 
             // menuStrip1
             // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.optionsToolStripMenuItem,
             this.toolsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(733, 24);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
+            this.menuStrip1.Size = new System.Drawing.Size(977, 28);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
             // SettingsForm
             // 
             this.AcceptButton = this.btnStartLog;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(733, 491);
+            this.ClientSize = new System.Drawing.Size(977, 604);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "SettingsForm";
             this.Text = "Visual ME7Logger";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SettingsForm_FormClosed);
@@ -1438,7 +1562,7 @@
         private System.Windows.Forms.ComboBox cmbLogSpeed;
         private System.Windows.Forms.ComboBox cmbCommunicate;
         private System.Windows.Forms.ComboBox cmbConnect;
-
-
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.ComboBox cmbDisplayOrder;
     }
 }
