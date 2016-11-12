@@ -75,8 +75,21 @@ namespace VisualME7Logger.Session
         public List<ExpressionVariable> ExpressionVariables { get; set; }
         public bool WriteLogToFileEnabled
         {
-            get { return this.options.WriteLogToFile; }
-            set { this.options.WriteLogToFile = value; }
+            get
+            {
+                if (this.options != null)
+                {
+                    return this.options.WriteLogToFile;
+                }
+                return false;
+            }
+            set
+            {
+                if (this.options != null)
+                {
+                    this.options.WriteLogToFile = value;
+                }
+            }
         }
 
         public bool CanSetPlaybackSpeed { get { return this.SessionType != SessionTypes.RealTime; } }
@@ -649,7 +662,7 @@ namespace VisualME7Logger.Session
             if (_exp == null)
             {
                 _exp = new NCalc.Expression(this.Expression);
-                _exp.EvaluateParameter += delegate(string name, NCalc.ParameterArgs args)
+                _exp.EvaluateParameter += delegate (string name, NCalc.ParameterArgs args)
                 {
                     Variable var = curLL.GetVariableByName(name);
                     if (var != null)
@@ -795,14 +808,21 @@ namespace VisualME7Logger.Session
                             {
                                 if (string.IsNullOrEmpty(names1[i]))
                                 {
-                                    currentGroup = groups[i].Substring(0, groups[i].Length - 1);
+                                    if (groups.Length > i)
+                                    {
+                                        currentGroup = groups[i].Substring(0, groups[i].Length - 1);
+                                    }
                                 }
                                 else
                                 {
-                                    string name = names1[i] + " " + names2[i];
-                                    this.Add(new LogVariable(this.Count + 1, name, units[i], name, currentGroup));
+                                    if (!string.IsNullOrEmpty(names1[i]))
+                                    {
+                                        string name = names1[i] + " " + names2[i];
+                                        this.Add(new LogVariable(this.Count + 1, name, units[i], name, currentGroup));
+                                    }
                                 }
                             }
+
                             this.Complete = true;
                             break;
                         }
@@ -832,7 +852,8 @@ namespace VisualME7Logger.Session
                     }
                     break;
                 case ME7LoggerLog.LogTypes.Eurodyne:
-                    if (line.StartsWith("Time,"))
+                case ME7LoggerLog.LogTypes.Normal:
+                    if (line.StartsWith("Time,") || line.StartsWith("Time (sec),"))
                     {
                         string[] names = line.Split(',');
                         for (int i = 1; i < names.Length; ++i)

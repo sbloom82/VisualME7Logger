@@ -136,6 +136,7 @@ namespace VisualME7Logger
                     delegate() { SessionDataRead(line, error); }));
                 return;
             }
+
             this.txtSessionData.AppendText(string.Format("{0}{1}\r\n", error ? "***" : "", line));
         }
 
@@ -163,12 +164,26 @@ namespace VisualME7Logger
         {
             System.Threading.Thread.CurrentThread.Priority = System.Threading.ThreadPriority.Lowest;
             doInit = false;
+            
+            BeginControlUpdate(this);
+            
             flpVariables.Controls.Clear();
 
             dataGridView1.Rows.Clear();
             dataGridView1.Columns.Clear();
             dataGridView1.Columns.Add("Timestamp", "TIME");
-            foreach (SessionVariable v in session.Variables.Values)
+
+            IEnumerable<SessionVariable> vars = session.Variables.Values;
+            if (DisplayOptions.DisplayOrder == DisplayOptions.DisplayOrders.AlphaByAlias)
+            {
+                vars = session.Variables.Values.OrderBy(v => v.Alias);
+            }
+            else if (DisplayOptions.DisplayOrder == DisplayOptions.DisplayOrders.AlphaByName)
+            {
+                vars = session.Variables.Values.OrderBy(v => v.Name);
+            }           
+
+            foreach (SessionVariable v in vars)
             {
                 bool hasActiveGraphVariable = this.DisplayOptions.GraphVariables.Any(gv => gv.Variable == v.Name && gv.Active);
                 dataGridView1.Columns.Add(v.Name, string.IsNullOrEmpty(v.Alias) ? v.Name : v.Alias);
@@ -209,9 +224,8 @@ namespace VisualME7Logger
                 flp.Controls.Add(name);
                 flpVariables.Controls.Add(flp);
             }
-
-            this.BuildChart();
-
+            flpVariables_Resize(null, null);           
+            
             if (this.session.SessionType == ME7LoggerSession.SessionTypes.LogFile)
             {
                 this.scrollbar.Minimum = 0;
@@ -219,7 +233,9 @@ namespace VisualME7Logger
                 this.scrollbar.Value = 0;
             }
 
-            flpVariables_Resize(null, null);
+            EndControlUpdate(this);
+
+            this.BuildChart();
         }
 
         List<LogLine> refreshList = new List<LogLine>();
@@ -316,10 +332,20 @@ namespace VisualME7Logger
                 lblInfo.Text = string.Format("Timestamp: {0}", line.TimeStamp.ToString());
             }
 
-            for (int i = 0; i < line.Variables.Count(); ++i)
+            IEnumerable<Variable> vars = line.Variables;
+            if (DisplayOptions.DisplayOrder == DisplayOptions.DisplayOrders.AlphaByAlias)
             {
-                Label l = (Label)flpVariables.Controls[i].Controls[0];
-                Variable v = line.Variables.ElementAt(i);
+                vars = line.Variables.OrderBy(v => v.SessionVariable.Alias);
+            }
+            else if (DisplayOptions.DisplayOrder == DisplayOptions.DisplayOrders.AlphaByName)
+            {
+                vars = line.Variables.OrderBy(v => v.SessionVariable.Name);
+            }   
+
+            int index = 0;
+            foreach (Variable v in vars)
+            {
+                Label l = (Label)flpVariables.Controls[index++].Controls[0];
                 l.Text = string.Format("{0} {1}", v.Value, v.SessionVariable.Unit);
             }
         }
@@ -1128,6 +1154,44 @@ namespace VisualME7Logger
                 MessageBox.Show("The session must be closed to toggle logging to a file");
             }
         }
+
+        #region  Control Update - fix flickering
+        /// <summary>
+        /// An application sends the WM_SETREDRAW message to a window to allow changes in that 
+        /// window to be redrawn or to prevent changes in that window from being redrawn.
+        /// </summary>
+        private const int WM_SETREDRAW = 11;
+
+        /// <summary>
+        /// Suspends painting for the target control. Do NOT forget to call EndControlUpdate!!!
+        /// </summary>
+        /// <param name="control">visual control</param>
+        public static void BeginControlUpdate(Control control)
+        {
+            Message msgSuspendUpdate = Message.Create(control.Handle, WM_SETREDRAW, IntPtr.Zero,
+                  IntPtr.Zero);
+
+            NativeWindow window = NativeWindow.FromHandle(control.Handle);
+            window.DefWndProc(ref msgSuspendUpdate);
+        }
+
+        /// <summary>
+        /// Resumes painting for the target control. Intended to be called following a call to BeginControlUpdate()
+        /// </summary>
+        /// <param name="control">visual control</param>
+        public static void EndControlUpdate(Control control)
+        {
+            // Create a C "true" boolean as an IntPtr
+            IntPtr wparam = new IntPtr(1);
+            Message msgResumeUpdate = Message.Create(control.Handle, WM_SETREDRAW, wparam,
+                  IntPtr.Zero);
+
+            NativeWindow window = NativeWindow.FromHandle(control.Handle);
+            window.DefWndProc(ref msgResumeUpdate);
+            control.Invalidate();
+            control.Refresh();
+        }
+        #endregion
     }
 
     public class DataGridViewCSVCopy : DataGridView

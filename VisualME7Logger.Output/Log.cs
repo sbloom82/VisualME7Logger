@@ -15,7 +15,8 @@ namespace VisualME7Logger.Log
             Unknown,
             ME7Logger,
             VCDS,
-            Eurodyne
+            Eurodyne,
+            Normal
         }
 
         internal static System.Globalization.CultureInfo CultureInfo = new System.Globalization.CultureInfo("en-US");
@@ -61,6 +62,10 @@ namespace VisualME7Logger.Log
                         {
                             this.LogType = LogTypes.Eurodyne;
                         }
+                        else if (line.StartsWith("Time (sec),"))
+                        {
+                            this.LogType = LogTypes.Normal;
+                        }
                     }
 
                     if (this.LogType == LogTypes.VCDS)
@@ -101,6 +106,23 @@ namespace VisualME7Logger.Log
                             {
                                 break;
                             }
+                        }
+                    }
+                    else if (this.LogType == LogTypes.Normal)
+                    {
+                        if (!variablesStarted)
+                        {
+                            variablesStarted = line.StartsWith("Time (sec),");
+                        }
+
+                        if (variablesStarted)
+                        {
+                            variables.ReadLine(line, this.LogType);
+                        }
+
+                        if (variables.Complete)
+                        {
+                            break;
                         }
                     }
 
@@ -272,7 +294,10 @@ namespace VisualME7Logger.Log
                                 this.Session.DataRead(line);
                             }
 
-                            if (line.StartsWith("\"TIME") || line.StartsWith("Marker,STAMP") || line.StartsWith("Time,"))
+                            if (line.StartsWith("\"TIME") || 
+                                line.StartsWith("Marker,STAMP") || 
+                                line.StartsWith("Time,") ||
+                                line.StartsWith("Time (sec),"))
                             {
                                 ready = true;
                             }
@@ -300,7 +325,8 @@ namespace VisualME7Logger.Log
                                 {
                                     LogLine logLine = this.ReadLine(line, last);
                                     Session.LineRead(logLine);
-                                    if (this.LogType == LogTypes.Eurodyne)
+                                    if (this.LogType == LogTypes.Eurodyne ||
+                                        this.LogType == LogTypes.Normal)
                                     {
                                         Session.CurrentSamplesPerSecond = (short)(((logLine.TimeStamp - (last == null ? 0 : last.TimeStamp)) * 100));
                                     }
@@ -415,10 +441,12 @@ namespace VisualME7Logger.Log
                     {
                         values.Add(split[j]);
                     }
-
-                    LogLine groupLogLine = new LogLine(this, currentGroup, lineNumber++, last, values.ToArray());
-                    lines.Add(groupLogLine);
-                    last = groupLogLine;
+                    if (!string.IsNullOrEmpty(values[0]))
+                    {
+                        LogLine groupLogLine = new LogLine(this, currentGroup, lineNumber++, last, values.ToArray());
+                        lines.Add(groupLogLine);
+                        last = groupLogLine;
+                    }
                 }
             }
             return lines;

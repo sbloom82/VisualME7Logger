@@ -39,13 +39,17 @@ namespace VisualME7Logger
         {
             InitializeComponent();
 
+            this.cmbGraphVariableStyle.DataSource = Enum.GetValues(typeof(ChartDashStyle));
+
+            this.cmbDisplayOrder.DataSource = Enum.GetValues(typeof(DisplayOptions.DisplayOrders));
+
             SetupGrid();
 
             this.LoadSettings();
 
             this.SwitchUI();
 
-            this.cmbGraphVariableStyle.DataSource = Enum.GetValues(typeof(ChartDashStyle));
+        
 
 #if !DEBUG
             bool isAdmin = false;
@@ -392,7 +396,8 @@ namespace VisualME7Logger
             this.CurrentProfile.DisplayOptions.RefreshInterval = (int)this.nudResfreshRate.Value;
             this.CurrentProfile.DisplayOptions.GraphHRes = (int)this.nudGraphResH.Value;
             this.CurrentProfile.DisplayOptions.GraphVRes = (int)this.nudGraphResV.Value;
-
+            this.CurrentProfile.DisplayOptions.DisplayOrder =
+                (DisplayOptions.DisplayOrders)this.cmbDisplayOrder.SelectedItem;
             try
             {
                 XElement root = new XElement("VisualME7LoggerSettings");
@@ -489,6 +494,7 @@ namespace VisualME7Logger
             nudResfreshRate.Value = CurrentProfile.DisplayOptions.RefreshInterval;
             nudGraphResH.Value = CurrentProfile.DisplayOptions.GraphHRes;
             nudGraphResV.Value = CurrentProfile.DisplayOptions.GraphVRes;
+            cmbDisplayOrder.SelectedItem = CurrentProfile.DisplayOptions.DisplayOrder;
         }
 
         private void dataGridView1_KeyDown(object sender, KeyEventArgs e)
@@ -961,11 +967,19 @@ namespace VisualME7Logger
 
     public class DisplayOptions
     {
+        public enum DisplayOrders
+        {
+            Default,
+            AlphaByAlias,
+            AlphaByName
+        }
+
         public int RefreshInterval = 35;
         public int GraphVRes = 1000;
         public int GraphHRes = 1200;
         public List<GraphVariable> GraphVariables = new List<GraphVariable>();
         public List<Session.ExpressionVariable> Expressions = new List<Session.ExpressionVariable>();
+        public DisplayOrders DisplayOrder = DisplayOrders.Default;
 
         public XElement Write()
         {
@@ -974,6 +988,7 @@ namespace VisualME7Logger
             retval.Add(new XAttribute("RefreshInterval", this.RefreshInterval));
             retval.Add(new XAttribute("GraphVRes", this.GraphVRes));
             retval.Add(new XAttribute("GraphHRes", this.GraphHRes));
+            retval.Add(new XAttribute("DisplayOrder", this.DisplayOrder.ToString()));
 
             XElement expressionsEle = new XElement("Expressions");
             foreach (var exp in Expressions)
@@ -1007,6 +1022,9 @@ namespace VisualME7Logger
                     case "GraphHRes":
                         this.GraphHRes = int.Parse(att.Value);
                         break;
+                    case "DisplayOrder":
+                        this.DisplayOrder = (DisplayOrders)Enum.Parse(typeof(DisplayOrders), att.Value);
+                        break;
                 }
             }
 
@@ -1030,6 +1048,7 @@ namespace VisualME7Logger
             clone.RefreshInterval = this.RefreshInterval;
             clone.GraphVRes = this.GraphVRes;
             clone.GraphHRes = this.GraphHRes;
+            clone.DisplayOrder = this.DisplayOrder;
 
             clone.Expressions = new List<Session.ExpressionVariable>();
             foreach (var ev in this.Expressions)
@@ -1068,6 +1087,8 @@ namespace VisualME7Logger
 
     public class GraphVariable
     {
+        internal static System.Globalization.CultureInfo CultureInfo = new System.Globalization.CultureInfo("en-US");
+
         public bool Active { get; set; }
         public string Variable { get; set; }
         public string Name { get; set; }
@@ -1121,10 +1142,10 @@ namespace VisualME7Logger
                         Name = att.Value;
                         break;
                     case "Min":
-                        Min = decimal.Parse(att.Value);
+                        Min = decimal.Parse(att.Value, CultureInfo);
                         break;
                     case "Max":
-                        Max = decimal.Parse(att.Value);
+                        Max = decimal.Parse(att.Value, CultureInfo);
                         break;
                     case "LineColor":
                         LineColor = Color.FromArgb(int.Parse(att.Value));
