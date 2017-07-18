@@ -123,7 +123,7 @@ namespace VisualME7Logger.Session
             this.configFilePath = configFilePath;
         }
 
-        public ME7LoggerSession(string ME7LoggerDirectory, string filePath, SessionTypes sessionType = SessionTypes.LogFile)
+        public ME7LoggerSession(string ME7LoggerDirectory, string filePath, SessionTypes sessionType = SessionTypes.LogFile, bool noWait=false)
         {
             this.Status = Statuses.New;
             this.SessionType = sessionType;
@@ -131,7 +131,7 @@ namespace VisualME7Logger.Session
             this.FilePath = filePath;
             if (this.SessionType == SessionTypes.LogFile)
             {
-                this.Log = new ME7LoggerLog(this, this.FilePath);
+                this.Log = new ME7LoggerLog(this, this.FilePath, noWait);
             }
             else if (this.SessionType == SessionTypes.SessionOutput)
             {

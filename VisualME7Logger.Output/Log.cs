@@ -29,12 +29,15 @@ namespace VisualME7Logger.Log
         }
 
         //For testing using text files
-        public ME7LoggerLog(ME7LoggerSession session, string logFilePath)
+        public ME7LoggerLog(ME7LoggerSession session, string logFilePath, bool noWait = false)
             : this(session)
         {
             this.LogFilePath = logFilePath;
+            this.noWait = noWait;
         }
 
+
+        private bool noWait;
         private int lineNumber;
         public LogTypes LogType;
 
@@ -335,12 +338,15 @@ namespace VisualME7Logger.Log
 
                                 if (!tailFile)
                                 {
-                                    int waitTime =
-                                        (int)((1 / (double)Session.CurrentSamplesPerSecond) * 1000) -
-                                        (int)DateTime.Now.Subtract(time).TotalMilliseconds;
+                                    if (!noWait)
+                                    {
+                                        int waitTime =
+                                          (int)((1 / (double)Session.CurrentSamplesPerSecond) * 1000) -
+                                          (int)DateTime.Now.Subtract(time).TotalMilliseconds;
 
-                                    if (waitTime > 0 && waitTime < 2500)
-                                        System.Threading.Thread.Sleep(waitTime);
+                                        if (waitTime > 0 && waitTime < 2500)
+                                            System.Threading.Thread.Sleep(waitTime);
+                                    }
                                 }
                             }
                             catch { }
