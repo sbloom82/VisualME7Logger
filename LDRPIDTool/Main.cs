@@ -12,6 +12,8 @@ namespace LDRPIDTool
 {
     public partial class Main : Form
     {
+        public static RangeFilter RangeFilter = new RangeFilter();
+
         public int[] dutyCycles = new int[]
         {
             0,
@@ -45,6 +47,7 @@ namespace LDRPIDTool
             6500
         };
 
+      
 
         public Main()
         {
@@ -82,7 +85,7 @@ namespace LDRPIDTool
         }
 
         List<ME7LoggerLog> logs;
-        Dictionary<ME7LoggerLog, List<DataPoint>> dataPointsByLog;
+        Dictionary<ME7LoggerLog, DataPointCollection> dataPointsByLog;
         Dictionary<decimal, HashSet<ME7LoggerLog>> logsByDutyCycle;
         bool wait;
         int closedCount;
@@ -91,7 +94,7 @@ namespace LDRPIDTool
             wait = true;
             closedCount = 0;
             logs = new List<ME7LoggerLog>();
-            dataPointsByLog = new Dictionary<ME7LoggerLog, List<DataPoint>>();
+            dataPointsByLog = new Dictionary<ME7LoggerLog, DataPointCollection>();
             logsByDutyCycle = new Dictionary<decimal, HashSet<ME7LoggerLog>>();
 
             DirectoryInfo dir = new DirectoryInfo(txtDir.Text);
@@ -108,7 +111,7 @@ namespace LDRPIDTool
 
                     ME7LoggerLog log = session.Log;
                     logs.Add(log);
-                    dataPointsByLog[log] = new List<DataPoint>();
+                    dataPointsByLog[log] = new DataPointCollection();
                 }
                 catch
                 {
@@ -126,38 +129,42 @@ namespace LDRPIDTool
 
             foreach (var log in dataPointsByLog.Keys)
             {
-                List<DataPoint> dataPoints = dataPointsByLog[log];
+                DataPointCollection dataPoints = dataPointsByLog[log];
                 if (dataPoints.Count == 0)
                     continue;
-                int roundedDC = (int)Math.Round(dataPoints[dataPoints.Count / 2].dutyCycle);
 
                 for (int d = 0; d < dutyCycles.Length; ++d)
                 {
-                    if (dutyCycles[d] == roundedDC)
+                    if (dutyCycles[d] == dataPoints.DutyCycle)
                     {
                         for (int r = 0; r < rpms.Length; ++r)
                         {
                             int rpm = rpms[r];
                             List<DataPoint> highPoints = new List<DataPoint>();
                             List<DataPoint> lowPoints = new List<DataPoint>();
-                            for (int i = 0; i < dataPoints.Count; ++i)
+                            List<DataPoint> filteredPoints = dataPoints.FilteredPoints;
+                            for (int i = 0; i < filteredPoints.Count; ++i)
                             {
-                                if (dataPoints[i].rpm <= rpm && (dataPoints.Count >= i + 1 || dataPoints[i + 1].rpm >= rpm))
+                                if (filteredPoints[i].rpm <= rpm && (filteredPoints.Count > i + 1 && filteredPoints[i + 1].rpm >= rpm))
                                 {
-                                    lowPoints.Add(dataPoints[i]);
+                                    lowPoints.Add(filteredPoints[i]);
                                 }
-                                else if (dataPoints[i].rpm >= rpm && (i - 1 < 0 || dataPoints[i - 1].rpm <= rpm))
+                                else if (filteredPoints[i].rpm >= rpm && (i != 0 && filteredPoints[i - 1].rpm <= rpm))
                                 {
-                                    highPoints.Add(dataPoints[i]);
+                                    highPoints.Add(filteredPoints[i]);
                                 }
                             }
 
-                            decimal highPressure = highPoints.Count > 0 ? highPoints.Average(p => p.absolutePressure) : 0;
-                            decimal lowPressure = lowPoints.Count > 0 ? lowPoints.Average(p => p.absolutePressure) : 0;
+                            string value = "";
+                            if (highPoints.Count > 0 || lowPoints.Count > 0)
+                            {
+                                decimal highPressure = highPoints.Count > 0 ? highPoints.Average(p => p.absolutePressure) : 0;
+                                decimal lowPressure = lowPoints.Count > 0 ? lowPoints.Average(p => p.absolutePressure) : 0;
 
-                            decimal value = highPressure == 0 ? lowPressure : lowPressure == 0 ? highPressure : (highPressure + lowPressure) / 2;
+                                value = ((highPressure + lowPressure) / 2).ToString("0.000");
+                            }
 
-                            grdTable.Rows[r + 1].Cells[d + 1].Value = value.ToString("0.000");
+                            grdTable.Rows[r + 1].Cells[d + 1].Value = value;
                             
                         }
                     }
@@ -166,15 +173,6 @@ namespace LDRPIDTool
 
             MessageBox.Show(string.Format("Done with {0} errors", errors));
         }
-        /*
-        public decimal interpolate(decimal x, decimal x0, decimal y0, decimal x1, decimal y1)
-        {
-            if ((x1 - x0) == 0)
-            {
-                return (y0 + y1) / 2;
-            }
-            return y0 + (x - x0) * (y1 - y0) / (x1 - x0);
-        }*/
 
         public void LogLineRead(LogLine line)
         {
@@ -246,6 +244,11 @@ namespace LDRPIDTool
                 txtDir.Text = dia.SelectedPath;
             }
         }
+
+        private void Main_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 
     public class DataPoint
@@ -260,5 +263,118 @@ namespace LDRPIDTool
         {
             return string.Format("{0}rpm - {1}mbar", rpm, absolutePressure);            
         }
+    }
+
+
+    public class DataPointCollection
+    {
+        List<DataPoint> dataPoints = new List<DataPoint>();      
+
+        int? dutyCycle;
+        public int DutyCycle
+        {
+            get
+            {
+                if (dutyCycle == null && dataPoints.Count > 0)
+                {
+                    //this is dumb, the dutyCycle should be what the majority of the dp's duty is
+                    // when you stomp the pedal, dutycycle may not immediately be your fixed duty cycle.
+                    dutyCycle = (int)Math.Round(dataPoints[Count / 2].dutyCycle);
+                }
+                return dutyCycle.Value;
+            }
+        }
+
+        public int Count { get { return dataPoints.Count; } }
+
+        public void Add(DataPoint dataPoint)
+        {
+            this.dataPoints.Add(dataPoint);
+        }
+
+        private List<DataPoint> filteredPoints;
+        public List<DataPoint> FilteredPoints
+        {
+            get
+            {
+                if (filteredPoints == null)
+                {
+                    filteredPoints = GetFilteredPoints();
+                }
+                return filteredPoints;
+            }
+        }
+
+        List<DataPoint> GetFilteredPoints()
+        {
+            List<DataPoint> retval = new List<DataPoint>();
+            foreach (DataPointCollection range in Ranges)
+            {
+                //detect spool up points in this range and filter those out.
+                List<DataPoint> window = new List<DataPoint>();
+                List<DataPoint> filteredRange = new List<DataPoint>();
+                foreach (DataPoint dp in range.dataPoints)
+                {
+                    window.Add(dp);
+
+                    DataPoint firstInWindow = window[0];
+                    if (dp.timestamp - firstInWindow.timestamp > Main.RangeFilter.seconds)
+                    {
+                        window.Remove(firstInWindow);
+                        if (Math.Abs(dp.absolutePressure - firstInWindow.absolutePressure) < Main.RangeFilter.mbar)
+                        {
+                            filteredRange.Add(firstInWindow);
+                        }
+                    }
+                }
+                filteredRange.AddRange(window);
+                if (filteredRange[filteredRange.Count - 1].rpm - filteredRange[0].rpm >= Main.RangeFilter.rpmRangeLengthMin)
+                {
+                    retval.AddRange(filteredRange);
+                }
+
+            }
+            return retval;
+        }
+
+        List<DataPointCollection> ranges = null;
+        List<DataPointCollection> Ranges
+        {
+            get
+            {
+                if (ranges == null)
+                {
+                    ranges = this.GetRanges();
+                }
+                return ranges;
+            }
+        }
+
+        List<DataPointCollection> GetRanges()
+        {
+            List<DataPointCollection> ranges = new List<DataPointCollection>();
+            DataPoint last = null;
+            DataPointCollection range = null;
+            for (int i = 0; i < dataPoints.Count; ++i)
+            {
+                DataPoint current = dataPoints[i];
+                if (range == null ||
+                    current.timestamp - last.timestamp > .25m) //probably should do this a better way
+                {
+                    range = new DataPointCollection();
+                    ranges.Add(range);
+                }
+                range.Add(current);
+                last = current;
+            }
+            return ranges;
+        }
+    }
+
+    public class RangeFilter
+    {
+        public decimal rpmRangeLengthMin = 2000;
+        public decimal seconds = .1m;
+        public decimal mbar = 100m;
     }
 }

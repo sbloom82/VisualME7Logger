@@ -51,14 +51,17 @@
             // 
             // txtDir
             // 
+            this.txtDir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDir.Location = new System.Drawing.Point(117, 14);
             this.txtDir.Name = "txtDir";
-            this.txtDir.Size = new System.Drawing.Size(520, 22);
+            this.txtDir.Size = new System.Drawing.Size(867, 22);
             this.txtDir.TabIndex = 4;
             // 
             // btnChooseDir
             // 
-            this.btnChooseDir.Location = new System.Drawing.Point(660, 15);
+            this.btnChooseDir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnChooseDir.Location = new System.Drawing.Point(1007, 13);
             this.btnChooseDir.Name = "btnChooseDir";
             this.btnChooseDir.Size = new System.Drawing.Size(90, 23);
             this.btnChooseDir.TabIndex = 5;
@@ -81,9 +84,11 @@
             // 
             // btnLoad
             // 
+            this.btnLoad.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.btnLoad.Location = new System.Drawing.Point(117, 42);
             this.btnLoad.Name = "btnLoad";
-            this.btnLoad.Size = new System.Drawing.Size(520, 23);
+            this.btnLoad.Size = new System.Drawing.Size(867, 23);
             this.btnLoad.TabIndex = 7;
             this.btnLoad.Text = "Load";
             this.btnLoad.UseVisualStyleBackColor = true;
@@ -119,6 +124,7 @@
             this.Controls.Add(this.panel2);
             this.Name = "Main";
             this.Text = "LDRPID tool";
+            this.Load += new System.EventHandler(this.Main_Load);
             ((System.ComponentModel.ISupportInitialize)(this.grdTable)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
