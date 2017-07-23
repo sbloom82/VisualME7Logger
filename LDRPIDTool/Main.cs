@@ -12,42 +12,7 @@ namespace LDRPIDTool
 {
     public partial class Main : Form
     {
-        public static RangeFilter RangeFilter = new RangeFilter();
-
-        public int[] dutyCycles = new int[]
-        {
-            0,
-            10,
-            20,
-            30,
-            40,
-            50,
-            60,
-            70,
-            80,
-            95
-        };
-
-        public int[] rpms = new int[]
-        {
-            1000,
-            1250,
-            1500,
-            1750,
-            2000,
-            2250,
-            2500,
-            3000,
-            3500,
-            4000,
-            4500,
-            5000,
-            5500,
-            6000,
-            6500
-        };
-
-      
+        public static Settings settings = new Settings();
 
         public Main()
         {
@@ -61,26 +26,49 @@ namespace LDRPIDTool
             DataGridViewColumn column = new DataGridViewColumn(new DataGridViewTextBoxCell());
             column.Name = "rowheadercol";
             column.Width = 75;
-            grdTable.Columns.Add(column);
-            for (int i = 0; i < dutyCycles.Length; ++i)
+            grdKFLDRL.Columns.Add(column);
+            for (int i = 0; i < settings.KFLDRLDutyCycles.Length; ++i)
             {
                 column = new DataGridViewColumn(new DataGridViewTextBoxCell());
                 column.Name =
-                    column.HeaderText = dutyCycles[i].ToString();
+                    column.HeaderText = settings.KFLDRLDutyCycles[i].ToString();
                 column.Width = 75;
-                grdTable.Columns.Add(column);
+                grdKFLDRL.Columns.Add(column);
             }
 
-            grdTable.Rows.Add();
-            for (int i = 0; i < dutyCycles.Length; ++i)
+            grdKFLDRL.Rows.Add();
+            for (int i = 0; i < settings.KFLDRLDutyCycles.Length; ++i)
             {
-                grdTable.Rows[0].Cells[i + 1].Value = dutyCycles[i];
+                grdKFLDRL.Rows[0].Cells[i + 1].Value = settings.KFLDRLDutyCycles[i];
             }
 
-            for (int i = 0; i < rpms.Length; ++i)
+            for (int i = 0; i < settings.KFLDRLRpms.Length; ++i)
             {
-                grdTable.Rows.Add();
-                grdTable.Rows[i + 1].Cells[0].Value = rpms[i];
+                grdKFLDRL.Rows.Add();
+                grdKFLDRL.Rows[i + 1].Cells[0].Value = settings.KFLDRLRpms[i];
+            }
+
+
+            for (int i = 0; i < settings.KFLDIMXPressures.Length; ++i)
+            {
+                column = new DataGridViewColumn(new DataGridViewTextBoxCell());
+                column.Name =
+                    column.HeaderText = settings.KFLDIMXPressures[i].ToString();
+                column.Width = 75;
+                grdKFLDIMX.Columns.Add(column);
+            }
+            grdKFLDIMX.Rows.Add();
+
+            for (int i = 0; i < settings.KFLDIMXPressures.Length; ++i)
+            {
+
+                grdKFLDIMX.Rows[0].Cells[i].Value = settings.KFLDIMXPressures[i];
+            }
+
+            grdKFLDIMX.Rows.Add();
+            for (int i = 0; i < settings.KFLDIMXDutyCycles.Length; ++i)
+            {
+                grdKFLDIMX.Rows[1].Cells[i].Value = settings.KFLDIMXDutyCycles[i];
             }
         }
 
@@ -91,6 +79,16 @@ namespace LDRPIDTool
         int closedCount;
         private void btnLoad_Click(object sender, EventArgs e)
         {
+
+            if (!Directory.Exists(txtDir.Text))
+            {
+                MessageBox.Show("Please choose a log directory");
+                return;
+            }
+
+            settings = LoadSettings();
+
+
             wait = true;
             closedCount = 0;
             logs = new List<ME7LoggerLog>();
@@ -111,7 +109,7 @@ namespace LDRPIDTool
 
                     ME7LoggerLog log = session.Log;
                     logs.Add(log);
-                    dataPointsByLog[log] = new DataPointCollection();
+                    dataPointsByLog[log] = new DataPointCollection(settings);
                 }
                 catch
                 {
@@ -127,19 +125,27 @@ namespace LDRPIDTool
                 System.Threading.Thread.Sleep(10);
             }
 
+            BuildValues();
+           // MessageBox.Show(string.Format("Done with {0} errors", errors));
+        }
+
+
+        public void BuildValues()
+        {
             foreach (var log in dataPointsByLog.Keys)
             {
                 DataPointCollection dataPoints = dataPointsByLog[log];
+
                 if (dataPoints.Count == 0)
                     continue;
 
-                for (int d = 0; d < dutyCycles.Length; ++d)
+                for (int d = 0; d < settings.KFLDRLDutyCycles.Length; ++d)
                 {
-                    if (dutyCycles[d] == dataPoints.DutyCycle)
+                    if (settings.KFLDRLDutyCycles[d] == dataPoints.DutyCycle)
                     {
-                        for (int r = 0; r < rpms.Length; ++r)
+                        for (int r = 0; r < settings.KFLDRLRpms.Length; ++r)
                         {
-                            int rpm = rpms[r];
+                            int rpm = settings.KFLDRLRpms[r];
                             List<DataPoint> highPoints = new List<DataPoint>();
                             List<DataPoint> lowPoints = new List<DataPoint>();
                             List<DataPoint> filteredPoints = dataPoints.FilteredPoints;
@@ -155,7 +161,7 @@ namespace LDRPIDTool
                                 }
                             }
 
-                            string value = "";
+                            string value = "1000.000";
                             if (highPoints.Count > 0 || lowPoints.Count > 0)
                             {
                                 decimal highPressure = highPoints.Count > 0 ? highPoints.Average(p => p.absolutePressure) : 0;
@@ -164,14 +170,12 @@ namespace LDRPIDTool
                                 value = ((highPressure + lowPressure) / 2).ToString("0.000");
                             }
 
-                            grdTable.Rows[r + 1].Cells[d + 1].Value = value;
-                            
+                            grdKFLDRL.Rows[r + 1].Cells[d + 1].Value = value;
+
                         }
                     }
                 }
             }
-
-            MessageBox.Show(string.Format("Done with {0} errors", errors));
         }
 
         public void LogLineRead(LogLine line)
@@ -185,7 +189,7 @@ namespace LDRPIDTool
                 if (accelPedal == null || accelPedal.Value >= 80)
                 {
                     Variable dc = line.GetVariableByName("ldtvm");
-                    if (dc != null && dutyCycles.Contains((int)Math.Round(dc.Value)))
+                    if (dc != null && settings.KFLDRLDutyCycles.Contains((int)Math.Round(dc.Value)))
                     {
                         DataPoint p = new DataPoint();
                         p.timestamp = line.TimeStamp;
@@ -249,6 +253,74 @@ namespace LDRPIDTool
         {
 
         }
+
+        public Settings LoadSettings()
+        {
+            settings = new Settings();
+
+            settings.RangeFilter = new RangeFilter();
+
+            settings.KFLDRLDutyCycles = new int[grdKFLDRL.Columns.Count - 1];
+            for (int i = 1; i < grdKFLDRL.Columns.Count; ++i)
+            {
+                settings.KFLDRLDutyCycles[i - 1] = int.Parse(grdKFLDRL.Rows[0].Cells[i].Value.ToString());
+            }
+
+            settings.KFLDRLRpms = new int[grdKFLDRL.Rows.Count - 2];
+            for (int i = 1; i < grdKFLDRL.Rows.Count - 1; ++i)
+            {
+                settings.KFLDRLRpms[i - 1] = int.Parse(grdKFLDRL.Rows[i].Cells[0].Value.ToString());
+            }
+
+            settings.KFLDIMXPressures = new int[grdKFLDIMX.Columns.Count];
+            for (int i = 0; i < grdKFLDIMX.Columns.Count; ++i)
+            {
+                settings.KFLDIMXPressures[i] = int.Parse(grdKFLDIMX.Rows[0].Cells[i].Value.ToString());
+            }
+
+            settings.KFLDIMXDutyCycles = new int[grdKFLDIMX.Columns.Count];
+            for (int i = 0; i < grdKFLDIMX.Columns.Count; ++i)
+            {
+                settings.KFLDIMXDutyCycles[i] = int.Parse(grdKFLDIMX.Rows[1].Cells[i].Value.ToString());
+            }
+
+            return settings;
+
+        }
+
+        private void radDutyCycle_Click(object sender, EventArgs e)
+        {
+            BuildValues();
+        }
+
+        private void radPressure_Click(object sender, EventArgs e)
+        {
+            BuildValues();
+        }
+
+        private void btnGenerate_Click(object sender, EventArgs e)
+        {
+            settings = LoadSettings();
+
+            decimal[][] data = new decimal[settings.KFLDRLRpms.Length][];
+            for (int i = 0; i < settings.KFLDRLRpms.Length; ++i)
+            {
+                data[i] = new decimal[settings.KFLDRLDutyCycles.Length];
+                for (int j = 0; j < settings.KFLDRLDutyCycles.Length; ++j)
+                {
+                    decimal value = 0;
+                    object obj = grdKFLDRL.Rows[i + 1].Cells[j + 1].Value;
+                    if (obj != null)
+                    {
+                        decimal.TryParse(grdKFLDRL.Rows[i + 1].Cells[j + 1].Value.ToString(), out value);
+                    }
+                    data[i][j] = value;
+                }
+            }
+
+            DataForm dataForm = new DataForm(settings, data);
+            dataForm.Show(this);
+        }
     }
 
     public class DataPoint
@@ -261,14 +333,19 @@ namespace LDRPIDTool
 
         public override string ToString()
         {
-            return string.Format("{0}rpm - {1}mbar", rpm, absolutePressure);            
+            return string.Format("{0}rpm - {1}mbar", rpm, absolutePressure);
         }
     }
 
-
     public class DataPointCollection
     {
-        List<DataPoint> dataPoints = new List<DataPoint>();      
+        public DataPointCollection(Settings settings)
+        {
+            this.settings = settings;
+        }
+
+        Settings settings;
+        List<DataPoint> dataPoints = new List<DataPoint>();
 
         int? dutyCycle;
         public int DutyCycle
@@ -318,17 +395,17 @@ namespace LDRPIDTool
                     window.Add(dp);
 
                     DataPoint firstInWindow = window[0];
-                    if (dp.timestamp - firstInWindow.timestamp > Main.RangeFilter.seconds)
+                    if (dp.timestamp - firstInWindow.timestamp > settings.RangeFilter.seconds)
                     {
                         window.Remove(firstInWindow);
-                        if (Math.Abs(dp.absolutePressure - firstInWindow.absolutePressure) < Main.RangeFilter.mbar)
+                        if (Math.Abs(dp.absolutePressure - firstInWindow.absolutePressure) < settings.RangeFilter.mbar)
                         {
                             filteredRange.Add(firstInWindow);
                         }
                     }
                 }
                 filteredRange.AddRange(window);
-                if (filteredRange[filteredRange.Count - 1].rpm - filteredRange[0].rpm >= Main.RangeFilter.rpmRangeLengthMin)
+                if (filteredRange[filteredRange.Count - 1].rpm - filteredRange[0].rpm >= settings.RangeFilter.rpmRangeLengthMin)
                 {
                     retval.AddRange(filteredRange);
                 }
@@ -361,7 +438,7 @@ namespace LDRPIDTool
                 if (range == null ||
                     current.timestamp - last.timestamp > .25m) //probably should do this a better way
                 {
-                    range = new DataPointCollection();
+                    range = new DataPointCollection(settings);
                     ranges.Add(range);
                 }
                 range.Add(current);
@@ -369,6 +446,77 @@ namespace LDRPIDTool
             }
             return ranges;
         }
+    }
+
+    public class Settings
+    {
+        public decimal ambient = 1000;
+
+        public RangeFilter RangeFilter = new RangeFilter();
+
+        public int[] KFLDRLDutyCycles = new int[]
+        {
+            0,
+            10,
+            20,
+            30,
+
+            40,
+            50,
+            60,
+            70,
+
+            80,
+            95
+        };
+
+        public int[] KFLDRLRpms = new int[]
+        {
+            1000,
+            1250,
+            1500,
+            1750,
+
+            2000,
+            2250,
+            2500,
+            3000,
+
+            3500,
+            4000,
+            4500,
+            5000,
+
+            5500,
+            6000,
+            6500
+        };
+
+        public int[] KFLDIMXPressures = new int[]
+        {
+            0,
+            400,
+            800,
+            1200,
+
+            1400,
+            1600,
+            1800,
+            2000
+        };
+
+        public int[] KFLDIMXDutyCycles = new int[]
+        {
+            0,
+            18,
+            36,
+            52,
+
+            63,
+            72,
+            81,
+            90
+        };
     }
 
     public class RangeFilter
