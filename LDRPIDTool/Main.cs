@@ -23,6 +23,12 @@ namespace LDRPIDTool
 
         private void BuildGrid()
         {
+            this.txtFilterMbar.Text = settings.RangeFilter.mbar.ToString("0.00");
+            this.txtFilterRPM.Text = settings.RangeFilter.rpmRangeLengthMin.ToString("0.00");
+            this.txtFilterSeconds.Text = settings.RangeFilter.seconds.ToString("0.00");
+
+
+
             DataGridViewColumn column = new DataGridViewColumn(new DataGridViewTextBoxCell());
             column.Name = "rowheadercol";
             column.Width = 75;
@@ -126,7 +132,6 @@ namespace LDRPIDTool
             }
 
             BuildValues();
-           // MessageBox.Show(string.Format("Done with {0} errors", errors));
         }
 
 
@@ -161,7 +166,7 @@ namespace LDRPIDTool
                                 }
                             }
 
-                            string value = "1000.000";
+                            string value = "0.000";
                             if (highPoints.Count > 0 || lowPoints.Count > 0)
                             {
                                 decimal highPressure = highPoints.Count > 0 ? highPoints.Average(p => p.absolutePressure) : 0;
@@ -200,7 +205,8 @@ namespace LDRPIDTool
                         p.rpm = v.Value;
 
                         v = line.GetVariableByName("pvdks_w");
-                        p.absolutePressure = v.Value;
+                        p.actualPresure = v.Value;
+                       // p.absolutePressure = v.Value;
 
 
                         p.dutyCycle = dc.Value;
@@ -259,33 +265,43 @@ namespace LDRPIDTool
             settings = new Settings();
 
             settings.RangeFilter = new RangeFilter();
-
-            settings.KFLDRLDutyCycles = new int[grdKFLDRL.Columns.Count - 1];
-            for (int i = 1; i < grdKFLDRL.Columns.Count; ++i)
+            try
             {
-                settings.KFLDRLDutyCycles[i - 1] = int.Parse(grdKFLDRL.Rows[0].Cells[i].Value.ToString());
+                settings.RangeFilter.mbar = decimal.Parse(txtFilterMbar.Text);
+                settings.RangeFilter.seconds = decimal.Parse(txtFilterSeconds.Text);
+                settings.RangeFilter.rpmRangeLengthMin = decimal.Parse(txtFilterSeconds.Text);
+
+                settings.KFLDRLDutyCycles = new int[grdKFLDRL.Columns.Count - 1];
+                for (int i = 1; i < grdKFLDRL.Columns.Count; ++i)
+                {
+                    settings.KFLDRLDutyCycles[i - 1] = int.Parse(grdKFLDRL.Rows[0].Cells[i].Value.ToString());
+                }
+
+                settings.KFLDRLRpms = new int[grdKFLDRL.Rows.Count - 2];
+                for (int i = 1; i < grdKFLDRL.Rows.Count - 1; ++i)
+                {
+                    settings.KFLDRLRpms[i - 1] = int.Parse(grdKFLDRL.Rows[i].Cells[0].Value.ToString());
+                }
+
+                settings.KFLDIMXPressures = new int[grdKFLDIMX.Columns.Count];
+                for (int i = 0; i < grdKFLDIMX.Columns.Count; ++i)
+                {
+                    settings.KFLDIMXPressures[i] = int.Parse(grdKFLDIMX.Rows[0].Cells[i].Value.ToString());
+                }
+
+                settings.KFLDIMXDutyCycles = new int[grdKFLDIMX.Columns.Count];
+                for (int i = 0; i < grdKFLDIMX.Columns.Count; ++i)
+                {
+                    settings.KFLDIMXDutyCycles[i] = int.Parse(grdKFLDIMX.Rows[1].Cells[i].Value.ToString());
+                }
             }
-
-            settings.KFLDRLRpms = new int[grdKFLDRL.Rows.Count - 2];
-            for (int i = 1; i < grdKFLDRL.Rows.Count - 1; ++i)
+            catch (Exception e)
             {
-                settings.KFLDRLRpms[i - 1] = int.Parse(grdKFLDRL.Rows[i].Cells[0].Value.ToString());
-            }
+                MessageBox.Show("Error while loading settings\r\n" + e.ToString() );
 
-            settings.KFLDIMXPressures = new int[grdKFLDIMX.Columns.Count];
-            for (int i = 0; i < grdKFLDIMX.Columns.Count; ++i)
-            {
-                settings.KFLDIMXPressures[i] = int.Parse(grdKFLDIMX.Rows[0].Cells[i].Value.ToString());
-            }
-
-            settings.KFLDIMXDutyCycles = new int[grdKFLDIMX.Columns.Count];
-            for (int i = 0; i < grdKFLDIMX.Columns.Count; ++i)
-            {
-                settings.KFLDIMXDutyCycles[i] = int.Parse(grdKFLDIMX.Rows[1].Cells[i].Value.ToString());
             }
 
             return settings;
-
         }
 
         private void radDutyCycle_Click(object sender, EventArgs e)
@@ -323,206 +339,5 @@ namespace LDRPIDTool
         }
     }
 
-    public class DataPoint
-    {
-        public decimal rpm;
-        public decimal absolutePressure;
-        public decimal dutyCycle;
-        public decimal baroPressure = 1000;
-        public decimal timestamp;
-
-        public override string ToString()
-        {
-            return string.Format("{0}rpm - {1}mbar", rpm, absolutePressure);
-        }
-    }
-
-    public class DataPointCollection
-    {
-        public DataPointCollection(Settings settings)
-        {
-            this.settings = settings;
-        }
-
-        Settings settings;
-        List<DataPoint> dataPoints = new List<DataPoint>();
-
-        int? dutyCycle;
-        public int DutyCycle
-        {
-            get
-            {
-                if (dutyCycle == null && dataPoints.Count > 0)
-                {
-                    //this is dumb, the dutyCycle should be what the majority of the dp's duty is
-                    // when you stomp the pedal, dutycycle may not immediately be your fixed duty cycle.
-                    dutyCycle = (int)Math.Round(dataPoints[Count / 2].dutyCycle);
-                }
-                return dutyCycle.Value;
-            }
-        }
-
-        public int Count { get { return dataPoints.Count; } }
-
-        public void Add(DataPoint dataPoint)
-        {
-            this.dataPoints.Add(dataPoint);
-        }
-
-        private List<DataPoint> filteredPoints;
-        public List<DataPoint> FilteredPoints
-        {
-            get
-            {
-                if (filteredPoints == null)
-                {
-                    filteredPoints = GetFilteredPoints();
-                }
-                return filteredPoints;
-            }
-        }
-
-        List<DataPoint> GetFilteredPoints()
-        {
-            List<DataPoint> retval = new List<DataPoint>();
-            foreach (DataPointCollection range in Ranges)
-            {
-                //detect spool up points in this range and filter those out.
-                List<DataPoint> window = new List<DataPoint>();
-                List<DataPoint> filteredRange = new List<DataPoint>();
-                foreach (DataPoint dp in range.dataPoints)
-                {
-                    window.Add(dp);
-
-                    DataPoint firstInWindow = window[0];
-                    if (dp.timestamp - firstInWindow.timestamp > settings.RangeFilter.seconds)
-                    {
-                        window.Remove(firstInWindow);
-                        if (Math.Abs(dp.absolutePressure - firstInWindow.absolutePressure) < settings.RangeFilter.mbar)
-                        {
-                            filteredRange.Add(firstInWindow);
-                        }
-                    }
-                }
-                filteredRange.AddRange(window);
-                if (filteredRange[filteredRange.Count - 1].rpm - filteredRange[0].rpm >= settings.RangeFilter.rpmRangeLengthMin)
-                {
-                    retval.AddRange(filteredRange);
-                }
-
-            }
-            return retval;
-        }
-
-        List<DataPointCollection> ranges = null;
-        List<DataPointCollection> Ranges
-        {
-            get
-            {
-                if (ranges == null)
-                {
-                    ranges = this.GetRanges();
-                }
-                return ranges;
-            }
-        }
-
-        List<DataPointCollection> GetRanges()
-        {
-            List<DataPointCollection> ranges = new List<DataPointCollection>();
-            DataPoint last = null;
-            DataPointCollection range = null;
-            for (int i = 0; i < dataPoints.Count; ++i)
-            {
-                DataPoint current = dataPoints[i];
-                if (range == null ||
-                    current.timestamp - last.timestamp > .25m) //probably should do this a better way
-                {
-                    range = new DataPointCollection(settings);
-                    ranges.Add(range);
-                }
-                range.Add(current);
-                last = current;
-            }
-            return ranges;
-        }
-    }
-
-    public class Settings
-    {
-        public decimal ambient = 1000;
-
-        public RangeFilter RangeFilter = new RangeFilter();
-
-        public int[] KFLDRLDutyCycles = new int[]
-        {
-            0,
-            10,
-            20,
-            30,
-
-            40,
-            50,
-            60,
-            70,
-
-            80,
-            95
-        };
-
-        public int[] KFLDRLRpms = new int[]
-        {
-            1000,
-            1250,
-            1500,
-            1750,
-
-            2000,
-            2250,
-            2500,
-            3000,
-
-            3500,
-            4000,
-            4500,
-            5000,
-
-            5500,
-            6000,
-            6500
-        };
-
-        public int[] KFLDIMXPressures = new int[]
-        {
-            0,
-            400,
-            800,
-            1200,
-
-            1400,
-            1600,
-            1800,
-            2000
-        };
-
-        public int[] KFLDIMXDutyCycles = new int[]
-        {
-            0,
-            18,
-            36,
-            52,
-
-            63,
-            72,
-            81,
-            90
-        };
-    }
-
-    public class RangeFilter
-    {
-        public decimal rpmRangeLengthMin = 2000;
-        public decimal seconds = .1m;
-        public decimal mbar = 100m;
-    }
+    
 }

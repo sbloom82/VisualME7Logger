@@ -41,14 +41,14 @@
             this.grdData.Name = "grdData";
             this.grdData.RowHeadersVisible = false;
             this.grdData.RowTemplate.Height = 24;
-            this.grdData.Size = new System.Drawing.Size(1111, 534);
+            this.grdData.Size = new System.Drawing.Size(1111, 558);
             this.grdData.TabIndex = 0;
             // 
             // DataForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1111, 534);
+            this.ClientSize = new System.Drawing.Size(1111, 558);
             this.Controls.Add(this.grdData);
             this.Name = "DataForm";
             this.Text = "Data";

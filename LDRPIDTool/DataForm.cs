@@ -39,7 +39,7 @@ namespace LDRPIDTool
             {
                 for (int j = 0; j < settings.KFLDRLDutyCycles.Length; ++j)
                 {
-                    decimal value = data[i][j] - settings.ambient;
+                    decimal value = data[i][j];// - settings.ambient;
                     decimal rpm = settings.KFLDRLRpms[i];
                     decimal dutyCycle = settings.KFLDRLDutyCycles[j];
 
@@ -53,7 +53,7 @@ namespace LDRPIDTool
                         }
                     }
 
-                    decimal zValue = linear(
+                    decimal zValue = Program.Interpolate(
                         value,
                         settings.KFLDIMXPressures[(index - 1 < 0) ? 0 : index - 1],
                         settings.KFLDIMXDutyCycles[(index - 1 < 0) ? 0 : index - 1],
@@ -61,7 +61,7 @@ namespace LDRPIDTool
                         settings.KFLDIMXDutyCycles[index]
                         );
 
-                    /*
+                    
                     Console.WriteLine(string.Format("rpm {0}, dc {1}, value {2}", rpm, dutyCycle, value));
 
                     Console.WriteLine(string.Format("mbar: {0}, pres0: {1}, dc0: {2}, pres1: {3}, dc1: {4} = value: {5}",
@@ -71,7 +71,7 @@ namespace LDRPIDTool
                       settings.KFLDIMXPressures[index],
                        settings.KFLDIMXDutyCycles[index],
                        zValue
-                      ));*/
+                      ));
 
                     if (zValue <= 0)
                     {
@@ -82,17 +82,6 @@ namespace LDRPIDTool
                     grdData.Rows[i + 1].Cells[j + 1].Value = zValue.ToString("0.000");
                 }
             }
-        }
-
-
-
-        static public decimal linear(decimal x, decimal x0, decimal y0, decimal x1, decimal y1)
-        {
-            if ((x1 - x0) == 0)
-            {
-                return (y0 + y1) / 2;
-            }
-            return y0 + (x - x0) * (y1 - y0) / (x1 - x0);
-        }
+        }     
     }
 }

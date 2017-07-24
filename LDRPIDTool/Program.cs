@@ -18,5 +18,219 @@ namespace LDRPIDTool
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Main());
         }
+
+        public static decimal Interpolate(decimal x, decimal x0, decimal y0, decimal x1, decimal y1)
+        {
+            if ((x1 - x0) == 0)
+            {
+                return (y0 + y1) / 2;
+            }
+            return y0 + (x - x0) * (y1 - y0) / (x1 - x0);
+        }
+    }
+
+    public class DataPoint
+    {
+        public decimal rpm;
+        public decimal actualPresure;
+        public decimal absolutePressure { get { return actualPresure - baroPressure; } }
+        public decimal dutyCycle;
+        public decimal baroPressure = 1000;
+        public decimal timestamp;
+
+        public override string ToString()
+        {
+            return string.Format("{0}rpm - {1}mbar", rpm, absolutePressure);
+        }
+    }
+
+    public class DataPointCollection
+    {
+        public DataPointCollection(Settings settings)
+        {
+            this.settings = settings;
+        }
+
+        Settings settings;
+        List<DataPoint> dataPoints = new List<DataPoint>();
+
+        int? dutyCycle;
+        public int DutyCycle
+        {
+            get
+            {
+                if (dutyCycle == null && dataPoints.Count > 0)
+                {
+                    //this is dumb, the dutyCycle should be what the majority of the dp's duty is
+                    // when you stomp the pedal, dutycycle may not immediately be your fixed duty cycle.
+                    dutyCycle = (int)Math.Round(dataPoints[Count / 2].dutyCycle);
+                }
+                return dutyCycle.Value;
+            }
+        }
+
+        public int Count { get { return dataPoints.Count; } }
+
+        public void Add(DataPoint dataPoint)
+        {
+            this.dataPoints.Add(dataPoint);
+        }
+
+        private List<DataPoint> filteredPoints;
+        public List<DataPoint> FilteredPoints
+        {
+            get
+            {
+                if (filteredPoints == null)
+                {
+                    filteredPoints = GetFilteredPoints();
+                }
+                return filteredPoints;
+            }
+        }
+
+        List<DataPoint> GetFilteredPoints()
+        {
+            List<DataPoint> retval = new List<DataPoint>();
+            foreach (DataPointCollection range in Ranges)
+            {
+                //detect spool up points in this range and filter those out.
+                List<DataPoint> window = new List<DataPoint>();
+                List<DataPoint> filteredRange = new List<DataPoint>();
+                foreach (DataPoint dp in range.dataPoints)
+                {
+                    window.Add(dp);
+
+                    DataPoint firstInWindow = window[0];
+                    if (dp.timestamp - firstInWindow.timestamp > settings.RangeFilter.seconds)
+                    {
+                        window.Remove(firstInWindow);
+                        if (Math.Abs(dp.absolutePressure - firstInWindow.absolutePressure) < settings.RangeFilter.mbar)
+                        {
+                            filteredRange.Add(firstInWindow);
+                        }
+                    }
+                }
+                filteredRange.AddRange(window);
+                if (filteredRange[filteredRange.Count - 1].rpm - filteredRange[0].rpm >= settings.RangeFilter.rpmRangeLengthMin)
+                {
+                    retval.AddRange(filteredRange);
+                }
+
+            }
+            return retval;
+        }
+
+        List<DataPointCollection> ranges = null;
+        List<DataPointCollection> Ranges
+        {
+            get
+            {
+                if (ranges == null)
+                {
+                    ranges = this.GetRanges();
+                }
+                return ranges;
+            }
+        }
+
+        List<DataPointCollection> GetRanges()
+        {
+            List<DataPointCollection> ranges = new List<DataPointCollection>();
+            DataPoint last = null;
+            DataPointCollection range = null;
+            for (int i = 0; i < dataPoints.Count; ++i)
+            {
+                DataPoint current = dataPoints[i];
+                if (range == null ||
+                    current.timestamp - last.timestamp > .25m) //probably should do this a better way
+                {
+                    range = new DataPointCollection(settings);
+                    ranges.Add(range);
+                }
+                range.Add(current);
+                last = current;
+            }
+            return ranges;
+        }
+    }
+
+    public class Settings
+    {
+        public decimal ambient = 1000;
+
+        public RangeFilter RangeFilter = new RangeFilter();
+
+        public int[] KFLDRLDutyCycles = new int[]
+        {
+            0,
+            10,
+            20,
+            30,
+
+            40,
+            50,
+            60,
+            70,
+
+            80,
+            95
+        };
+
+        public int[] KFLDRLRpms = new int[]
+        {
+            1000,
+            1500,
+            2000,
+            2500,
+
+            2750,
+            3000,
+            3250,
+            3500,
+
+            3750,
+            4000,
+            4500,
+            5000,
+
+            5500,
+            6000,
+            6500,
+            6800,
+        };
+
+        public int[] KFLDIMXPressures = new int[]
+        {
+            0,
+            400,
+            800,
+            1200,
+
+            1400,
+            1600,
+            1800,
+            2000
+        };
+
+        public int[] KFLDIMXDutyCycles = new int[]
+        {
+            0,
+            18,
+            36,
+            52,
+
+            63,
+            72,
+            81,
+            90
+        };
+    }
+
+    public class RangeFilter
+    {
+        public decimal rpmRangeLengthMin = 2500;
+        public decimal seconds = .1m;
+        public decimal mbar = 75m;
     }
 }
