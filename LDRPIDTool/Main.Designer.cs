@@ -257,7 +257,6 @@
             this.Controls.Add(this.panel2);
             this.Name = "Main";
             this.Text = "LDRPID tool";
-            this.Load += new System.EventHandler(this.Main_Load);
             ((System.ComponentModel.ISupportInitialize)(this.grdKFLDRL)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel4.ResumeLayout(false);

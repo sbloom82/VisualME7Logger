@@ -27,8 +27,6 @@ namespace LDRPIDTool
             this.txtFilterRPM.Text = settings.RangeFilter.rpmRangeLengthMin.ToString("0.00");
             this.txtFilterSeconds.Text = settings.RangeFilter.seconds.ToString("0.00");
 
-
-
             DataGridViewColumn column = new DataGridViewColumn(new DataGridViewTextBoxCell());
             column.Name = "rowheadercol";
             column.Width = 75;
@@ -54,7 +52,6 @@ namespace LDRPIDTool
                 grdKFLDRL.Rows[i + 1].Cells[0].Value = settings.KFLDRLRpms[i];
             }
 
-
             for (int i = 0; i < settings.KFLDIMXPressures.Length; ++i)
             {
                 column = new DataGridViewColumn(new DataGridViewTextBoxCell());
@@ -67,7 +64,6 @@ namespace LDRPIDTool
 
             for (int i = 0; i < settings.KFLDIMXPressures.Length; ++i)
             {
-
                 grdKFLDIMX.Rows[0].Cells[i].Value = settings.KFLDIMXPressures[i];
             }
 
@@ -85,7 +81,6 @@ namespace LDRPIDTool
         int closedCount;
         private void btnLoad_Click(object sender, EventArgs e)
         {
-
             if (!Directory.Exists(txtDir.Text))
             {
                 MessageBox.Show("Please choose a log directory");
@@ -93,7 +88,6 @@ namespace LDRPIDTool
             }
 
             settings = LoadSettings();
-
 
             wait = true;
             closedCount = 0;
@@ -123,7 +117,6 @@ namespace LDRPIDTool
                 }
             }
 
-
             //waiting for all logs to finish reading (hope visualme7logger.output is threadsafe :) )
 
             while (wait)
@@ -133,7 +126,6 @@ namespace LDRPIDTool
 
             BuildValues();
         }
-
 
         public void BuildValues()
         {
@@ -189,7 +181,6 @@ namespace LDRPIDTool
             {
                 //take a variable read from a log, make convert it into something more usable for this application
 
-                //todo, detect ramp up and filter those out, otherwise results will be inaccurate.
                 Variable accelPedal = line.GetVariableByName("wped");
                 if (accelPedal == null || accelPedal.Value >= 80)
                 {
@@ -206,8 +197,6 @@ namespace LDRPIDTool
 
                         v = line.GetVariableByName("pvdks_w");
                         p.actualPresure = v.Value;
-                       // p.absolutePressure = v.Value;
-
 
                         p.dutyCycle = dc.Value;
 
@@ -255,11 +244,6 @@ namespace LDRPIDTool
             }
         }
 
-        private void Main_Load(object sender, EventArgs e)
-        {
-
-        }
-
         public Settings LoadSettings()
         {
             settings = new Settings();
@@ -297,21 +281,10 @@ namespace LDRPIDTool
             }
             catch (Exception e)
             {
-                MessageBox.Show("Error while loading settings\r\n" + e.ToString() );
-
+                MessageBox.Show("Error while loading settings\r\n" + e.ToString());
             }
 
             return settings;
-        }
-
-        private void radDutyCycle_Click(object sender, EventArgs e)
-        {
-            BuildValues();
-        }
-
-        private void radPressure_Click(object sender, EventArgs e)
-        {
-            BuildValues();
         }
 
         private void btnGenerate_Click(object sender, EventArgs e)
@@ -338,6 +311,4 @@ namespace LDRPIDTool
             dataForm.Show(this);
         }
     }
-
-    
 }
