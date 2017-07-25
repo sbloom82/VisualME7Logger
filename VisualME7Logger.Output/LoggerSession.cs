@@ -855,10 +855,35 @@ namespace VisualME7Logger.Session
                 case ME7LoggerLog.LogTypes.Normal:
                     if (line.StartsWith("Time,") || line.StartsWith("Time (sec),"))
                     {
+                        bool parse = false;
+                        if (line.StartsWith("Time (sec),"))
+                        {
+                            parse = true;
+                        }
+
                         string[] names = line.Split(',');
                         for (int i = 1; i < names.Length; ++i)
                         {
-                            this.Add(new LogVariable(i, names[i], string.Empty, names[i]));
+                            if (!string.IsNullOrEmpty(names[i]))
+                            {
+
+                                if (parse)
+                                {
+                                    string value = names[i];
+                                    int indexOpen = value.IndexOf("(");
+                                    int indexClose = value.IndexOf(")");
+
+                                    //example  Engine Speed(RPM) nmot_w, Vehicle Speed(MPH) vfzg_w,
+                                    string alias = value.Substring(0, indexOpen);
+                                    string unit = value.Substring(indexOpen + 1, indexClose - indexOpen - 1);
+                                    string name = value.Substring(indexClose + 2, value.Length - indexClose - 2);
+                                    this.Add(new LogVariable(i, name, unit, alias));
+                                }
+                                else
+                                {
+                                    this.Add(new LogVariable(i, names[i], string.Empty, names[i]));
+                                }
+                            }
                         }
                         this.Complete = true;
                     }

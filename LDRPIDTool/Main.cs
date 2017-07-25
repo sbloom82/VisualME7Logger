@@ -111,20 +111,26 @@ namespace LDRPIDTool
                     logs.Add(log);
                     dataPointsByLog[log] = new DataPointCollection(settings);
                 }
-                catch
+                catch(Exception ex)
                 {
                     errors++;
+                    closedCount++;
                 }
             }
 
             //waiting for all logs to finish reading (hope visualme7logger.output is threadsafe :) )
 
-            while (wait)
+            while (errors + closedCount < logs.Count)
             {
                 System.Threading.Thread.Sleep(10);
             }
 
             BuildValues();
+
+            if (errors > 0)
+            {
+                MessageBox.Show("Errors while processing log files");
+            }
         }
 
         public void BuildValues()
@@ -182,6 +188,9 @@ namespace LDRPIDTool
                 //take a variable read from a log, make convert it into something more usable for this application
 
                 Variable accelPedal = line.GetVariableByName("wped");
+                if (accelPedal == null)
+                    accelPedal = line.GetVariableByName("wped_w");
+
                 if (accelPedal == null || accelPedal.Value >= 80)
                 {
                     Variable dc = line.GetVariableByName("ldtvm");
@@ -196,6 +205,8 @@ namespace LDRPIDTool
                         p.rpm = v.Value;
 
                         v = line.GetVariableByName("pvdks_w");
+                        if (v == null)
+                            v = line.GetVariableByName("pvdkds_w");
                         p.actualPresure = v.Value;
 
                         p.dutyCycle = dc.Value;
@@ -227,10 +238,6 @@ namespace LDRPIDTool
             if (status == ME7LoggerSession.Statuses.Closed)
             {
                 closedCount++;
-                if (closedCount == logs.Count)
-                {
-                    wait = false;
-                }
             }
         }
 
