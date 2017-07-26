@@ -26,6 +26,7 @@ namespace LDRPIDTool
             this.txtFilterMbar.Text = settings.RangeFilter.mbar.ToString("0.00");
             this.txtFilterRPM.Text = settings.RangeFilter.rpmRangeLengthMin.ToString("0.00");
             this.txtFilterSeconds.Text = settings.RangeFilter.seconds.ToString("0.00");
+            this.txtAmbient.Text = settings.ambient.ToString("0.00");
 
             DataGridViewColumn column = new DataGridViewColumn(new DataGridViewTextBoxCell());
             column.Name = "rowheadercol";
@@ -214,8 +215,9 @@ namespace LDRPIDTool
                         v = line.GetVariableByName("pu");
                         if (v == null)
                             v = line.GetVariableByName("pu_w");
-                        if (v != null)
-                            p.baroPressure = v.Value;
+                        if (v == null)
+                            v = line.GetVariableByName("pus_w");
+                        p.baroPressure = v == null ? settings.ambient : v.Value;
 
                         lock (logsByDutyCycle)
                         {
@@ -261,6 +263,7 @@ namespace LDRPIDTool
                 settings.RangeFilter.mbar = decimal.Parse(txtFilterMbar.Text);
                 settings.RangeFilter.seconds = decimal.Parse(txtFilterSeconds.Text);
                 settings.RangeFilter.rpmRangeLengthMin = decimal.Parse(txtFilterSeconds.Text);
+                settings.ambient = decimal.Parse(txtAmbient.Text);
 
                 settings.KFLDRLDutyCycles = new int[grdKFLDRL.Columns.Count - 1];
                 for (int i = 1; i < grdKFLDRL.Columns.Count; ++i)
@@ -315,7 +318,7 @@ namespace LDRPIDTool
             }
 
             DataForm dataForm = new DataForm(settings, data);
-            dataForm.Show(this);
+            dataForm.Show();
         }
     }
 }

@@ -39,14 +39,16 @@
             this.btnGenerate = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.btnLoad = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.txtFilterMbar = new System.Windows.Forms.TextBox();
-            this.txtFilterSeconds = new System.Windows.Forms.TextBox();
-            this.txtFilterRPM = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtFilterRPM = new System.Windows.Forms.TextBox();
+            this.txtFilterSeconds = new System.Windows.Forms.TextBox();
+            this.txtFilterMbar = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.btnLoad = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
+            this.txtAmbient = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.grdKFLDRL)).BeginInit();
             this.panel1.SuspendLayout();
             this.panel4.SuspendLayout();
@@ -95,7 +97,7 @@
             this.grdKFLDRL.RowHeadersVisible = false;
             this.grdKFLDRL.RowTemplate.Height = 24;
             this.grdKFLDRL.Size = new System.Drawing.Size(1115, 538);
-            this.grdKFLDRL.TabIndex = 6;
+            this.grdKFLDRL.TabIndex = 7;
             // 
             // panel1
             // 
@@ -147,7 +149,7 @@
             this.btnGenerate.Location = new System.Drawing.Point(0, 632);
             this.btnGenerate.Name = "btnGenerate";
             this.btnGenerate.Size = new System.Drawing.Size(1115, 23);
-            this.btnGenerate.TabIndex = 7;
+            this.btnGenerate.TabIndex = 8;
             this.btnGenerate.Text = "Generate";
             this.btnGenerate.UseVisualStyleBackColor = true;
             this.btnGenerate.Click += new System.EventHandler(this.btnGenerate_Click);
@@ -163,6 +165,8 @@
             // 
             // panel3
             // 
+            this.panel3.Controls.Add(this.label6);
+            this.panel3.Controls.Add(this.txtAmbient);
             this.panel3.Controls.Add(this.label5);
             this.panel3.Controls.Add(this.label4);
             this.panel3.Controls.Add(this.label3);
@@ -180,55 +184,14 @@
             this.panel3.Size = new System.Drawing.Size(1115, 89);
             this.panel3.TabIndex = 8;
             // 
-            // btnLoad
+            // label5
             // 
-            this.btnLoad.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.btnLoad.Location = new System.Drawing.Point(0, 65);
-            this.btnLoad.Name = "btnLoad";
-            this.btnLoad.Size = new System.Drawing.Size(1115, 24);
-            this.btnLoad.TabIndex = 5;
-            this.btnLoad.Text = "Load";
-            this.btnLoad.UseVisualStyleBackColor = true;
-            this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 40);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(89, 17);
-            this.label2.TabIndex = 8;
-            this.label2.Text = "Range Filter:";
-            // 
-            // txtFilterMbar
-            // 
-            this.txtFilterMbar.Location = new System.Drawing.Point(253, 38);
-            this.txtFilterMbar.Name = "txtFilterMbar";
-            this.txtFilterMbar.Size = new System.Drawing.Size(100, 22);
-            this.txtFilterMbar.TabIndex = 2;
-            // 
-            // txtFilterSeconds
-            // 
-            this.txtFilterSeconds.Location = new System.Drawing.Point(432, 38);
-            this.txtFilterSeconds.Name = "txtFilterSeconds";
-            this.txtFilterSeconds.Size = new System.Drawing.Size(100, 22);
-            this.txtFilterSeconds.TabIndex = 3;
-            // 
-            // txtFilterRPM
-            // 
-            this.txtFilterRPM.Location = new System.Drawing.Point(645, 39);
-            this.txtFilterRPM.Name = "txtFilterRPM";
-            this.txtFilterRPM.Size = new System.Drawing.Size(100, 22);
-            this.txtFilterRPM.TabIndex = 4;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(107, 41);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(142, 17);
-            this.label3.TabIndex = 12;
-            this.label3.Text = "Spool Increase mbar:";
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(550, 40);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(103, 17);
+            this.label5.TabIndex = 14;
+            this.label5.Text = "rpm range min:";
             // 
             // label4
             // 
@@ -239,14 +202,71 @@
             this.label4.TabIndex = 13;
             this.label4.Text = "/ seconds:";
             // 
-            // label5
+            // label3
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(538, 42);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(103, 17);
-            this.label5.TabIndex = 14;
-            this.label5.Text = "rpm range min:";
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(108, 41);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(142, 17);
+            this.label3.TabIndex = 12;
+            this.label3.Text = "Spool Increase mbar:";
+            // 
+            // txtFilterRPM
+            // 
+            this.txtFilterRPM.Location = new System.Drawing.Point(656, 37);
+            this.txtFilterRPM.Name = "txtFilterRPM";
+            this.txtFilterRPM.Size = new System.Drawing.Size(100, 22);
+            this.txtFilterRPM.TabIndex = 4;
+            // 
+            // txtFilterSeconds
+            // 
+            this.txtFilterSeconds.Location = new System.Drawing.Point(432, 38);
+            this.txtFilterSeconds.Name = "txtFilterSeconds";
+            this.txtFilterSeconds.Size = new System.Drawing.Size(100, 22);
+            this.txtFilterSeconds.TabIndex = 3;
+            // 
+            // txtFilterMbar
+            // 
+            this.txtFilterMbar.Location = new System.Drawing.Point(253, 38);
+            this.txtFilterMbar.Name = "txtFilterMbar";
+            this.txtFilterMbar.Size = new System.Drawing.Size(100, 22);
+            this.txtFilterMbar.TabIndex = 2;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 40);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(89, 17);
+            this.label2.TabIndex = 8;
+            this.label2.Text = "Range Filter:";
+            // 
+            // btnLoad
+            // 
+            this.btnLoad.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.btnLoad.Location = new System.Drawing.Point(0, 65);
+            this.btnLoad.Name = "btnLoad";
+            this.btnLoad.Size = new System.Drawing.Size(1115, 24);
+            this.btnLoad.TabIndex = 6;
+            this.btnLoad.Text = "Load";
+            this.btnLoad.UseVisualStyleBackColor = true;
+            this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(831, 40);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(62, 17);
+            this.label6.TabIndex = 16;
+            this.label6.Text = "ambient:";
+            // 
+            // txtAmbient
+            // 
+            this.txtAmbient.Location = new System.Drawing.Point(896, 37);
+            this.txtAmbient.Name = "txtAmbient";
+            this.txtAmbient.Size = new System.Drawing.Size(100, 22);
+            this.txtAmbient.TabIndex = 5;
             // 
             // Main
             // 
@@ -290,6 +310,8 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox txtAmbient;
     }
 }
 
