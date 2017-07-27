@@ -42,8 +42,70 @@ namespace LDRPIDTool
                     decimal value = data[i][j];// - settings.ambient;
                     decimal rpm = settings.KFLDRLRpms[i];
                     decimal dutyCycle = settings.KFLDRLDutyCycles[j];
-
+                                       
                     int index = 0;
+                    for (int k = 0; k < settings.KFLDIMXDutyCycles.Length; ++k)
+                    {
+                        index = k;
+                        if (settings.KFLDIMXDutyCycles[k] == dutyCycle)
+                        {
+                            break;
+                        }
+                    }
+
+                    decimal pressureAtDutyCycle = Program.Interpolate(
+                        dutyCycle,
+                        settings.KFLDIMXDutyCycles[(index - 1 < 0) ? 0 : index - 1],
+                        settings.KFLDIMXPressures[(index - 1 < 0) ? 0 : index - 1],                        
+                        settings.KFLDIMXDutyCycles[index],
+                        settings.KFLDIMXPressures[index]);
+
+#if DEBUG
+                    Console.WriteLine(string.Format("rpm {0}, dc {1}, value {2}", rpm, dutyCycle, value));
+
+                    Console.WriteLine(string.Format("dc: {0}, pres0: {1}, dc0: {2}, pres1: {3}, dc1: {4} = pressureatdc: {5}",
+                      dutyCycle,
+                      settings.KFLDIMXPressures[(index - 1 < 0) ? 0 : index - 1],
+                      settings.KFLDIMXDutyCycles[(index - 1 < 0) ? 0 : index - 1],
+                      settings.KFLDIMXPressures[index],
+                       settings.KFLDIMXDutyCycles[index],
+                       pressureAtDutyCycle
+                      ));
+#endif
+
+                    //with pressure at dutycycle, interpolate dc from pressures in first pass map
+
+                    //at this rpm - data[i]
+                    index = 0;
+                    for (int k = 0; k < data[i].Length; ++k)
+                    {
+                        if (data[i][k] >= pressureAtDutyCycle)
+                        {
+                            index = k;
+                            break;
+                        }
+                    }
+
+                    decimal zValue = Program.Interpolate(
+                        pressureAtDutyCycle,
+                        data[i][(index - 1 < 0) ? 0 : index - 1],
+                        settings.KFLDRLDutyCycles[(index - 1 < 0) ? 0 : index - 1],
+                        data[i][index],
+                        settings.KFLDRLDutyCycles[index]
+
+                        );
+
+                    if (zValue <= 0)
+                    {
+                        zValue = dutyCycle;
+                    }
+
+                    grdData.Rows[i + 1].Cells[j + 1].Value = zValue.ToString("0.000");
+
+
+
+
+                    /*int  index = 0;
                     for (int k = 0; k < settings.KFLDIMXPressures.Length; ++k)
                     {
                         index = k;
@@ -62,6 +124,8 @@ namespace LDRPIDTool
                         );
 
 #if DEBUG
+                    
+                    
                     Console.WriteLine(string.Format("rpm {0}, dc {1}, value {2}", rpm, dutyCycle, value));
 
                     Console.WriteLine(string.Format("mbar: {0}, pres0: {1}, dc0: {2}, pres1: {3}, dc1: {4} = value: {5}",
@@ -74,14 +138,15 @@ namespace LDRPIDTool
                       ));
 #endif
 
+                    
                     if (zValue <= 0)
                     {
                         zValue = dutyCycle;
                     }
 
-                    grdData.Rows[i + 1].Cells[j + 1].Value = zValue.ToString("0.000");
+                    grdData.Rows[i + 1].Cells[j + 1].Value = zValue.ToString("0.000");*/
                 }
             }
-        }     
+        }
     }
 }
