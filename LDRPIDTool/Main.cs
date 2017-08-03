@@ -77,7 +77,6 @@ namespace LDRPIDTool
 
         List<ME7LoggerLog> logs;
         Dictionary<ME7LoggerLog, DataPointCollection> dataPointsByLog;
-        Dictionary<decimal, HashSet<ME7LoggerLog>> logsByDutyCycle;
         bool wait;
         int closedCount;
         private void btnLoad_Click(object sender, EventArgs e)
@@ -94,8 +93,7 @@ namespace LDRPIDTool
             closedCount = 0;
             logs = new List<ME7LoggerLog>();
             dataPointsByLog = new Dictionary<ME7LoggerLog, DataPointCollection>();
-            logsByDutyCycle = new Dictionary<decimal, HashSet<ME7LoggerLog>>();
-
+            
             DirectoryInfo dir = new DirectoryInfo(txtDir.Text);
 
             int errors = 0;
@@ -112,7 +110,7 @@ namespace LDRPIDTool
                     logs.Add(log);
                     dataPointsByLog[log] = new DataPointCollection(settings);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     errors++;
                     closedCount++;
@@ -147,37 +145,111 @@ namespace LDRPIDTool
                 {
                     if (settings.KFLDRLDutyCycles[d] == dataPoints.DutyCycle)
                     {
+                        List<DataPoint> filteredPoints = dataPoints.FilteredPoints;
                         for (int r = 0; r < settings.KFLDRLRpms.Length; ++r)
                         {
                             int rpm = settings.KFLDRLRpms[r];
                             List<DataPoint> highPoints = new List<DataPoint>();
                             List<DataPoint> lowPoints = new List<DataPoint>();
-                            List<DataPoint> filteredPoints = dataPoints.FilteredPoints;
                             for (int i = 0; i < filteredPoints.Count; ++i)
                             {
-                                if (filteredPoints[i].rpm <= rpm && (filteredPoints.Count > i + 1 && filteredPoints[i + 1].rpm >= rpm))
+                                DataPoint current = filteredPoints[i];
+
+                                if (current.rpm <= rpm && (r==0 && current.rpm > settings.KFLDRLRpms[r -1]))
                                 {
-                                    lowPoints.Add(filteredPoints[i]);
+                                    lowPoints.Add(current);
                                 }
-                                else if (filteredPoints[i].rpm >= rpm && (i != 0 && filteredPoints[i - 1].rpm <= rpm))
+                                else if (current.rpm >= rpm && (settings.KFLDRLRpms.Length < r + 1 || current.rpm < settings.KFLDRLRpms[r+1]))
                                 {
-                                    highPoints.Add(filteredPoints[i]);
+                                    highPoints.Add(current);
                                 }
                             }
 
                             string value = "0.000";
                             if (highPoints.Count > 0 || lowPoints.Count > 0)
                             {
-                                decimal highPressure = highPoints.Count > 0 ? highPoints.Average(p => p.absolutePressure) : 0;
-                                decimal lowPressure = lowPoints.Count > 0 ? lowPoints.Average(p => p.absolutePressure) : 0;
+                                decimal highPressure = highPoints.Count > 0 ? highPoints.Average(p => p.absolutePressure) : lowPoints.Average(p => p.absolutePressure);
+                                decimal lowPressure = lowPoints.Count > 0 ? lowPoints.Average(p => p.absolutePressure) : highPoints.Average(p => p.absolutePressure);
 
                                 value = ((highPressure + lowPressure) / 2).ToString("0.000");
                             }
+                            else
+                            {
+                                //grdKFLDRL.Rows[r + 1].Cells[d + 1].
+                            }
 
-                            grdKFLDRL.Rows[r + 1].Cells[d + 1].Value = value;
-
+                            var cell = grdKFLDRL.Rows[r + 1].Cells[d + 1];                            
+                            cell.Value = value;
+                            cell.Style.BackColor = System.Drawing.Color.White;
                         }
                     }
+                }
+            }
+
+            if (settings.InterpolateBlankCells)
+            {
+                for (int d = 0; d < settings.KFLDRLDutyCycles.Length; ++d)
+                {
+                    int found = 0;
+                    for (int r = settings.KFLDRLRpms.Length; r >= 0; --r)
+                    {
+                        var cell = grdKFLDRL.Rows[r + 1].Cells[d + 1];
+                        if (cell.Value == null)
+                            continue;
+
+                        decimal value = decimal.Parse(cell.Value.ToString());
+                        if (found > 1 && value == 0)
+                        {
+                            //get new value by interpolating last two pointsds
+                            decimal newValue = Program.Interpolate(
+                                settings.KFLDRLRpms[r],
+                                settings.KFLDRLRpms[r + 1],
+                                decimal.Parse(grdKFLDRL.Rows[r + 2].Cells[d + 1].Value.ToString()),
+                                settings.KFLDRLRpms[r + 2],
+                                decimal.Parse(grdKFLDRL.Rows[r + 3].Cells[d + 1].Value.ToString()));
+                            cell.Value = (newValue < 0 ? 0 : newValue).ToString("0.000");
+                            cell.Style.BackColor = System.Drawing.Color.Red;
+
+                        }
+                        else if (value != 0)
+                        {
+                            found++;
+                        }
+                        else
+                        {
+                            found = 0;
+                        }
+                    }
+
+                    found = 0;
+                    for (int r = 0; r < settings.KFLDRLRpms.Length; ++r)
+                    {
+                        var cell = grdKFLDRL.Rows[r + 1].Cells[d + 1];
+                        if (cell.Value == null)
+                            continue;
+
+                        decimal value = decimal.Parse(cell.Value.ToString());
+                        if (found > 1 && value == 0)
+                        {
+                            //get new value by interpolating last two pointsds
+                            decimal newValue = Program.Interpolate(
+                                settings.KFLDRLRpms[r],
+                                settings.KFLDRLRpms[r - 1],
+                                decimal.Parse(grdKFLDRL.Rows[r].Cells[d + 1].Value.ToString()),
+                                settings.KFLDRLRpms[r - 2],
+                                decimal.Parse(grdKFLDRL.Rows[r - 1].Cells[d + 1].Value.ToString()));
+                            cell.Value = (newValue < 0 ? 0 : newValue).ToString("0.000");
+                            cell.Style.BackColor = System.Drawing.Color.Red;
+                        }
+                        else if (value != 0)
+                        {
+                            found++;
+                        }
+                        else
+                        {
+                            found = 0;
+                        }
+                    }                   
                 }
             }
         }
@@ -186,48 +258,30 @@ namespace LDRPIDTool
         {
             lock (dataPointsByLog)
             {
-                //take a variable read from a log, make convert it into something more usable for this application
-
-                Variable accelPedal = line.GetVariableByName("wped");
-                if (accelPedal == null)
-                    accelPedal = line.GetVariableByName("wped_w");
-
-                if (accelPedal == null || accelPedal.Value >= 80)
+                //take a variable read from a log, make it into something more usable for this application
+                Variable throttleOrAccelAngle = line.GetVariableByName("wdkba", "wped", "wped_w");
+                if (throttleOrAccelAngle == null ||
+                     throttleOrAccelAngle.Value > 90)
                 {
                     Variable dc = line.GetVariableByName("ldtvm");
                     if (dc != null && settings.KFLDRLDutyCycles.Contains((int)Math.Round(dc.Value)))
                     {
                         DataPoint p = new DataPoint();
                         p.timestamp = line.TimeStamp;
-
-                        Variable v = line.GetVariableByName("nmot");
-                        if (v == null)
-                            v = line.GetVariableByName("nmot_w");
-                        p.rpm = v.Value;
-
-                        v = line.GetVariableByName("pvdks_w");
-                        if (v == null)
-                            v = line.GetVariableByName("pvdkds_w");
-                        p.actualPresure = v.Value;
-
                         p.dutyCycle = dc.Value;
 
-                        v = line.GetVariableByName("pu");
-                        if (v == null)
-                            v = line.GetVariableByName("pu_w");
-                        if (v == null)
-                            v = line.GetVariableByName("pus_w");
+                        Variable v = line.GetVariableByName("nmot", "nmot_w");
+                        p.rpm = v.Value;
+
+                        v = line.GetVariableByName("pvdks_w", "pvdkds_w");
+                        p.actualPresure = v.Value;
+
+                        v = line.GetVariableByName("pu", "pu_w", "pus_w");
                         p.baroPressure = v == null ? settings.ambient : v.Value;
 
-                        lock (logsByDutyCycle)
+                        lock (dataPointsByLog)
                         {
                             dataPointsByLog[line.Log].Add(p);
-
-                            if (!logsByDutyCycle.ContainsKey(p.dutyCycle))
-                            {
-                                logsByDutyCycle[p.dutyCycle] = new HashSet<ME7LoggerLog>();
-                            }
-                            logsByDutyCycle[p.dutyCycle].Add(line.Log);
                         }
                     }
                 }

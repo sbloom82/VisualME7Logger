@@ -69,6 +69,21 @@ namespace LDRPIDTool
             }
         }
 
+        decimal? dutyCycleActual;
+        private decimal DutyCycleActual
+        {
+            get
+            {
+                if (dutyCycleActual == null && dataPoints.Count > 0)
+                {
+                    //this is dumb, the dutyCycle should be what the majority of the dp's duty is
+                    // when you stomp the pedal, dutycycle may not immediately be your fixed duty cycle.
+                    dutyCycleActual = dataPoints[Count / 2].dutyCycle;
+                }
+                return dutyCycleActual.Value;
+            }
+        }
+
         public int Count { get { return dataPoints.Count; } }
 
         public void Add(DataPoint dataPoint)
@@ -142,6 +157,9 @@ namespace LDRPIDTool
             for (int i = 0; i < dataPoints.Count; ++i)
             {
                 DataPoint current = dataPoints[i];
+                if (current.dutyCycle != this.DutyCycleActual)
+                    continue;
+
                 if (range == null ||
                     current.timestamp - last.timestamp > .25m) //probably should do this a better way
                 {
@@ -157,6 +175,7 @@ namespace LDRPIDTool
 
     public class Settings
     {
+        public bool InterpolateBlankCells = true;
         public decimal ambient = 1000;
 
         public RangeFilter RangeFilter = new RangeFilter();
@@ -218,7 +237,7 @@ namespace LDRPIDTool
             0,
             18,
             36,
-            52,
+            54,
 
             63,
             72,

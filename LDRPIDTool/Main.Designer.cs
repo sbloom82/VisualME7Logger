@@ -39,6 +39,8 @@
             this.btnGenerate = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.label6 = new System.Windows.Forms.Label();
+            this.txtAmbient = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -47,8 +49,6 @@
             this.txtFilterMbar = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.btnLoad = new System.Windows.Forms.Button();
-            this.label6 = new System.Windows.Forms.Label();
-            this.txtAmbient = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.grdKFLDRL)).BeginInit();
             this.panel1.SuspendLayout();
             this.panel4.SuspendLayout();
@@ -184,10 +184,26 @@
             this.panel3.Size = new System.Drawing.Size(1115, 89);
             this.panel3.TabIndex = 8;
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(830, 41);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(62, 17);
+            this.label6.TabIndex = 16;
+            this.label6.Text = "ambient:";
+            // 
+            // txtAmbient
+            // 
+            this.txtAmbient.Location = new System.Drawing.Point(896, 38);
+            this.txtAmbient.Name = "txtAmbient";
+            this.txtAmbient.Size = new System.Drawing.Size(100, 22);
+            this.txtAmbient.TabIndex = 5;
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(550, 40);
+            this.label5.Location = new System.Drawing.Point(549, 41);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(103, 17);
             this.label5.TabIndex = 14;
@@ -205,7 +221,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(108, 41);
+            this.label3.Location = new System.Drawing.Point(107, 41);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(142, 17);
             this.label3.TabIndex = 12;
@@ -213,7 +229,7 @@
             // 
             // txtFilterRPM
             // 
-            this.txtFilterRPM.Location = new System.Drawing.Point(656, 37);
+            this.txtFilterRPM.Location = new System.Drawing.Point(656, 38);
             this.txtFilterRPM.Name = "txtFilterRPM";
             this.txtFilterRPM.Size = new System.Drawing.Size(100, 22);
             this.txtFilterRPM.TabIndex = 4;
@@ -235,7 +251,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 40);
+            this.label2.Location = new System.Drawing.Point(12, 41);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(89, 17);
             this.label2.TabIndex = 8;
@@ -251,22 +267,6 @@
             this.btnLoad.Text = "Load";
             this.btnLoad.UseVisualStyleBackColor = true;
             this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(831, 40);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(62, 17);
-            this.label6.TabIndex = 16;
-            this.label6.Text = "ambient:";
-            // 
-            // txtAmbient
-            // 
-            this.txtAmbient.Location = new System.Drawing.Point(896, 37);
-            this.txtAmbient.Name = "txtAmbient";
-            this.txtAmbient.Size = new System.Drawing.Size(100, 22);
-            this.txtAmbient.TabIndex = 5;
             // 
             // Main
             // 

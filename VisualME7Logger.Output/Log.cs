@@ -579,10 +579,13 @@ namespace VisualME7Logger.Log
             }
         }
 
-        public Variable GetVariableByName(string name)
+        public Variable GetVariableByName(params string[] names)
         {
-            if (variablesByName.ContainsKey(name))
-                return variablesByName[name];
+            foreach (string name in names)
+            {
+                if (variablesByName.ContainsKey(name))
+                    return variablesByName[name];
+            }
             return null;
         }
     }
