@@ -159,7 +159,7 @@ namespace LDRPIDTool
                                 {
                                     lowPoints.Add(current);
                                 }
-                                else if (current.rpm >= rpm && (settings.KFLDRLRpms.Length < r + 1 || current.rpm < settings.KFLDRLRpms[r+1]))
+                                else if (current.rpm >= rpm && (settings.KFLDRLRpms.Length <= r + 1 || current.rpm < settings.KFLDRLRpms[r+1]))
                                 {
                                     highPoints.Add(current);
                                 }
