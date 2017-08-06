@@ -252,4 +252,53 @@ namespace LDRPIDTool
         public decimal seconds = .1m;
         public decimal mbar = 75m;
     }
+
+
+    public class SlightlyBetterDataGridView : DataGridView
+    {
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+            if (e.Control && e.KeyCode == Keys.V)
+            {
+                string s = Clipboard.GetText();
+                string[] lines = s.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+                int row = this.CurrentCell.RowIndex;
+                int col = this.CurrentCell.ColumnIndex;
+                foreach (string line in lines)
+                {
+                    string[] cells = line.Split('\t');
+                    int cellsSelected = cells.Length;
+                    if (row < this.Rows.Count)
+                    {
+                        for (int i = 0; i < cellsSelected; i++)
+                        {
+                            if (col + i < this.Columns.Count)
+                                this[col + i, row].Value = cells[i];
+                            else
+                                break;
+                        }
+                        row++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }            
+        }
+
+        protected override void OnCellEndEdit(DataGridViewCellEventArgs e)
+        {
+            base.OnCellEndEdit(e);
+            if (this.SelectedCells.Count > 0)
+            {
+                object value = this.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+                foreach (DataGridViewCell v in this.SelectedCells)
+                {
+                    v.Value = value;
+                }
+            }
+        }
+    }
 }

@@ -31,11 +31,11 @@
             this.lblLogDir = new System.Windows.Forms.Label();
             this.txtDir = new System.Windows.Forms.TextBox();
             this.btnChooseDir = new System.Windows.Forms.Button();
-            this.grdKFLDRL = new System.Windows.Forms.DataGridView();
+            this.grdKFLDRL = new SlightlyBetterDataGridView();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
-            this.grdKFLDIMX = new System.Windows.Forms.DataGridView();
+            this.grdKFLDIMX = new SlightlyBetterDataGridView();
             this.btnGenerate = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
@@ -89,6 +89,8 @@
             // grdKFLDRL
             // 
             this.grdKFLDRL.AccessibleName = "";
+            this.grdKFLDRL.AllowUserToResizeColumns = false;
+            this.grdKFLDRL.AllowUserToResizeRows = false;
             this.grdKFLDRL.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.grdKFLDRL.ColumnHeadersVisible = false;
             this.grdKFLDRL.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -294,14 +296,14 @@
         private System.Windows.Forms.Label lblLogDir;
         private System.Windows.Forms.TextBox txtDir;
         private System.Windows.Forms.Button btnChooseDir;
-        private System.Windows.Forms.DataGridView grdKFLDRL;
+        private SlightlyBetterDataGridView grdKFLDRL;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Button btnGenerate;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.DataGridView grdKFLDIMX;
+        private SlightlyBetterDataGridView grdKFLDIMX;
         private System.Windows.Forms.Button btnLoad;
         private System.Windows.Forms.TextBox txtFilterRPM;
         private System.Windows.Forms.TextBox txtFilterSeconds;

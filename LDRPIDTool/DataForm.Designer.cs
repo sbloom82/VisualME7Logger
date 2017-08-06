@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.grdData = new System.Windows.Forms.DataGridView();
+            this.grdData = new SlightlyBetterDataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.grdData)).BeginInit();
             this.SuspendLayout();
             // 
@@ -59,6 +59,6 @@
 
         #endregion
 
-        private System.Windows.Forms.DataGridView grdData;
+        private SlightlyBetterDataGridView grdData;
     }
 }

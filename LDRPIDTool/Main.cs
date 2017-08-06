@@ -77,7 +77,6 @@ namespace LDRPIDTool
 
         List<ME7LoggerLog> logs;
         Dictionary<ME7LoggerLog, DataPointCollection> dataPointsByLog;
-        bool wait;
         int closedCount;
         private void btnLoad_Click(object sender, EventArgs e)
         {
@@ -89,11 +88,10 @@ namespace LDRPIDTool
 
             settings = LoadSettings();
 
-            wait = true;
             closedCount = 0;
             logs = new List<ME7LoggerLog>();
             dataPointsByLog = new Dictionary<ME7LoggerLog, DataPointCollection>();
-            
+
             DirectoryInfo dir = new DirectoryInfo(txtDir.Text);
 
             int errors = 0;
@@ -155,31 +153,29 @@ namespace LDRPIDTool
                             {
                                 DataPoint current = filteredPoints[i];
 
-                                if (current.rpm <= rpm && (r==0 && current.rpm > settings.KFLDRLRpms[r -1]))
+                                if (current.rpm <= rpm &&
+                                    (r == 0 || current.rpm > settings.KFLDRLRpms[r - 1]))
                                 {
                                     lowPoints.Add(current);
                                 }
-                                else if (current.rpm >= rpm && (settings.KFLDRLRpms.Length <= r + 1 || current.rpm < settings.KFLDRLRpms[r+1]))
+                                else if (current.rpm >= rpm && 
+                                    (settings.KFLDRLRpms.Length <= r + 1 || current.rpm < settings.KFLDRLRpms[r + 1]))
                                 {
                                     highPoints.Add(current);
                                 }
                             }
 
-                            string value = "0.000";
+                            decimal value = 0;
                             if (highPoints.Count > 0 || lowPoints.Count > 0)
                             {
                                 decimal highPressure = highPoints.Count > 0 ? highPoints.Average(p => p.absolutePressure) : lowPoints.Average(p => p.absolutePressure);
                                 decimal lowPressure = lowPoints.Count > 0 ? lowPoints.Average(p => p.absolutePressure) : highPoints.Average(p => p.absolutePressure);
 
-                                value = ((highPressure + lowPressure) / 2).ToString("0.000");
-                            }
-                            else
-                            {
-                                //grdKFLDRL.Rows[r + 1].Cells[d + 1].
+                                value = ((highPressure + lowPressure) / 2);
                             }
 
-                            var cell = grdKFLDRL.Rows[r + 1].Cells[d + 1];                            
-                            cell.Value = value;
+                            var cell = grdKFLDRL.Rows[r + 1].Cells[d + 1];
+                            cell.Value = value.ToString("0.000");
                             cell.Style.BackColor = System.Drawing.Color.White;
                         }
                     }
@@ -249,7 +245,7 @@ namespace LDRPIDTool
                         {
                             found = 0;
                         }
-                    }                   
+                    }
                 }
             }
         }
