@@ -102,11 +102,12 @@ namespace LDRPIDTool
                     ME7LoggerSession session = new ME7LoggerSession("", file.FullName, noWait: true);
                     session.LogLineRead += LogLineRead;
                     session.StatusChanged += SessionStatusChanged;
-                    session.Open();
 
                     ME7LoggerLog log = session.Log;
                     logs.Add(log);
                     dataPointsByLog[log] = new DataPointCollection(settings);
+
+                    session.Open();
                 }
                 catch (Exception ex)
                 {
