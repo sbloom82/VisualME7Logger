@@ -145,7 +145,7 @@ namespace VisualME7Logger.Log
                     {
                         if (!commInfoStarted)
                         {
-                            commInfoStarted = line == "";
+                            commInfoStarted = line == "" || line.All(c => c == ',');
                         }
                         else
                         {
@@ -156,7 +156,7 @@ namespace VisualME7Logger.Log
                     {
                         if (!variablesStarted)
                         {
-                            variablesStarted = line == "";
+                            variablesStarted = line == "" || line.All(c => c == ',');
                         }
                         else
                         {
@@ -297,7 +297,8 @@ namespace VisualME7Logger.Log
                                 this.Session.DataRead(line);
                             }
 
-                            if (line.StartsWith("\"TIME") || 
+                            if (line.StartsWith("\"TIME") ||
+                                line.StartsWith("TIME") ||
                                 line.StartsWith("Marker,STAMP") || 
                                 line.StartsWith("Time,") ||
                                 line.StartsWith("Time (sec),"))
