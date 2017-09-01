@@ -47,7 +47,7 @@ namespace LDRPIDTool
                     for (int k = 0; k < settings.KFLDIMXDutyCycles.Length; ++k)
                     {
                         index = k;
-                        if (settings.KFLDIMXDutyCycles[k] == dutyCycle)
+                        if (dutyCycle <= settings.KFLDIMXDutyCycles[k])
                         {
                             break;
                         }
