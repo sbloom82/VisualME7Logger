@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using VisualME7Logger.Log;
 using VisualME7Logger.Session;
 using System.Linq;
-
+using System.Reflection;
 
 namespace LDRPIDTool
 {
@@ -370,6 +370,23 @@ namespace LDRPIDTool
 
             DataForm dataForm = new DataForm(settings, data);
             dataForm.Show();
+        }
+
+        private void btnHelp_Click(object sender, EventArgs e)
+        {
+            string title = $"{AssemblyInfo.Title} - {AssemblyInfo.Version} - {AssemblyInfo.Copyright} {AssemblyInfo.Company}";
+            string helpText =
+                "LDRPID Tool creates a \"feed forward\" KFLDRL by using KFLDIMX to convert the KFLDRL duty cycle axis into pressure\r\n\r\n" +
+                "For best results, log the follow parameters at a fixed duty cycle per each duty cycle in the KFLDRL axis:\r\n\r\n" +
+                "Throttle Plate Angle = wdkba\r\n" +
+                "OR\r\n" +
+                "Accel Pedal Position = wped or wped_w\r\n" +
+                "Duty Cycle = ldtvm\r\n" +
+                "Engine Speed = nmot or nmot_w\r\n" +
+                "Charge Pressure = pvdks_w or pvdkds_w\r\n" +
+                "Barometric Pressure = pu or pu_w or pus_w or ambient override value";
+
+            MessageBox.Show(this, helpText, title);
         }
     }
 }
