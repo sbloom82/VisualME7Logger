@@ -443,12 +443,7 @@ namespace VisualME7Logger
                 SessionVariable var = session.Variables[graphVariable.Variable];
                 if (var != null)
                 {
-                    Series s = new Series(string.Format("{4} - {0} {1}-{2} {3}", 
-                        graphVariable.Name, 
-                        graphVariable.Min.ToString("0.##"), 
-                        graphVariable.Max.ToString("0.##"), 
-                        var.Unit,
-                        graphVariable.Variable));
+                    Series s = new Series(string.Format("{0} {1}-{2} {3}", graphVariable.Name, graphVariable.Min.ToString("0.##"), graphVariable.Max.ToString("0.##"), var.Unit));
                     s.Color = graphVariable.LineColor;
                     s.ChartType = (SeriesChartType)cmbChartType.SelectedItem;
                     s.BorderWidth = graphVariable.LineThickness;
@@ -564,9 +559,7 @@ namespace VisualME7Logger
                     decimal percent = (v.Value - graphVariable.Min) / (graphVariable.Max - graphVariable.Min) * this.DisplayOptions.GraphVRes;
                     DataPoint p = s.Points.Add((double)percent);
                     p.AxisLabel = decimal.Round(line.TimeStamp, 1).ToString();
-                    p.ToolTip = string.Format("{5}\r\n{0}: {1} {2}\r\nMin: {3} {2}\r\nMax: {4} {2}", 
-                        graphVariable.Name, v.Value, v.SessionVariable.Unit, v.CurrentMinValue, v.CurrentMaxValue,
-                        graphVariable.Variable);
+                    p.ToolTip = string.Format("{0}: {1} {2}\r\nMin: {3} {2}\r\nMax: {4} {2}", graphVariable.Name, v.Value, v.SessionVariable.Unit, v.CurrentMinValue, v.CurrentMaxValue);
                     p.Tag = v;
 
                     s.Points.RemoveAt(0);
