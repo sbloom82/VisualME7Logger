@@ -539,8 +539,7 @@ namespace VisualME7Logger
 
         private void settingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new OptionsForm(this.CurrentProfile.LoggerOptions).ShowDialog(this);
-            this.SwitchUI();
+          
         }
 
         private void btnAddGraphVariable_Click(object sender, EventArgs e)
@@ -866,6 +865,12 @@ namespace VisualME7Logger
 
             this.ExpressionEditMode = EditModes.View;
             SwitchUI();
+        }
+
+        private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new OptionsForm(this.CurrentProfile.LoggerOptions).ShowDialog(this);
+            this.SwitchUI();
         }
     }
 
