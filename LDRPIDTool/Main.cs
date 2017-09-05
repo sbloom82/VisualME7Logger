@@ -31,26 +31,24 @@ namespace LDRPIDTool
             DataGridViewColumn column = new DataGridViewColumn(new DataGridViewTextBoxCell());
             column.Name = "rowheadercol";
             column.Width = 75;
-            grdKFLDRL.Columns.Add(column);
+            grdPressureByDCandRPM.Columns.Add(column);
+
+            grdPressureByDCandRPM.Rows.Add();
+           
+            for (int i = 0; i < settings.KFLDRLRpms.Length; ++i)
+            {
+                grdPressureByDCandRPM.Rows.Add();
+                grdPressureByDCandRPM.Rows[i + 1].Cells[0].Value = settings.KFLDRLRpms[i];
+            }
+
             for (int i = 0; i < settings.KFLDRLDutyCycles.Length; ++i)
             {
                 column = new DataGridViewColumn(new DataGridViewTextBoxCell());
                 column.Name =
                     column.HeaderText = settings.KFLDRLDutyCycles[i].ToString();
                 column.Width = 75;
-                grdKFLDRL.Columns.Add(column);
-            }
-
-            grdKFLDRL.Rows.Add();
-            for (int i = 0; i < settings.KFLDRLDutyCycles.Length; ++i)
-            {
-                grdKFLDRL.Rows[0].Cells[i + 1].Value = settings.KFLDRLDutyCycles[i];
-            }
-
-            for (int i = 0; i < settings.KFLDRLRpms.Length; ++i)
-            {
-                grdKFLDRL.Rows.Add();
-                grdKFLDRL.Rows[i + 1].Cells[0].Value = settings.KFLDRLRpms[i];
+                grdKFLDRLDutyCycleAxis.Columns.Add(column);
+                grdKFLDRLDutyCycleAxis.Rows[0].Cells[i].Value = settings.KFLDRLDutyCycles[i];
             }
 
             for (int i = 0; i < settings.KFLDIMXPressures.Length; ++i)
@@ -133,64 +131,87 @@ namespace LDRPIDTool
 
         public void BuildValues()
         {
-            foreach (var log in dataPointsByLog.Keys)
+            int columnCount = grdPressureByDCandRPM.ColumnCount;
+            for (int i = 1; i < columnCount; ++i)
             {
-                DataPointCollection dataPoints = dataPointsByLog[log];
-
-                if (dataPoints.Count == 0)
-                    continue;
-
-                for (int d = 0; d < settings.KFLDRLDutyCycles.Length; ++d)
+                grdPressureByDCandRPM.Columns.RemoveAt(1);
+            }
+            Dictionary<int, int> dutyCycles = new Dictionary<int, int>();
+            var logsWithFilteredDataPoints = dataPointsByLog.Values.Where(dpc => dpc.FilteredPoints.Count > 0);
+            foreach (var dataPoints in logsWithFilteredDataPoints.OrderBy(dpc => dpc.DutyCycle))
+            {                
+                int column = 0;
+                if (!dutyCycles.ContainsKey(dataPoints.DutyCycle))
                 {
-                    if (settings.KFLDRLDutyCycles[d] == dataPoints.DutyCycle)
+                    column = grdPressureByDCandRPM.Rows[0].Cells.Count;
+                    dutyCycles[dataPoints.DutyCycle] = column;
+
+                    DataGridViewColumn dgvcolumn = new DataGridViewColumn(new DataGridViewTextBoxCell());
+                    dgvcolumn = new DataGridViewColumn(new DataGridViewTextBoxCell());
+                    dgvcolumn.Name =
+                        dgvcolumn.HeaderText = dataPoints.DutyCycle.ToString();
+                    dgvcolumn.Width = 75;
+                    grdPressureByDCandRPM.Columns.Add(dgvcolumn);
+
+                    grdPressureByDCandRPM.Rows[0].Cells[column].Value = dataPoints.DutyCycle;
+                }
+                else
+                {
+                    continue;
+                }
+
+                List<DataPoint> filteredPoints = new List<DataPoint>();
+                foreach(var dpc in logsWithFilteredDataPoints.Where(fdp => fdp.DutyCycle == dataPoints.DutyCycle))
+                {
+                    filteredPoints.AddRange(dpc.FilteredPoints);
+                }
+
+                for (int r = 0; r < settings.KFLDRLRpms.Length; ++r)
+                {
+                    int rpm = settings.KFLDRLRpms[r];
+                    List<DataPoint> highPoints = new List<DataPoint>();
+                    List<DataPoint> lowPoints = new List<DataPoint>();
+                    for (int i = 0; i < filteredPoints.Count; ++i)
                     {
-                        List<DataPoint> filteredPoints = dataPoints.FilteredPoints;
-                        for (int r = 0; r < settings.KFLDRLRpms.Length; ++r)
+                        DataPoint current = filteredPoints[i];
+
+                        if (current.rpm <= rpm &&
+                            (r == 0 || current.rpm > settings.KFLDRLRpms[r - 1]))
                         {
-                            int rpm = settings.KFLDRLRpms[r];
-                            List<DataPoint> highPoints = new List<DataPoint>();
-                            List<DataPoint> lowPoints = new List<DataPoint>();
-                            for (int i = 0; i < filteredPoints.Count; ++i)
-                            {
-                                DataPoint current = filteredPoints[i];
-
-                                if (current.rpm <= rpm &&
-                                    (r == 0 || current.rpm > settings.KFLDRLRpms[r - 1]))
-                                {
-                                    lowPoints.Add(current);
-                                }
-                                else if (current.rpm >= rpm && 
-                                    (settings.KFLDRLRpms.Length <= r + 1 || current.rpm < settings.KFLDRLRpms[r + 1]))
-                                {
-                                    highPoints.Add(current);
-                                }
-                            }
-
-                            decimal value = 0;
-                            if (highPoints.Count > 0 || lowPoints.Count > 0)
-                            {
-                                decimal highPressure = highPoints.Count > 0 ? highPoints.Average(p => p.absolutePressure) : lowPoints.Average(p => p.absolutePressure);
-                                decimal lowPressure = lowPoints.Count > 0 ? lowPoints.Average(p => p.absolutePressure) : highPoints.Average(p => p.absolutePressure);
-
-                                value = ((highPressure + lowPressure) / 2);
-                            }
-
-                            var cell = grdKFLDRL.Rows[r + 1].Cells[d + 1];
-                            cell.Value = value.ToString("0.000");
-                            cell.Style.BackColor = System.Drawing.Color.White;
+                            lowPoints.Add(current);
+                        }
+                        else if (current.rpm >= rpm &&
+                            (settings.KFLDRLRpms.Length <= r + 1 || current.rpm < settings.KFLDRLRpms[r + 1]))
+                        {
+                            highPoints.Add(current);
                         }
                     }
+
+                    decimal value = 0;
+                    if (highPoints.Count > 0 || lowPoints.Count > 0)
+                    {
+                        decimal highPressure = highPoints.Count > 0 ? highPoints.Average(p => p.absolutePressure) : lowPoints.Average(p => p.absolutePressure);
+                        decimal lowPressure = lowPoints.Count > 0 ? lowPoints.Average(p => p.absolutePressure) : highPoints.Average(p => p.absolutePressure);
+
+                        value = ((highPressure + lowPressure) / 2);
+                    }
+
+                    var cell = grdPressureByDCandRPM.Rows[r + 1].Cells[column];
+                    cell.Value = value.ToString("0.000");
+                    cell.Style.BackColor = System.Drawing.Color.White;
                 }
+
             }
 
+           
             if (settings.InterpolateBlankCells)
             {
-                for (int d = 0; d < settings.KFLDRLDutyCycles.Length; ++d)
-                {
+                for(int d = 0; d < grdPressureByDCandRPM.ColumnCount - 1; ++d)
+                { 
                     int found = 0;
-                    for (int r = settings.KFLDRLRpms.Length; r >= 0; --r)
+                    for (int r = settings.KFLDRLRpms.Length -1; r >= 0; --r)
                     {
-                        var cell = grdKFLDRL.Rows[r + 1].Cells[d + 1];
+                        var cell = grdPressureByDCandRPM.Rows[r + 1].Cells[d + 1];
                         if (cell.Value == null)
                             continue;
 
@@ -201,9 +222,9 @@ namespace LDRPIDTool
                             decimal newValue = Program.Interpolate(
                                 settings.KFLDRLRpms[r],
                                 settings.KFLDRLRpms[r + 1],
-                                decimal.Parse(grdKFLDRL.Rows[r + 2].Cells[d + 1].Value.ToString()),
+                                decimal.Parse(grdPressureByDCandRPM.Rows[r + 2].Cells[d + 1].Value.ToString()),
                                 settings.KFLDRLRpms[r + 2],
-                                decimal.Parse(grdKFLDRL.Rows[r + 3].Cells[d + 1].Value.ToString()));
+                                decimal.Parse(grdPressureByDCandRPM.Rows[r + 3].Cells[d + 1].Value.ToString()));
                             cell.Value = (newValue < 0 ? 0 : newValue).ToString("0.000");
                             cell.Style.BackColor = System.Drawing.Color.Red;
 
@@ -219,9 +240,9 @@ namespace LDRPIDTool
                     }
 
                     found = 0;
-                    for (int r = 0; r < settings.KFLDRLRpms.Length; ++r)
+                    for (int r = 0; r <= settings.KFLDRLRpms.Length - 1; ++r)
                     {
-                        var cell = grdKFLDRL.Rows[r + 1].Cells[d + 1];
+                        var cell = grdPressureByDCandRPM.Rows[r + 1].Cells[d + 1];
                         if (cell.Value == null)
                             continue;
 
@@ -232,9 +253,9 @@ namespace LDRPIDTool
                             decimal newValue = Program.Interpolate(
                                 settings.KFLDRLRpms[r],
                                 settings.KFLDRLRpms[r - 1],
-                                decimal.Parse(grdKFLDRL.Rows[r].Cells[d + 1].Value.ToString()),
+                                decimal.Parse(grdPressureByDCandRPM.Rows[r].Cells[d + 1].Value.ToString()),
                                 settings.KFLDRLRpms[r - 2],
-                                decimal.Parse(grdKFLDRL.Rows[r - 1].Cells[d + 1].Value.ToString()));
+                                decimal.Parse(grdPressureByDCandRPM.Rows[r - 1].Cells[d + 1].Value.ToString()));
                             cell.Value = (newValue < 0 ? 0 : newValue).ToString("0.000");
                             cell.Style.BackColor = System.Drawing.Color.Red;
                         }
@@ -261,7 +282,7 @@ namespace LDRPIDTool
                      throttleOrAccelAngle.Value > 90)
                 {
                     Variable dc = line.GetVariableByName("ldtvm");
-                    if (dc != null && settings.KFLDRLDutyCycles.Contains((int)Math.Round(dc.Value)))
+                    if (dc != null)
                     {
                         DataPoint p = new DataPoint();
                         p.timestamp = line.TimeStamp;
@@ -316,17 +337,23 @@ namespace LDRPIDTool
                 settings.RangeFilter.rpmRangeLengthMin = decimal.Parse(txtFilterSeconds.Text);
                 settings.ambient = decimal.Parse(txtAmbient.Text);
 
-                settings.KFLDRLDutyCycles = new int[grdKFLDRL.Columns.Count - 1];
-                for (int i = 1; i < grdKFLDRL.Columns.Count; ++i)
+                settings.KFLDRLDutyCycles = new int[grdKFLDRLDutyCycleAxis.Columns.Count];
+                for (int i = 0; i < grdKFLDRLDutyCycleAxis.Columns.Count; ++i)
                 {
-                    settings.KFLDRLDutyCycles[i - 1] = int.Parse(grdKFLDRL.Rows[0].Cells[i].Value.ToString());
+                    settings.KFLDRLDutyCycles[i] = int.Parse(grdKFLDRLDutyCycleAxis.Rows[0].Cells[i].Value.ToString());
                 }
 
-                settings.KFLDRLRpms = new int[grdKFLDRL.Rows.Count - 2];
-                for (int i = 1; i < grdKFLDRL.Rows.Count - 1; ++i)
+                settings.KFLDRLRpms = new int[grdPressureByDCandRPM.Rows.Count - 1];
+                for (int i = 0; i < grdPressureByDCandRPM.Rows.Count - 1; ++i)
                 {
-                    settings.KFLDRLRpms[i - 1] = int.Parse(grdKFLDRL.Rows[i].Cells[0].Value.ToString());
+                    settings.KFLDRLRpms[i] = int.Parse(grdPressureByDCandRPM.Rows[i + 1].Cells[0].Value.ToString());
                 }
+
+                settings.LoggedDutyCycles = new int[grdPressureByDCandRPM.ColumnCount - 1];
+                for (int i = 1; i < grdPressureByDCandRPM.ColumnCount; ++i)
+                {
+                    settings.LoggedDutyCycles[i-1] = int.Parse(grdPressureByDCandRPM.Rows[0].Cells[i].Value.ToString());
+                } 
 
                 settings.KFLDIMXPressures = new int[grdKFLDIMX.Columns.Count];
                 for (int i = 0; i < grdKFLDIMX.Columns.Count; ++i)
@@ -355,14 +382,14 @@ namespace LDRPIDTool
             decimal[][] data = new decimal[settings.KFLDRLRpms.Length][];
             for (int i = 0; i < settings.KFLDRLRpms.Length; ++i)
             {
-                data[i] = new decimal[settings.KFLDRLDutyCycles.Length];
-                for (int j = 0; j < settings.KFLDRLDutyCycles.Length; ++j)
+                data[i] = new decimal[settings.LoggedDutyCycles.Length];
+                for (int j = 0; j < settings.LoggedDutyCycles.Length; ++j)
                 {
                     decimal value = 0;
-                    object obj = grdKFLDRL.Rows[i + 1].Cells[j + 1].Value;
+                    object obj = grdPressureByDCandRPM.Rows[i + 1].Cells[j + 1].Value;
                     if (obj != null)
                     {
-                        decimal.TryParse(grdKFLDRL.Rows[i + 1].Cells[j + 1].Value.ToString(), out value);
+                        decimal.TryParse(grdPressureByDCandRPM.Rows[i + 1].Cells[j + 1].Value.ToString(), out value);
                     }
                     data[i][j] = value;
                 }

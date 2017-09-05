@@ -244,6 +244,8 @@ namespace LDRPIDTool
             81,
             90
         };
+
+        public int[] LoggedDutyCycles;
     }
 
     public class RangeFilter
@@ -291,7 +293,7 @@ namespace LDRPIDTool
         protected override void OnCellEndEdit(DataGridViewCellEventArgs e)
         {
             base.OnCellEndEdit(e);
-            if (this.SelectedCells.Count > 0)
+            if (this.SelectedCells.Count > 1)
             {
                 object value = this.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
                 foreach (DataGridViewCell v in this.SelectedCells)
