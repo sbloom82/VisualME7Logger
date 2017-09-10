@@ -411,7 +411,8 @@ namespace LDRPIDTool
                 "Duty Cycle = ldtvm\r\n" +
                 "Engine Speed = nmot or nmot_w\r\n" +
                 "Charge Pressure = pvdks_w or pvdkds_w\r\n" +
-                "Barometric Pressure = pu or pu_w or pus_w or ambient override value";
+                "Barometric Pressure = pu or pu_w or pus_w or ambient override value\r\n\r\n" +
+                "Note: Ensure LDDIMXN is accounted for by either zeroing the map or modifying KFLDIMX";
 
             MessageBox.Show(this, helpText, title);
         }
