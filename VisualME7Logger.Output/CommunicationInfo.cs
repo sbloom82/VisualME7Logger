@@ -92,7 +92,7 @@ namespace VisualME7Logger.Common
                     {
                         try
                         {
-                            SamplesPerSecond = short.Parse(parts[1].Replace("samples/second", "").Trim());
+                            SamplesPerSecond = short.Parse(parts[1].Substring(0, 2).Trim());
                         }
                         catch { }
                     }

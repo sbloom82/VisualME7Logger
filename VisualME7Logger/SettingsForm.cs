@@ -867,6 +867,12 @@ namespace VisualME7Logger
             this.ExpressionEditMode = EditModes.View;
             SwitchUI();
         }
+
+        private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new OptionsForm(this.CurrentProfile.LoggerOptions).ShowDialog(this);
+            this.SwitchUI();            
+        }
     }
 
     public class Profile
