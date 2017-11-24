@@ -657,6 +657,7 @@ namespace VisualME7Logger.Session
         NCalc.Expression _exp = null;
         LogLine curLL = null;
         int errorCount = 0;
+        char splitChar = '|';
         public object Compute(LogLine logLine)
         {
             if (_exp == null)
@@ -666,10 +667,10 @@ namespace VisualME7Logger.Session
                 {                   
                     if (!string.IsNullOrEmpty(name))
                     {
-                        string[] names = name.Split('|');
+                        string[] names = name.Split(splitChar);
                         foreach (string n in names)
                         {
-                            Variable var = curLL.GetVariableByName(n.Trim());
+                            Variable var = curLL.GetVariableByName(n);
                             if (var != null)
                             {
                                 args.Result = var.Value;
