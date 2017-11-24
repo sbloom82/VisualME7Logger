@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LDRPIDTool
+namespace VisualME7Logger.Output
 {
     public static class AssemblyInfo
     {
@@ -55,7 +55,7 @@ namespace LDRPIDTool
 
         private static T GetAssemblyAttribute<T>() where T : Attribute
         {
-            object[] attributes = Assembly.GetExecutingAssembly()
+            object[] attributes = Assembly.GetEntryAssembly()
                 .GetCustomAttributes(typeof(T), true);
             if (attributes == null || attributes.Length == 0) return null;
             return (T)attributes[0];

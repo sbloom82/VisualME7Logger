@@ -57,6 +57,7 @@
     <Compile Include="Log.cs" />
     <Compile Include="LoggerSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\SharedAssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\ME7Logger\bin\savedconfig" />

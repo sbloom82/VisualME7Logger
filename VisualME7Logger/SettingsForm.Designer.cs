@@ -135,6 +135,7 @@
             this.eEPromToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tpMeasurements.SuspendLayout();
@@ -1387,13 +1388,21 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.optionsToolStripMenuItem,
-            this.toolsToolStripMenuItem});
+            this.toolsToolStripMenuItem,
+            this.toolStripMenuItem2});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
             this.menuStrip1.Size = new System.Drawing.Size(977, 28);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(28, 24);
+            this.toolStripMenuItem2.Text = "?";
+            this.toolStripMenuItem2.Click += new System.EventHandler(this.btnHelp_Click);
             // 
             // SettingsForm
             // 
@@ -1554,5 +1563,6 @@
         private System.Windows.Forms.ComboBox cmbConnect;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.ComboBox cmbDisplayOrder;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
     }
 }

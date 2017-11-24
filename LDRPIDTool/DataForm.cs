@@ -72,18 +72,30 @@ namespace LDRPIDTool
                       ));
 #endif
 
+
+                    grdData.Rows[i + 1].Cells[j + 1].Style.BackColor = System.Drawing.Color.White;
+
                     //with pressure at dutycycle, interpolate dc from pressures in first pass map
 
                     //at this rpm - data[i]
                     decimal[] rowValues = data[i];
                     decimal zValue = 0;
                     if (pressureAtDutyCycle < rowValues[0] ||
-                        pressureAtDutyCycle > rowValues[rowValues.Length - 1])
+                        (pressureAtDutyCycle > rowValues[rowValues.Length - 1] && (j + 1 >= settings.KFLDRLDutyCycles.Length || rpm < settings.rpmSep)))
                     {
                         zValue = dutyCycle;
                     }
                     else
                     {
+                       
+                        if (pressureAtDutyCycle > rowValues[rowValues.Length - 1])
+                        {
+                            grdData.Rows[i + 1].Cells[j + 1].Style.BackColor = System.Drawing.Color.Red;
+                            //COLOR RED
+
+                        }
+
+
                         index = rowValues.Length - 1;
                         for (int k = 0; k < data[i].Length; ++k)
                         {

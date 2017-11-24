@@ -180,6 +180,8 @@ namespace LDRPIDTool
 
         public RangeFilter RangeFilter = new RangeFilter();
 
+        public int rpmSep = 2250;
+
         public int[] KFLDRLDutyCycles = new int[]
         {
             0,

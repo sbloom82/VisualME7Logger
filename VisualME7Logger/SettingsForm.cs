@@ -12,6 +12,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 using System.Security;
 using System.Security.Permissions;
 using System.Security.Principal;
+using VisualME7Logger.Output;
 
 namespace VisualME7Logger
 {
@@ -176,26 +177,31 @@ namespace VisualME7Logger
 
         private void SwitchUI()
         {
-            this.lstGraphVariables.Enabled =
+            try
+            {
+                //wrapping in try because list.selecteditem is throwing a indexout of range.
+                this.lstGraphVariables.Enabled =
                 this.btnAddGraphVariable.Enabled = this.GraphVariableEditMode == EditModes.View;
-            this.btnEditGraphVariable.Enabled =
-                this.btnDeleteGraphVariable.Enabled = this.GraphVariableEditMode == EditModes.View && lstGraphVariables.SelectedItem != null;
-            this.gbGraphVariables.Enabled = this.GraphVariableEditMode != EditModes.View;
+                this.btnEditGraphVariable.Enabled =
+                    this.btnDeleteGraphVariable.Enabled = this.GraphVariableEditMode == EditModes.View && lstGraphVariables.SelectedItem != null;
+                this.gbGraphVariables.Enabled = this.GraphVariableEditMode != EditModes.View;
 
-            this.lstProfiles.Enabled =
-                this.btnProfileAdd.Enabled = this.ProfileEditMode == EditModes.View;
-            this.btnProfileSetCurrent.Enabled =
-                this.btnProfileClone.Enabled =
-                this.btnProfileEdit.Enabled =
-                this.btnProfileDelete.Enabled = this.ProfileEditMode == EditModes.View && lstProfiles.SelectedItem != null;
-            this.gbProfile.Enabled = this.ProfileEditMode != EditModes.View;
+                this.lstProfiles.Enabled =
+                    this.btnProfileAdd.Enabled = this.ProfileEditMode == EditModes.View;
+                this.btnProfileSetCurrent.Enabled =
+                    this.btnProfileClone.Enabled =
+                    this.btnProfileEdit.Enabled =
+                    this.btnProfileDelete.Enabled = this.ProfileEditMode == EditModes.View && lstProfiles.SelectedItem != null;
+                this.gbProfile.Enabled = this.ProfileEditMode != EditModes.View;
 
-            this.lstExpressions.Enabled =
-                this.btnExpressionAdd.Enabled = this.ExpressionEditMode == EditModes.View;
-            this.btnExpressionClone.Enabled =
-                this.btnExpressionEdit.Enabled =
-                this.btnExpressionDelete.Enabled = this.ExpressionEditMode == EditModes.View && lstExpressions.SelectedItem != null;
-            this.gbExpressions.Enabled = this.ExpressionEditMode != EditModes.View;
+                this.lstExpressions.Enabled =
+                    this.btnExpressionAdd.Enabled = this.ExpressionEditMode == EditModes.View;
+                this.btnExpressionClone.Enabled =
+                    this.btnExpressionEdit.Enabled =
+                    this.btnExpressionDelete.Enabled = this.ExpressionEditMode == EditModes.View && lstExpressions.SelectedItem != null;
+                this.gbExpressions.Enabled = this.ExpressionEditMode != EditModes.View;
+            }
+            catch { }
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -872,6 +878,13 @@ namespace VisualME7Logger
         {
             new OptionsForm(this.CurrentProfile.LoggerOptions).ShowDialog(this);
             this.SwitchUI();            
+        }
+
+        private void btnHelp_Click(object sender, EventArgs e)
+        {
+            string title = $"{AssemblyInfo.Title} - {AssemblyInfo.Version} - {AssemblyInfo.Copyright} {AssemblyInfo.Company}";
+            string helpText = "VisualME7Logger - Figure it out yodamself";
+            MessageBox.Show(this, helpText, title);
         }
     }
 

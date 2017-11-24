@@ -663,16 +663,21 @@ namespace VisualME7Logger.Session
             {
                 _exp = new NCalc.Expression(this.Expression);
                 _exp.EvaluateParameter += delegate (string name, NCalc.ParameterArgs args)
-                {
-                    Variable var = curLL.GetVariableByName(name);
-                    if (var != null)
+                {                   
+                    if (!string.IsNullOrEmpty(name))
                     {
-                        args.Result = var.Value;
+                        string[] names = name.Split('|');
+                        foreach (string n in names)
+                        {
+                            Variable var = curLL.GetVariableByName(n.Trim());
+                            if (var != null)
+                            {
+                                args.Result = var.Value;
+                                return;
+                            }
+                        }                        
                     }
-                    else
-                    {
-                        args.HasResult = false;
-                    }
+                    args.HasResult = false;
                 };
             }
             object obj = 0m;
