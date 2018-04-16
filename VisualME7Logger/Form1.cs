@@ -185,7 +185,7 @@ namespace VisualME7Logger
 
             foreach (SessionVariable v in vars)
             {
-                bool hasActiveGraphVariable = this.DisplayOptions.GraphVariables.Any(gv => gv.Variable == v.Name && gv.Active);
+                GraphVariable var  = this.DisplayOptions.GraphVariables.FirstOrDefault(gv => gv.Variable == v.Name && gv.Active);
                 dataGridView1.Columns.Add(v.Name, string.IsNullOrEmpty(v.Alias) ? v.Name : v.Alias);
 
                 FlowLayoutPanel flp = new FlowLayoutPanel();
@@ -198,8 +198,8 @@ namespace VisualME7Logger
                 flp.MouseUp += flp_MouseUp;
 
                 Label name = new Label();
-                Font f = new Font(name.Font.FontFamily, name.Font.Size + 1, hasActiveGraphVariable ? FontStyle.Bold : FontStyle.Regular);
-
+                Font f = new Font(name.Font.FontFamily, name.Font.Size + 1, var != null ? FontStyle.Bold : FontStyle.Regular);
+              
                 name.Name = v.Name;
                 name.Height = 20;
                 name.Text = v.ToString();
@@ -209,6 +209,8 @@ namespace VisualME7Logger
                 name.RightToLeft = System.Windows.Forms.RightToLeft.No;
                 name.Tag = v;
                 name.MouseUp += flp_MouseUp;
+                name.ForeColor = var != null ? var.LineColor : Color.White;
+                name.BackColor = Color.FromArgb(64, 64, 64);
 
                 Label value = new Label();
                 value.Name = v.Name;
@@ -219,6 +221,8 @@ namespace VisualME7Logger
                 value.RightToLeft = System.Windows.Forms.RightToLeft.No;
                 value.Tag = v;
                 value.MouseUp += flp_MouseUp;
+                value.ForeColor = var != null ? var.LineColor : Color.White;
+                value.BackColor = Color.FromArgb(64, 64, 64);
 
                 flp.Controls.Add(value);
                 flp.Controls.Add(name);
@@ -345,8 +349,8 @@ namespace VisualME7Logger
             int index = 0;
             foreach (Variable v in vars)
             {
-                Label l = (Label)flpVariables.Controls[index++].Controls[0];
-                l.Text = string.Format("{0} {1}", v.Value, v.SessionVariable.Unit);
+                flpVariables.Controls[index++].Controls[0].Text =
+                    string.Format("{0} {1}", v.Value, v.SessionVariable.Unit);
             }
         }
 
@@ -423,6 +427,7 @@ namespace VisualME7Logger
                 if (c is Label)
                 {
                     c.Font = f;
+                    c.ForeColor = graphVariable.Active ? graphVariable.LineColor : Color.White;
                 }
                 else if (c is CheckBox)
                 {

@@ -403,7 +403,7 @@ namespace LDRPIDTool
             string title = $"{AssemblyInfo.Title} - {AssemblyInfo.Version} - {AssemblyInfo.Copyright} {AssemblyInfo.Company}";
             string helpText =
                 "LDRPID Tool creates a \"feed forward\" KFLDRL by using KFLDIMX to convert the KFLDRL duty cycle axis into pressure\r\n\r\n" +
-                "For best results, log the follow parameters at a fixed duty cycle per each duty cycle in the KFLDRL axis:\r\n\r\n" +
+                "For best results, log the following parameters at a different fixed duty cycles:\r\n\r\n" +
                 "Throttle Plate Angle = wdkba\r\n" +
                 "OR\r\n" +
                 "Accel Pedal Position = wped or wped_w\r\n" +
@@ -411,7 +411,8 @@ namespace LDRPIDTool
                 "Engine Speed = nmot or nmot_w\r\n" +
                 "Charge Pressure = pvdks_w or pvdkds_w\r\n" +
                 "Barometric Pressure = pu or pu_w or pus_w or ambient override value\r\n\r\n" +
-                "Note: Ensure LDDIMXN is accounted for by either zeroing the map or modifying KFLDIMX";
+                "Notes:\r\n" +
+                "Set fixed WGDC with KFLDRAPP and CWMDAPP = 8";
 
             MessageBox.Show(this, helpText, title);
         }

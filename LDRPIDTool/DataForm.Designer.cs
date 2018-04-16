@@ -28,7 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.grdData = new SlightlyBetterDataGridView();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DataForm));
+            this.grdData = new LDRPIDTool.SlightlyBetterDataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.grdData)).BeginInit();
             this.SuspendLayout();
             // 
@@ -50,6 +51,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1111, 558);
             this.Controls.Add(this.grdData);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "DataForm";
             this.Text = "Data";
             ((System.ComponentModel.ISupportInitialize)(this.grdData)).EndInit();

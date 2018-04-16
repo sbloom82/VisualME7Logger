@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.lblLogDir = new System.Windows.Forms.Label();
             this.txtDir = new System.Windows.Forms.TextBox();
             this.btnChooseDir = new System.Windows.Forms.Button();
@@ -352,9 +353,10 @@
             this.ClientSize = new System.Drawing.Size(1115, 819);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "Main";
-            this.Text = "LDRPID tool";
+            this.Text = "LDRPID Boost Tool";
             ((System.ComponentModel.ISupportInitialize)(this.grdPressureByDCandRPM)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel5.ResumeLayout(false);

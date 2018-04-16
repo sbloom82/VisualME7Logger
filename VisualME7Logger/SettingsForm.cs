@@ -883,7 +883,7 @@ namespace VisualME7Logger
         private void btnHelp_Click(object sender, EventArgs e)
         {
             string title = $"{AssemblyInfo.Title} - {AssemblyInfo.Version} - {AssemblyInfo.Copyright} {AssemblyInfo.Company}";
-            string helpText = "VisualME7Logger - Figure it out yodamself";
+            string helpText = "VisualME7Logger - [Informative help text goes here ;)]";
             MessageBox.Show(this, helpText, title);
         }
     }
