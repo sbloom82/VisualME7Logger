@@ -36,7 +36,7 @@ namespace VisualME7Logger.Log
             this.noWait = noWait;
         }
 
-
+        internal bool NewVCDSFormat;
         private bool noWait;
         private int lineNumber;
         public LogTypes LogType;
@@ -77,7 +77,8 @@ namespace VisualME7Logger.Log
                         {
                             if (!variablesStarted)
                             {
-                                variablesStarted = line.StartsWith(",Group A:");
+                                variablesStarted = line.StartsWith(",Group A:") || line.StartsWith("Marker,");
+                                NewVCDSFormat = line.StartsWith("Marker,");
                             }
 
                             if (variablesStarted)
@@ -265,6 +266,7 @@ namespace VisualME7Logger.Log
                 Encoding.UTF7))
             {
                 bool ready = false;
+                bool newVCDSReady = false;
                 string line;
                 DateTime time = DateTime.Now;
 
@@ -297,13 +299,22 @@ namespace VisualME7Logger.Log
                                 this.Session.DataRead(line);
                             }
 
-                            if (line.StartsWith("\"TIME") ||
+                            if (newVCDSReady)
+                            {
+                                ready = line.StartsWith(",,");
+                            }
+                            else if (line.StartsWith("\"TIME") ||
                                 line.StartsWith("TIME") ||
-                                line.StartsWith("Marker,STAMP") || 
+                                line.StartsWith("Marker,") ||
                                 line.StartsWith("Time,") ||
                                 line.StartsWith("Time (sec),"))
                             {
                                 ready = true;
+                                if (NewVCDSFormat)
+                                {
+                                    newVCDSReady = true;
+                                    ready = false;
+                                }
                             }
                         }
                         else
@@ -316,12 +327,13 @@ namespace VisualME7Logger.Log
                             }
                             try
                             {
-                                if (this.LogType == LogTypes.VCDS)
+                                if (this.LogType == LogTypes.VCDS && !NewVCDSFormat)
                                 {
                                     foreach (LogLine logLine in this.ReadVCDSLine(line, last))
                                     {
                                         Session.LineRead(logLine);
-                                        Session.CurrentSamplesPerSecond = (short)(((logLine.TimeStamp - (last == null ? 0 : last.TimeStamp)) * 100));
+                                        if(Session.CurrentSamplesPerSecond == 0)
+                                            Session.CurrentSamplesPerSecond = (short)(1 / ((logLine.TimeStamp - (last == null ? 0 : last.TimeStamp))));
                                         last = logLine;
                                     }
                                 }
@@ -330,9 +342,11 @@ namespace VisualME7Logger.Log
                                     LogLine logLine = this.ReadLine(line, last);
                                     Session.LineRead(logLine);
                                     if (this.LogType == LogTypes.Eurodyne ||
-                                        this.LogType == LogTypes.Normal)
+                                        this.LogType == LogTypes.Normal ||
+                                        this.LogType == LogTypes.VCDS)
                                     {
-                                        Session.CurrentSamplesPerSecond = (short)(((logLine.TimeStamp - (last == null ? 0 : last.TimeStamp)) * 100));
+                                        if(Session.CurrentSamplesPerSecond == 0)
+                                            Session.CurrentSamplesPerSecond = (short)(1 / ((logLine.TimeStamp - (last == null ? 0 : last.TimeStamp))));
                                     }
                                     last = logLine;
                                 }
@@ -470,10 +484,14 @@ namespace VisualME7Logger.Log
         public Variable this[string name] { get { return variablesByName[name]; } }
         public IEnumerable<Variable> Variables { get { return this.variables; } }
         private List<Variable> variables = new List<Variable>();
+        private short timestampIndex = 0;
 
         public LogLine(ME7LoggerLog log, string line, int lineNumber, LogLine last)
         {
             this.Log = log;
+            if (this.Log.NewVCDSFormat)
+                this.timestampIndex = 1;
+
             this.LineNumber = lineNumber;
             this.Parse(line, last);
         }
@@ -513,6 +531,7 @@ namespace VisualME7Logger.Log
             }
         }
 
+
         private bool timeOnly = false;
         private const char COLUMN_SEP = ',';
         private void Parse(string line, LogLine last)
@@ -523,18 +542,18 @@ namespace VisualME7Logger.Log
             {
                 try
                 {
-                    TimeStamp = decimal.Parse(values[0], VisualME7Logger.Log.ME7LoggerLog.CultureInfo);
+                    TimeStamp = decimal.Parse(values[timestampIndex], VisualME7Logger.Log.ME7LoggerLog.CultureInfo);
                 }
                 catch
                 {
                     try
                     {
-                        TimeStampDateTime = DateTime.Parse(values[0]);
+                        TimeStampDateTime = DateTime.Parse(values[timestampIndex]);
                         TimeStamp = 0;
                     }
                     catch
                     {
-                        TimeStampDateTime = DateTime.ParseExact(values[0], "HH:mm:ss:ffff", System.Globalization.CultureInfo.CurrentCulture);
+                        TimeStampDateTime = DateTime.ParseExact(values[timestampIndex], "HH:mm:ss:ffff", System.Globalization.CultureInfo.CurrentCulture);
                         TimeStamp = 0;
                         timeOnly = true;
                     }
@@ -544,24 +563,24 @@ namespace VisualME7Logger.Log
             {
                 if (!last.TimeStampDateTime.HasValue)
                 {
-                    TimeStamp = decimal.Parse(values[0], VisualME7Logger.Log.ME7LoggerLog.CultureInfo);
+                    TimeStamp = decimal.Parse(values[timestampIndex], VisualME7Logger.Log.ME7LoggerLog.CultureInfo);
                 }
                 else
                 {
                     if (!last.timeOnly)
                     {
-                        TimeStampDateTime = DateTime.Parse(values[0]);
+                        TimeStampDateTime = DateTime.Parse(values[timestampIndex]);
                     }
                     else
                     {
-                        TimeStampDateTime = DateTime.ParseExact(values[0], "HH:mm:ss:ffff", System.Globalization.CultureInfo.CurrentCulture);
+                        TimeStampDateTime = DateTime.ParseExact(values[timestampIndex], "HH:mm:ss:ffff", System.Globalization.CultureInfo.CurrentCulture);
                         timeOnly = true;
                     }
                     TimeStamp = last.TimeStamp + (decimal)TimeStampDateTime.Value.Subtract(last.TimeStampDateTime.Value).TotalSeconds;
                 }
             }
 
-            int i = 1;
+            int i = timestampIndex + 1;
 
             foreach (SessionVariable sv in Log.Session.Variables.Values)
             {
@@ -576,7 +595,8 @@ namespace VisualME7Logger.Log
                 {
                     variablesByName.Add(v.SessionVariable.Name, v);
                 }
-                i++;
+
+                i += Log.NewVCDSFormat ? 2 : 1;
             }
         }
 

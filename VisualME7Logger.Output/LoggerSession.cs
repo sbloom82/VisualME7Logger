@@ -794,7 +794,7 @@ namespace VisualME7Logger.Session
             switch (logType)
             {
                 case ME7LoggerLog.LogTypes.VCDS:
-                    if (line.StartsWith(",Group A:"))
+                    if (line.StartsWith(",Group A:") || line.StartsWith("Marker,"))
                     {
                         variableLines = new List<string>();
                         variableLines.Add(line);
@@ -826,6 +826,23 @@ namespace VisualME7Logger.Session
                                         string name = names1[i] + " " + names2[i];
                                         this.Add(new LogVariable(this.Count + 1, name, units[i], name, currentGroup));
                                     }
+                                }
+                            }
+
+                            this.Complete = true;
+                            break;
+                        }
+                        else if (variableLines.Count == 3 && variableLines[0].StartsWith("Marker,"))
+                        {
+                            string[] names1 = variableLines[0].Split(',');
+                            string[] names2 = variableLines[1].Split(',');
+                            string[] units = variableLines[2].Split(',');
+
+                            for (int i = 1; i < names1.Length; ++i)
+                            {
+                                if (!string.IsNullOrEmpty(names1[i]) && names1[i] != "TIME")
+                                {
+                                    this.Add(new LogVariable(this.Count + 1, names1[i], units[i], names2[i]));
                                 }
                             }
 
