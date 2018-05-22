@@ -79,7 +79,7 @@ namespace VisualME7Logger
             if (this.InvokeRequired)
             {
                 this.Invoke(new MethodInvoker(
-                    delegate() { SessionStatusChanged(status); }));
+                    delegate () { SessionStatusChanged(status); }));
                 return;
             }
 
@@ -133,7 +133,7 @@ namespace VisualME7Logger
             if (this.InvokeRequired)
             {
                 this.Invoke(new MethodInvoker(
-                    delegate() { SessionDataRead(line, error); }));
+                    delegate () { SessionDataRead(line, error); }));
                 return;
             }
 
@@ -164,9 +164,9 @@ namespace VisualME7Logger
         {
             System.Threading.Thread.CurrentThread.Priority = System.Threading.ThreadPriority.Lowest;
             doInit = false;
-            
+
             BeginControlUpdate(this);
-            
+
             flpVariables.Controls.Clear();
 
             dataGridView1.Rows.Clear();
@@ -181,11 +181,11 @@ namespace VisualME7Logger
             else if (DisplayOptions.DisplayOrder == DisplayOptions.DisplayOrders.AlphaByName)
             {
                 vars = session.Variables.Values.OrderBy(v => v.Name);
-            }           
+            }
 
             foreach (SessionVariable v in vars)
             {
-                GraphVariable var  = this.DisplayOptions.GraphVariables.FirstOrDefault(gv => gv.Variable == v.Name && gv.Active);
+                GraphVariable var = this.DisplayOptions.GraphVariables.FirstOrDefault(gv => gv.Variable == v.Name && gv.Active);
                 dataGridView1.Columns.Add(v.Name, string.IsNullOrEmpty(v.Alias) ? v.Name : v.Alias);
 
                 FlowLayoutPanel flp = new FlowLayoutPanel();
@@ -197,9 +197,10 @@ namespace VisualME7Logger
                 flp.Tag = v;
                 flp.MouseUp += flp_MouseUp;
 
+
                 Label name = new Label();
                 Font f = new Font(name.Font.FontFamily, name.Font.Size + 1, var != null ? FontStyle.Bold : FontStyle.Regular);
-              
+
                 name.Name = v.Name;
                 name.Height = 20;
                 name.Text = v.ToString();
@@ -224,12 +225,22 @@ namespace VisualME7Logger
                 value.ForeColor = var != null ? var.LineColor : Color.White;
                 value.BackColor = Color.FromArgb(64, 64, 64);
 
+                string tipText = v.ToString();
+                if (var != null)
+                {
+                    tipText += $"\r\nMin: {var.Min}{v.Unit} - Max: {var.Max}{v.Unit}";
+                }
+                ToolTip tt = new ToolTip();
+                tt.SetToolTip(flp, tipText);
+                tt.SetToolTip(name, tipText);
+                tt.SetToolTip(value, tipText);
+
                 flp.Controls.Add(value);
                 flp.Controls.Add(name);
                 flpVariables.Controls.Add(flp);
             }
-            flpVariables_Resize(null, null);           
-            
+            flpVariables_Resize(null, null);
+
             if (this.session.SessionType == ME7LoggerSession.SessionTypes.LogFile)
             {
                 this.scrollbar.Minimum = 0;
@@ -344,7 +355,7 @@ namespace VisualME7Logger
             else if (DisplayOptions.DisplayOrder == DisplayOptions.DisplayOrders.AlphaByName)
             {
                 vars = line.Variables.OrderBy(v => v.SessionVariable.Name);
-            }   
+            }
 
             int index = 0;
             foreach (Variable v in vars)
@@ -520,7 +531,7 @@ namespace VisualME7Logger
                 ca.Position.X = (i++ * 4);
                 ca.Position.Y = (this.DisplayOptions.GraphVariables.Count(v => v.Active) / 2) + 5;
                 ca.Position.Width = 4f;
-                ca.Position.Height = 92 - (this.DisplayOptions.GraphVariables.Count(v => v.Active) / 2);
+                ca.Position.Height = 98;// - (this.DisplayOptions.GraphVariables.Count(v => v.Active) / 2);
 
                 Series s = new Series();
                 s.IsVisibleInLegend = false;
@@ -534,11 +545,12 @@ namespace VisualME7Logger
             }
 
             ChartArea _default = chart1.ChartAreas["Default"];
-            Legend l = chart1.Legends[0];
-            l.Position.X = 2;
-            l.Position.Y = 2;
-            l.Position.Width = 100;
-            l.Position.Height = this.DisplayOptions.GraphVariables.Count(v => v.Active) / 2;
+            //Legend l = chart1.Legends[0];
+            //l.Position.X = 2;
+            //l.Position.Y = 2;
+            //l.Position.Width = 100;
+            //l.Position.Height = this.DisplayOptions.GraphVariables.Count(v => v.Active) / 2;
+
 
             _default.InnerPlotPosition.Height = 95;
             _default.InnerPlotPosition.Width = 96f;
@@ -548,7 +560,7 @@ namespace VisualME7Logger
             _default.Position.X = (axis.Count * 4) - (axis.Count == 0 ? 0 : 2 - (axis.Count * .10f));
             _default.Position.Y = (this.DisplayOptions.GraphVariables.Count(v => v.Active) / 2) + 5;
             _default.Position.Width = 100 - (axis.Count * 4);
-            _default.Position.Height = 92 - (this.DisplayOptions.GraphVariables.Count(v => v.Active) / 2);
+            _default.Position.Height = 98;// - (this.DisplayOptions.GraphVariables.Count(v => v.Active) / 2);
         }
 
         void PlotLineOnChart(LogLine line)
