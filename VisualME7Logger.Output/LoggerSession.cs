@@ -974,6 +974,7 @@ namespace VisualME7Logger.Session
             FTDIInfo = string.Empty;
             WriteLogToFile = true;
             LogFile = System.IO.Path.Combine(ME7LoggerDirectory, "logs", "VisualME7Logger.csv");
+            UseDefaultLogFile = true;
             RealTimeOutput = true;
             BaudRate = 56000;
             SampleRate = 20;
