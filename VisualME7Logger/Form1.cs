@@ -529,9 +529,9 @@ namespace VisualME7Logger
                 ca.AxisX.MajorTickMark.Enabled = false;
 
                 ca.Position.X = (i++ * 4);
-                ca.Position.Y = (this.DisplayOptions.GraphVariables.Count(v => v.Active) / 2) + 5;
+                ca.Position.Y = 2;
                 ca.Position.Width = 4f;
-                ca.Position.Height = 98;// - (this.DisplayOptions.GraphVariables.Count(v => v.Active) / 2);
+                ca.Position.Height = 97;
 
                 Series s = new Series();
                 s.IsVisibleInLegend = false;
@@ -545,22 +545,16 @@ namespace VisualME7Logger
             }
 
             ChartArea _default = chart1.ChartAreas["Default"];
-            //Legend l = chart1.Legends[0];
-            //l.Position.X = 2;
-            //l.Position.Y = 2;
-            //l.Position.Width = 100;
-            //l.Position.Height = this.DisplayOptions.GraphVariables.Count(v => v.Active) / 2;
-
-
+          
             _default.InnerPlotPosition.Height = 95;
             _default.InnerPlotPosition.Width = 96f;
             _default.InnerPlotPosition.X = 2;
             _default.InnerPlotPosition.Y = 0;
 
             _default.Position.X = (axis.Count * 4) - (axis.Count == 0 ? 0 : 2 - (axis.Count * .10f));
-            _default.Position.Y = (this.DisplayOptions.GraphVariables.Count(v => v.Active) / 2) + 5;
+            _default.Position.Y = 2;
             _default.Position.Width = 100 - (axis.Count * 4);
-            _default.Position.Height = 98;// - (this.DisplayOptions.GraphVariables.Count(v => v.Active) / 2);
+            _default.Position.Height = 97;
         }
 
         void PlotLineOnChart(LogLine line)
