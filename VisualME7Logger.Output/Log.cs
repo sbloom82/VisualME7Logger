@@ -15,7 +15,7 @@ namespace VisualME7Logger.Log
             Unknown,
             ME7Logger,
             VCDS,
-            Eurodyne,
+            Standard,
             Normal
         }
 
@@ -61,9 +61,9 @@ namespace VisualME7Logger.Log
                         {
                             this.LogType = LogTypes.VCDS;
                         }
-                        else if (line.StartsWith("Time,"))
+                        else if (line.StartsWith("Time"))
                         {
-                            this.LogType = LogTypes.Eurodyne;
+                            this.LogType = LogTypes.Standard;
                         }
                         else if (line.StartsWith("Time (sec),"))
                         {
@@ -92,13 +92,13 @@ namespace VisualME7Logger.Log
                             }
                         }
                     }
-                    else if (this.LogType == LogTypes.Eurodyne)
+                    else if (this.LogType == LogTypes.Standard)
                     {
                         if (!variables.Complete)
                         {
                             if (!variablesStarted)
                             {
-                                variablesStarted = line.StartsWith("Time,");
+                                variablesStarted = line.StartsWith("Time");
                             }
 
                             if (variablesStarted)
@@ -306,8 +306,7 @@ namespace VisualME7Logger.Log
                             else if (line.StartsWith("\"TIME") ||
                                 line.StartsWith("TIME") ||
                                 line.StartsWith("Marker,") ||
-                                line.StartsWith("Time,") ||
-                                line.StartsWith("Time (sec),"))
+                                line.StartsWith("Time"))
                             {
                                 ready = true;
                                 if (NewVCDSFormat)
@@ -319,7 +318,11 @@ namespace VisualME7Logger.Log
                         }
                         else
                         {
-                            if (string.IsNullOrWhiteSpace(line) || line[0] == '#')
+                            if (string.IsNullOrWhiteSpace(line))
+                            {
+                                continue;
+                            }
+                            else if (line[0] == '#')
                             {
                                 //handles multiple logs in the same file
                                 ready = false;
@@ -332,7 +335,7 @@ namespace VisualME7Logger.Log
                                     foreach (LogLine logLine in this.ReadVCDSLine(line, last))
                                     {
                                         Session.LineRead(logLine);
-                                        if(Session.CurrentSamplesPerSecond == 0)
+                                        if (Session.CurrentSamplesPerSecond == 0)
                                             Session.CurrentSamplesPerSecond = (short)(1 / ((logLine.TimeStamp - (last == null ? 0 : last.TimeStamp))));
                                         last = logLine;
                                     }
@@ -341,11 +344,11 @@ namespace VisualME7Logger.Log
                                 {
                                     LogLine logLine = this.ReadLine(line, last);
                                     Session.LineRead(logLine);
-                                    if (this.LogType == LogTypes.Eurodyne ||
+                                    if (this.LogType == LogTypes.Standard ||
                                         this.LogType == LogTypes.Normal ||
                                         this.LogType == LogTypes.VCDS)
                                     {
-                                        if(Session.CurrentSamplesPerSecond == 0)
+                                        if (Session.CurrentSamplesPerSecond == 0 && logLine.TimeStamp != 0)
                                             Session.CurrentSamplesPerSecond = (short)(1 / ((logLine.TimeStamp - (last == null ? 0 : last.TimeStamp))));
                                     }
                                     last = logLine;
@@ -534,6 +537,7 @@ namespace VisualME7Logger.Log
 
         private bool timeOnly = false;
         private const char COLUMN_SEP = ',';
+        private string timeFormat = "";
         private void Parse(string line, LogLine last)
         {
             string[] values = line.Split(LogLine.COLUMN_SEP);
@@ -553,7 +557,17 @@ namespace VisualME7Logger.Log
                     }
                     catch
                     {
-                        TimeStampDateTime = DateTime.ParseExact(values[timestampIndex], "HH:mm:ss:ffff", System.Globalization.CultureInfo.CurrentCulture);
+                        try
+                        {
+                            timeFormat = "HH:mm:ss:ffff";
+                            TimeStampDateTime = DateTime.ParseExact(values[timestampIndex], timeFormat, System.Globalization.CultureInfo.CurrentCulture);
+                        }
+                        catch
+                        {
+                            timeFormat = "mm:ss.fff";
+                            TimeStampDateTime = DateTime.ParseExact(values[timestampIndex], timeFormat, System.Globalization.CultureInfo.CurrentCulture);
+                        }
+
                         TimeStamp = 0;
                         timeOnly = true;
                     }
@@ -573,8 +587,9 @@ namespace VisualME7Logger.Log
                     }
                     else
                     {
-                        TimeStampDateTime = DateTime.ParseExact(values[timestampIndex], "HH:mm:ss:ffff", System.Globalization.CultureInfo.CurrentCulture);
+                        TimeStampDateTime = DateTime.ParseExact(values[timestampIndex], last.timeFormat, System.Globalization.CultureInfo.CurrentCulture);
                         timeOnly = true;
+                        timeFormat = last.timeFormat;
                     }
                     TimeStamp = last.TimeStamp + (decimal)TimeStampDateTime.Value.Subtract(last.TimeStampDateTime.Value).TotalSeconds;
                 }

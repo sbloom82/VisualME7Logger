@@ -874,9 +874,9 @@ namespace VisualME7Logger.Session
                         }
                     }
                     break;
-                case ME7LoggerLog.LogTypes.Eurodyne:
+                case ME7LoggerLog.LogTypes.Standard:
                 case ME7LoggerLog.LogTypes.Normal:
-                    if (line.StartsWith("Time,") || line.StartsWith("Time (sec),"))
+                    if (line.StartsWith("Time") || line.StartsWith("Time (sec),"))
                     {
                         bool parse = false;
                         if (line.StartsWith("Time (sec),"))
