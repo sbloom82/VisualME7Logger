@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("SB_GLI")]
 [assembly: AssemblyProduct("VisualME7Logger")]
-[assembly: AssemblyCopyright("Copyright © 2013-2017")]
+[assembly: AssemblyCopyright("Copyright © 2013-2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2017.11.24.27")]
-[assembly: AssemblyFileVersion("2017.11.24.27")]
+[assembly: AssemblyVersion("2018.07.02.28")]
+[assembly: AssemblyFileVersion("2018.07.02.28")]
