@@ -61,14 +61,14 @@ namespace VisualME7Logger.Log
                         {
                             this.LogType = LogTypes.VCDS;
                         }
-                        else if (line.StartsWith("Time"))
-                        {
-                            this.LogType = LogTypes.Standard;
-                        }
                         else if (line.StartsWith("Time (sec),"))
                         {
                             this.LogType = LogTypes.Normal;
                         }
+                        else if (line.StartsWith("Time"))
+                        {
+                            this.LogType = LogTypes.Standard;
+                        }                       
                     }
 
                     if (this.LogType == LogTypes.VCDS)
@@ -336,7 +336,10 @@ namespace VisualME7Logger.Log
                                     {
                                         Session.LineRead(logLine);
                                         if (Session.CurrentSamplesPerSecond == 0)
-                                            Session.CurrentSamplesPerSecond = (short)(1 / ((logLine.TimeStamp - (last == null ? 0 : last.TimeStamp))));
+                                        {
+                                            Session.CurrentSamplesPerSecond = 10;
+                                            //Session.CurrentSamplesPerSecond = (short)(1 / ((logLine.TimeStamp - (last == null ? 0 : last.TimeStamp))));
+                                        }
                                         last = logLine;
                                     }
                                 }
@@ -348,8 +351,11 @@ namespace VisualME7Logger.Log
                                         this.LogType == LogTypes.Normal ||
                                         this.LogType == LogTypes.VCDS)
                                     {
-                                        if (Session.CurrentSamplesPerSecond == 0 && logLine.TimeStamp != 0)
-                                            Session.CurrentSamplesPerSecond = (short)(1 / ((logLine.TimeStamp - (last == null ? 0 : last.TimeStamp))));
+                                        if (Session.CurrentSamplesPerSecond == 0)// && logLine.TimeStamp != 0)
+                                        {
+                                            Session.CurrentSamplesPerSecond = 20;
+                                            //Session.CurrentSamplesPerSecond = (short)(1 / ((logLine.TimeStamp - (last == null ? 0 : last.TimeStamp))));
+                                        }
                                     }
                                     last = logLine;
                                 }
