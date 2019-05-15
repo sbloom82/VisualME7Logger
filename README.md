@@ -30,8 +30,11 @@ Features:
 Extras:
 
 Checksum validation:
+
 ![Checkums](docs/checksum.png)
 
-EEProm Tools
+EEProm Tools:
+
 Read/Write/Clone VIN, IMMO AND SKC as well as Checksum correction and Death Code Fix.
+
 ![EEPROM](docs/eeprom.png)
