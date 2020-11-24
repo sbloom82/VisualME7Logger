@@ -459,7 +459,7 @@ namespace VisualME7Logger
                 SessionVariable var = session.Variables[graphVariable.Variable];
                 if (var != null)
                 {
-                    Series s = new Series(string.Format("{0} {1}-{2} {3}", graphVariable.Name, graphVariable.Min.ToString("0.##"), graphVariable.Max.ToString("0.##"), var.Unit));
+                    Series s = new Series(string.Format("{0} {1}-{2} {3}", String.IsNullOrEmpty(graphVariable.Name) ? graphVariable.Variable : graphVariable.Name, graphVariable.Min.ToString("0.##"), graphVariable.Max.ToString("0.##"), var.Unit));
                     s.Color = graphVariable.LineColor;
                     s.ChartType = (SeriesChartType)cmbChartType.SelectedItem;
                     s.BorderWidth = graphVariable.LineThickness;
