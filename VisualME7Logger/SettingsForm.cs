@@ -64,6 +64,11 @@ namespace VisualME7Logger
                 MessageBox.Show(this, "VisualME7Logger detected that it is not running with administrative privileges.  You may have problems using this software.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 #endif
+
+            if (!File.Exists(Path.Combine(Program.ME7LoggerDirectory, "bin", "ME7Logger.exe")))
+            {
+                MessageBox.Show(this, "Ensure VisualME7Logger is in the main directory of ME7Logger, otherwise you will not be able to start logging.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }             
         }
 
         void SetupGrid()
